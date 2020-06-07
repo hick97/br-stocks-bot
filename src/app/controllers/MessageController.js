@@ -27,7 +27,7 @@ class MessageController {
         }
       }
 
-      // await sendMessage(message.chat.id, text, message.message_id)
+      await sendMessage(message.chat.id, text, message.message_id)
 
       return res.json({ text })
     } catch (err) {
