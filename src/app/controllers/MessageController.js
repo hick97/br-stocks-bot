@@ -11,7 +11,7 @@ class MessageController {
       }
 
       const text = isCommandOption(message) ? await commandFunc[message.text]() : 'Checar se é um ativo'
-      await sendMessage(message.chat.id, text)
+      await sendMessage(message.chat.id, text, message.message_id)
 
       return res.json({ text })
     } catch (err) {
