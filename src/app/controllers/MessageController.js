@@ -1,5 +1,7 @@
 const { sendMessage, isSingleCommand } = require('../repositories/MessageRepository')
 const { stockIsValid } = require('../repositories/StockRepository')
+const { updateWallet } = require('../repositories/WalletRepository')
+
 const singleCommands = require('../helpers/singleCommandsFunc')
 const staticMessages = require('../enum/messages')
 
@@ -19,7 +21,7 @@ class MessageController {
       } else {
         if (stockIsValid(message)) {
           // TODO
-          text = 'todo'
+          text = await updateWallet(message)
         } else {
           text = staticMessages.INVALID_COMMAND
         }

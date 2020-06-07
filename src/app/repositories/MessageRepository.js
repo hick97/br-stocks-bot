@@ -1,6 +1,6 @@
 const axios = require('axios')
 
-const telegramApi = require('../services/api')
+const Api = require('../services/api')
 const singleCommands = require('../enum/singleCommands')
 const { getKeyboardOptions } = require('../helpers/keyboardOptions')
 
@@ -13,7 +13,7 @@ class MessageRepository {
   }
 
   async sendMessage(chat_id, text, message_id) {
-    await axios.post(`${telegramApi.telegramURL}/sendMessage`, {
+    await axios.post(`${Api.telegramURL}/sendMessage`, {
       chat_id,
       text,
       reply_to_message_id: message_id,
