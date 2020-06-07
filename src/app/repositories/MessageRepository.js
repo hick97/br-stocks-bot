@@ -15,7 +15,14 @@ class MessageRepository {
     await axios.post(`${telegramApi.telegramURL}/sendMessage`, {
       chat_id,
       text,
-      reply_to_message_id: message_id
+      reply_to_message_id: message_id,
+      reply_markup: JSON.stringify({
+        inline_keyboard: [
+          [{ text: 'Some button text 1', callback_data: '1' }],
+          [{ text: 'Some button text 2', callback_data: '2' }],
+          [{ text: 'Some button text 3', callback_data: '3' }]
+        ]
+      })
     })
     return { chat_id, text }
   }
