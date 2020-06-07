@@ -29,7 +29,7 @@ class MessageRepository {
   }
 
   async helpMenu() {
-    return '<b>Instruções</b>'
+    return '<b>Instruções</b><br/>'
   }
 
   async startMenu() {
