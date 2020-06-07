@@ -1,7 +1,8 @@
-const { helpMenu, startMenu } = require('../repositories/MessageRepository')
+const { helpMenu } = require('../repositories/MessageRepository')
+const staticMessages = require('../enum/messages')
 
 const commandFunc = {
-  '/start': startMenu,
+  '/start': staticMessages.START_MESSAGE,
   '/wallet': () => 'TODO',
   '/quotes': () => 'TODO',
   '/help': helpMenu

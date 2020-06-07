@@ -2,6 +2,7 @@ const axios = require('axios')
 
 const telegramApi = require('../services/api')
 const commandOptions = require('../enum/commandOptions')
+const { getKeyboardOptions } = require('../helpers/keyboardOptions')
 
 class MessageRepository {
   isCommandOption(message) {
@@ -17,18 +18,14 @@ class MessageRepository {
       text,
       reply_to_message_id: message_id,
       reply_markup: JSON.stringify({
-        keyboard: [
-          [{ text: 'Some button text 1' }],
-          [{ text: 'Some button text 2' }],
-          [{ text: 'Some button text 3' }]
-        ]
+        keyboard: getKeyboardOptions()
       })
     })
     return { chat_id, text }
   }
 
   async helpMenu() {
-    return 'Esse é o menu de ajuda.'
+    return '<b>Instruções</b>\n'
   }
 
   async startMenu() {
