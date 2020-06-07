@@ -1,7 +1,7 @@
 const commandOptions = [
   '/start',
   '/wallet',
-  '/quotes',
+  '/details',
   '/help'
 ]
 

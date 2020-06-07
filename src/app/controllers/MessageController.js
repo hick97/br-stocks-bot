@@ -1,4 +1,4 @@
-const { sendMessage, isCommandOption, setCommands } = require('../repositories/MessageRepository')
+const { sendMessage, isCommandOption } = require('../repositories/MessageRepository')
 
 const commandFunc = require('../helpers/commandFunc')
 
@@ -13,7 +13,6 @@ class MessageController {
 
       const text = isCommandOption(message) ? await commandFunc[message.text]() : 'Checar se é um ativo'
       await sendMessage(message.chat.id, text, message.message_id)
-      await setCommands()
 
       return res.json({ text })
     } catch (err) {

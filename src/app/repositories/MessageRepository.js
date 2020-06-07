@@ -27,15 +27,6 @@ class MessageRepository {
     })
   }
 
-  async setCommands() {
-    await axios.post(`${telegramApi.telegramURL}/setMyCommands`, {
-      commands: [{
-        command: '/start',
-        description: 'Uma breve introdução de como utilizar o BR Stocks Bot'
-      }]
-    })
-  }
-
   async helpMenu() {
     return '<b>Instruções</b>\n' + 'testando123...'
   }
