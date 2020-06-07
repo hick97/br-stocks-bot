@@ -18,15 +18,18 @@ class MessageRepository {
       text,
       reply_to_message_id: message_id,
       reply_markup: JSON.stringify({
-        keyboard: getKeyboardOptions()
+        keyboard: getKeyboardOptions(),
+        resize_keyboard: true,
+        one_time_keyboard: true
       }),
-      parse_mode: 'Markdown'
+      parse_mode: 'HTML'
+
     })
     return { chat_id, text }
   }
 
   async helpMenu() {
-    return '**Instruções**\n'
+    return '<b>Instruções</b><br>'
   }
 
   async startMenu() {
