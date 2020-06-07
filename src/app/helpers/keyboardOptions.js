@@ -1,4 +1,4 @@
-const commandOptions = require('../enum/commandOptions')
+const commandOptions = require('../enum/singleCommands')
 
 const getKeyboardOptions = () => {
   const keyboard = commandOptions.map((command) => ([{

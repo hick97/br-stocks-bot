@@ -1,13 +1,13 @@
 const axios = require('axios')
 
 const telegramApi = require('../services/api')
-const commandOptions = require('../enum/commandOptions')
+const singleCommands = require('../enum/singleCommands')
 const { getKeyboardOptions } = require('../helpers/keyboardOptions')
 
 class MessageRepository {
-  isCommandOption(message) {
+  isSingleCommand(message) {
     const { text } = message
-    const textIsValid = commandOptions.includes(text)
+    const textIsValid = singleCommands.includes(text)
 
     return textIsValid
   }
@@ -25,14 +25,6 @@ class MessageRepository {
       parse_mode: 'HTML'
 
     })
-  }
-
-  async helpMenu() {
-    return '<b>Instruções</b>\n' + 'testando123...'
-  }
-
-  async startMenu() {
-    return 'Esse é o menu de início'
   }
 }
 

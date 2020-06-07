@@ -1,7 +1,11 @@
 /* eslint-disable import/first */
 require('dotenv').config()
 const express = require('express')
+const mongoose = require('mongoose')
 const cors = require('cors')
+
+const databaseConfig = require('./config/database')
+
 const routes = require('./routes')
 
 class App {
@@ -9,7 +13,16 @@ class App {
     this.express = express()
 
     this.middlewares()
+    this.database()
     this.routes()
+  }
+
+  database() {
+    mongoose.connect(databaseConfig.uri, {
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useNewUrlParser: true
+    })
   }
 
   middlewares() {

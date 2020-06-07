@@ -1,6 +1,7 @@
-const { sendMessage, isCommandOption } = require('../repositories/MessageRepository')
-
-const commandFunc = require('../helpers/commandFunc')
+const { sendMessage, isSingleCommand } = require('../repositories/MessageRepository')
+const { stockIsValid } = require('../repositories/StockRepository')
+const singleCommands = require('../helpers/singleCommandsFunc')
+const staticMessages = require('../enum/messages')
 
 class MessageController {
   async execute(req, res) {
@@ -8,15 +9,27 @@ class MessageController {
       const { message } = req.body
 
       if (!message) {
-        throw Error('Ocorreceu um erro, tente novamente em alguns instantes.')
+        throw Error('Ocorreceu um erro com a mensagem recebida, tente novamente em alguns instantes.')
       }
 
-      const text = isCommandOption(message) ? await commandFunc[message.text]() : 'Checar se é um ativo'
-      await sendMessage(message.chat.id, text, message.message_id)
+      let text = ''
+
+      if (isSingleCommand(message)) {
+        text = await singleCommands[message.text]()
+      } else {
+        if (stockIsValid(message)) {
+          // TODO
+          text = 'todo'
+        } else {
+          text = staticMessages.INVALID_COMMAND
+        }
+      }
+
+      // await sendMessage(message.chat.id, text, message.message_id)
 
       return res.json({ text })
     } catch (err) {
-      res.end('Ocorreu um erro, tente novamente. Para mais informações utilize o comando /help. Error: ' + err.message)
+      res.end('Error: ' + err.message)
     }
   }
 }
