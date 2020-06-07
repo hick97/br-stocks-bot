@@ -25,7 +25,15 @@ class MessageRepository {
       parse_mode: 'HTML'
 
     })
-    return { chat_id, text }
+  }
+
+  async setCommands() {
+    await axios.post(`${telegramApi.telegramURL}/setMyCommands`, {
+      commands: [{
+        command: '/start',
+        description: 'Uma breve introdução de como utilizar o BR Stocks Bot'
+      }]
+    })
   }
 
   async helpMenu() {
