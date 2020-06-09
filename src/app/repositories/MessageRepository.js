@@ -12,7 +12,7 @@ class MessageRepository {
     return textIsValid
   }
 
-  async sendMessage(chat_id, text, message_id) {
+  async sendMessage(chat_id, text, message_id = '') {
     await axios.post(`${Api.telegramURL}/sendMessage`, {
       chat_id,
       text,

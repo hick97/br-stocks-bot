@@ -2,10 +2,12 @@
 require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
+const cron = require('node-cron')
+
 const cors = require('cors')
 
 const databaseConfig = require('./config/database')
-
+const reportJob = require('./app/controllers/ReportController')
 const routes = require('./routes')
 
 class App {
@@ -15,6 +17,7 @@ class App {
     this.middlewares()
     this.database()
     this.routes()
+    this.jobs()
   }
 
   database() {
@@ -32,6 +35,15 @@ class App {
 
   routes() {
     this.express.use(routes)
+  }
+
+  jobs() {
+    cron.schedule('29 21 * * *', () => {
+      reportJob.execute()
+    }, {
+      scheduled: true,
+      timezone: 'America/Sao_Paulo'
+    })
   }
 }
 
