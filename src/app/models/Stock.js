@@ -5,6 +5,10 @@ const StockSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  stock: {
+    type: String,
+    required: true
+  },
   symbol: {
     type: String,
     required: true
