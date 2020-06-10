@@ -89,17 +89,29 @@ class WalletRepository {
 
   async listWalletById(chat_id) {
     // TODO: listar ativo
-    const stocks = await Wallet.find({
+    const wallet = await Wallet.find({
       chat_id
-    }).populate('stocks', 'symbol', 'price', 'quantity')
+    }).populate('stocks')
 
-    return stocks
+    const stocks = []
+
+    for (let index = 0; index < wallet[0].stocks.length; index++) {
+      if (index === 0) stocks.push('<b>SUA CARTEIRA</b> \n\n')
+      const picked = (({ stock, price, quantity }) => `${stock} ${quantity} ${price}\n`)(wallet[0].stocks[index])
+      stocks.push(picked)
+    }
+
+    if (stocks.length === 0) {
+      return 'Calma lá!\nCadastre pelo menos um ativo para utilizar funcionalidades da carteira.'
+    }
+
+    return stocks.join('')
   }
 
   async listAllWallets() {
     const wallets = await Wallet.find({}).select('chat_id -_id')
 
-    return wallets
+    return JSON.stringify(wallets)
   }
 }
 

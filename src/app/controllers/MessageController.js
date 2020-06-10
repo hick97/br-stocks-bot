@@ -1,6 +1,6 @@
 const { sendMessage, isSingleCommand } = require('../repositories/MessageRepository')
 const { stockIsValid } = require('../repositories/StockRepository')
-const { updateWallet } = require('../repositories/WalletRepository')
+const { updateWallet, listWalletById } = require('../repositories/WalletRepository')
 
 const singleCommands = require('../helpers/singleCommandsFunc')
 const staticMessages = require('../enum/messages')
@@ -14,17 +14,27 @@ class MessageController {
         throw Error('Ocorreceu um erro com a mensagem recebida, tente novamente em alguns instantes.')
       }
 
-      let text = ''
+      let text = null
+      text = (isSingleCommand(message)) && singleCommands[message.text]
 
-      if (isSingleCommand(message)) {
-        text = await singleCommands[message.text]()
-      } else {
-        if (stockIsValid(message)) {
-          // TODO
-          text = await updateWallet(message)
-        } else {
-          text = staticMessages.INVALID_COMMAND
+      if (!text) {
+        text = stockIsValid(message) && await updateWallet(message)
+      }
+      if (!text) {
+        switch (message.text) {
+          case '/wallet':
+            text = await listWalletById(message.chat.id)
+            break
+          case '/details':
+            text = 'TODO'
+            break
+
+          default:
+            break
         }
+      }
+      if (!text) {
+        text = staticMessages.INVALID_COMMAND
       }
 
       await sendMessage(message.chat.id, text, message.message_id)
