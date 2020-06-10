@@ -95,14 +95,14 @@ class WalletRepository {
 
     const stocks = []
 
-    for (let index = 0; index < wallet[0].stocks.length; index++) {
-      if (index === 0) stocks.push('<b>SUA CARTEIRA</b> \n\n')
-      const picked = (({ stock, price, quantity }) => `${stock} ${quantity} ${price}\n`)(wallet[0].stocks[index])
-      stocks.push(picked)
+    if (!wallet[0]) {
+      return 'Calma lá!\nCadastre pelo menos um ativo para utilizar funcionalidades da carteira.'
     }
 
-    if (stocks.length === 0) {
-      return 'Calma lá!\nCadastre pelo menos um ativo para utilizar funcionalidades da carteira.'
+    for (let index = 0; index < wallet[0].stocks.length; index++) {
+      if (index === 0) stocks.push('\n<b>SUA CARTEIRA</b> \n\n')
+      const picked = (({ stock, price, quantity }) => `${stock} \t${quantity} \t${price}\n`)(wallet[0].stocks[index])
+      stocks.push(picked)
     }
 
     return stocks.join('')
