@@ -38,7 +38,7 @@ class App {
   }
 
   jobs() {
-    cron.schedule('30 8 * * *', () => {
+    cron.schedule('37 12 * * *', () => {
       reportJob.execute()
     }, {
       scheduled: true,
