@@ -17,11 +17,6 @@ class MessageRepository {
       chat_id,
       text,
       reply_to_message_id: message_id,
-      reply_markup: JSON.stringify({
-        keyboard: getKeyboardOptions(),
-        resize_keyboard: true,
-        one_time_keyboard: true
-      }),
       parse_mode: 'HTML'
 
     })

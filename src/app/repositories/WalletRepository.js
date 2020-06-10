@@ -111,7 +111,7 @@ class WalletRepository {
   async listAllWallets() {
     const wallets = await Wallet.find({}).select('chat_id -_id')
 
-    return JSON.stringify(wallets)
+    return wallets
   }
 }
 

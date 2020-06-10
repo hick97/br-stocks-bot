@@ -8,7 +8,7 @@ class ReportController {
 
     for (let index = 0; index < subscriptions.length; index++) {
       const reportData = await buildReport(subscriptions[index].chat_id)
-      await sendMessage(reportData.chat_id, JSON.stringify(reportData))
+      await sendMessage(reportData.chat_id, reportData.message)
     }
   }
 }
