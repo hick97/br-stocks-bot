@@ -1,8 +1,5 @@
-class ReportRepository {
-  async getSubscriptions() {
-    return [680912149]
-  }
 
+class ReportRepository {
   async buildReport(chat_id) {
     const report = {
       chat_id,
@@ -10,10 +7,6 @@ class ReportRepository {
     }
 
     return report
-  }
-
-  async getReport(data) {
-    return `Enviando a mensagem: ${data.message} para o chat_id: ${data.chat_id}`
   }
 }
 module.exports = new ReportRepository()

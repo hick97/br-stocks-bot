@@ -79,13 +79,19 @@ class WalletRepository {
     return staticMessages.STOCK_UPDATED
   }
 
-  async listWalletStock(chat_id) {
+  async listWalletById(chat_id) {
     // TODO: listar ativo
     const stocks = await Wallet.find({
       chat_id
     })
 
     return stocks
+  }
+
+  async listAllWallets() {
+    const wallets = await Wallet.find({}).select('chat_id -_id')
+
+    return wallets
   }
 }
 

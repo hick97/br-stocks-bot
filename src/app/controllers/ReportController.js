@@ -1,14 +1,14 @@
-const { buildReport, getReport, getSubscriptions } = require('../repositories/ReportRepository')
+const { listAllWallets } = require('../repositories/WalletRepository')
+const { buildReport } = require('../repositories/ReportRepository')
 const { sendMessage } = require('../repositories/MessageRepository')
 
 class ReportController {
   async execute() {
-    const subscriptions = await getSubscriptions()
+    const subscriptions = await listAllWallets()
 
     for (let index = 0; index < subscriptions.length; index++) {
-      const reportData = await buildReport(subscriptions[index])
-      const reportMessage = await getReport(reportData)
-      await sendMessage(reportData.chat_id, reportMessage)
+      const reportData = await buildReport(subscriptions[index].chat_id)
+      await sendMessage(reportData.chat_id, JSON.stringify(reportData))
     }
   }
 }
