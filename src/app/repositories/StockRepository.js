@@ -17,22 +17,22 @@ class StockRepository {
     return true
   }
 
-  async createStock(stock, price, quantity) {
-    delete stock['9. matchScore']
+  async createStock(symbol, price, quantity, stock) {
+    delete symbol['9. matchScore']
 
     const obj = {
-      symbol: stock['1. symbol'],
-      name: stock['2. name'],
-      type: stock['3. type'],
-      region: stock['4. region'],
-      marketOpen: stock['5. marketOpen'],
-      marketClose: stock['6. marketClose'],
-      timezone: stock['7. timezone'],
-      currency: stock['8. currency']
+      symbol: symbol['1. symbol'],
+      name: symbol['2. name'],
+      type: symbol['3. type'],
+      region: symbol['4. region'],
+      marketOpen: symbol['5. marketOpen'],
+      marketClose: symbol['6. marketClose'],
+      timezone: symbol['7. timezone'],
+      currency: symbol['8. currency']
     }
     // Verificar se o ativo não ta no BD antes (poupar requisição)
 
-    const { _id } = await Stock.create({ ...obj, price: parseFloat(price), quantity: parseInt(quantity) })
+    const { _id } = await Stock.create({ ...obj, price: parseFloat(price), quantity: parseInt(quantity), stock })
     return _id
   }
 

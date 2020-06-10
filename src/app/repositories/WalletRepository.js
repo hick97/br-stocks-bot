@@ -29,7 +29,15 @@ class WalletRepository {
           return staticMessages.NOT_FOUND
         }
 
-        stockId = await createStock(stockData, values.price, values.quantity)
+        stockId = await createStock(stockData, values.price, values.quantity, values.stock)
+
+        await Wallet.create({
+          name: chat.title,
+          chat_id: chat.id,
+          stocks: [stockId]
+        })
+
+        return staticMessages.STOCK_CREATED
       }
 
       stockId = stockAlreadyExists._id
@@ -51,7 +59,7 @@ class WalletRepository {
         return staticMessages.NOT_FOUND
       }
 
-      stockId = await createStock(stockData, values.price, values.quantity)
+      stockId = await createStock(stockData, values.price, values.quantity, values.stock)
 
       await Wallet.findByIdAndUpdate(walletAlreadyExists._id, {
         stocks: [...walletAlreadyExists.stocks, { _id: stockId }]
@@ -83,7 +91,7 @@ class WalletRepository {
     // TODO: listar ativo
     const stocks = await Wallet.find({
       chat_id
-    })
+    }).populate('stocks', 'symbol', 'price', 'quantity')
 
     return stocks
   }

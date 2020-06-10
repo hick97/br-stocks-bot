@@ -21,7 +21,7 @@ class MessageController {
       } else {
         if (stockIsValid(message)) {
           // TODO
-          // text = await updateWallet(message)
+          text = await updateWallet(message)
         } else {
           text = staticMessages.INVALID_COMMAND
         }
