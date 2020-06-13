@@ -1,5 +1,6 @@
 const axios = require('axios')
 const Stock = require('../models/Stock')
+const Quote = require('../models/Quote')
 
 const Api = require('../services/api')
 const alphaFunctions = require('../enum/alphaVantageFunctions')
@@ -17,7 +18,13 @@ class StockRepository {
     return true
   }
 
-  async createStock(symbol, price, quantity, stock) {
+  async listAllStocks() {
+    const stocks = await Stock.find({}).select('symbol -_id')
+
+    return stocks
+  }
+
+  async createStock(symbol, stock) {
     delete symbol['9. matchScore']
 
     const obj = {
@@ -32,13 +39,8 @@ class StockRepository {
     }
     // Verificar se o ativo não ta no BD antes (poupar requisição)
 
-    const { _id } = await Stock.create({ ...obj, price: parseFloat(price), quantity: parseInt(quantity), stock })
+    const { _id } = await Stock.create({ ...obj, stock })
     return _id
-  }
-
-  async updateStock(id, price, quantity) {
-    const stock = await Stock.findByIdAndUpdate(id, { price: parseFloat(price), quantity: parseInt(quantity) })
-    return stock
   }
 
   deleteStock(stock) {
@@ -70,13 +72,16 @@ class StockRepository {
     return match
   }
 
-  async getStockQuote(symbol) {
+  async createStockQuote(symbol, count) {
+    const MAX_REQUESTS_PER_MINUTE = 5
+    const FIRST_REQUEST = 0
+
+    count !== FIRST_REQUEST && count % MAX_REQUESTS_PER_MINUTE === 0 && await new Promise(r => setTimeout(r, 10 * 6000))
     const { data } = await axios.get(`${Api.alphaVantageURL}&function=${alphaFunctions.globalQuote}&symbol=${symbol}`)
-    await new Promise(r => setTimeout(r, 10 * 6000))
     const options = data['Global Quote']
 
     const obj = {
-      symbol: parseFloat(options['01. symbol']).toFixed(2),
+      symbol: options['01. symbol'],
       open: parseFloat(options['02. open']).toFixed(2),
       high: parseFloat(options['03. high']).toFixed(2),
       low: parseFloat(options['04. low']).toFixed(2),
@@ -87,7 +92,13 @@ class StockRepository {
       change: options['09. change'],
       changePercent: options['10. change percent']
     }
-    return obj
+    await Quote.create(obj)
+  }
+
+  async getStockQuote(symbol) {
+    const stockQuoteDate = await Quote.findOne({ symbol })
+
+    return stockQuoteDate
   }
 }
 

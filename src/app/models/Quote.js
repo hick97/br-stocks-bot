@@ -1,41 +1,49 @@
 const mongoose = require('mongoose')
 
-const StockSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  stock: {
-    type: String,
-    required: true
-  },
+const QuoteSchema = new mongoose.Schema({
   symbol: {
     type: String,
     required: true
   },
-  type: {
+  open: {
+    type: Number,
+    required: true
+  },
+  high: {
+    type: Number,
+    required: true
+  },
+  low: {
+    type: Number,
+    required: true
+  },
+  price: {
+    type: Number,
+    required: true
+  },
+  volume: {
     type: String,
     required: true
   },
-  region: {
+  latestTradingDay: {
     type: String,
     required: true
   },
-  marketOpen: {
+  previousClose: {
+    type: Number,
+    required: true
+  },
+  change: {
     type: String,
     required: true
   },
-  marketClose: {
+  changePercent: {
     type: String,
     required: true
   },
-  timezone: {
-    type: String,
-    required: true
-  },
-  currency: {
-    type: String,
-    required: true
+  updatedAt: {
+    type: Date,
+    default: Date.now
   },
   createdAt: {
     type: Date,
@@ -43,4 +51,4 @@ const StockSchema = new mongoose.Schema({
   }
 })
 
-module.exports = mongoose.model('Stock', StockSchema)
+module.exports = mongoose.model('Quote', QuoteSchema)

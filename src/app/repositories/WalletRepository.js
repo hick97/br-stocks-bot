@@ -1,4 +1,4 @@
-const { getStockValues, findStockData, createStock, updateStock } = require('../repositories/StockRepository')
+const { getStockValues, findStockData, createStock } = require('../repositories/StockRepository')
 
 const staticMessages = require('../enum/messages')
 
@@ -9,13 +9,14 @@ class WalletRepository {
   async updateWallet(message) {
     const { text, chat } = message
     let stockData = {}
-    let stockId
+    // let stockId
 
     // check if wallet already exists
     const walletAlreadyExists = await Wallet.findOne({ chat_id: chat.id })
 
     // get action, stock, quantity and price
     const values = await getStockValues(text)
+    const formattedPrice = values.price.replace(/,/g, '.')
 
     // check if stock already exists
     const stockAlreadyExists = await Stock.findOne({ symbol: `${values.stock}.SAO` })
@@ -29,23 +30,17 @@ class WalletRepository {
           return staticMessages.NOT_FOUND
         }
 
-        stockId = await createStock(stockData, values.price, values.quantity, values.stock)
-
-        await Wallet.create({
-          name: chat.title,
-          chat_id: chat.id,
-          stocks: [stockId]
-        })
-
-        return staticMessages.STOCK_CREATED
+        await createStock(stockData, values.stock)
       }
-
-      stockId = stockAlreadyExists._id
 
       await Wallet.create({
         name: chat.title,
         chat_id: chat.id,
-        stocks: [stockId]
+        stocks: [{
+          stock: values.stock,
+          quantity: parseInt(values.quantity),
+          price: parseFloat(formattedPrice)
+        }]
       })
 
       return staticMessages.STOCK_CREATED
@@ -59,36 +54,47 @@ class WalletRepository {
         return staticMessages.NOT_FOUND
       }
 
-      stockId = await createStock(stockData, values.price, values.quantity, values.stock)
+      await createStock(stockData, values.stock)
 
       await Wallet.findByIdAndUpdate(walletAlreadyExists._id, {
-        stocks: [...walletAlreadyExists.stocks, { _id: stockId }]
+        stocks: [...walletAlreadyExists.stocks, {
+          stock: values.stock,
+          quantity: parseInt(values.quantity),
+          price: parseFloat(formattedPrice)
+        }]
       })
 
       return staticMessages.STOCK_CREATED
     }
 
     // check if stock already exists on chat wallet
-    const stockExistsOnWallet = await walletAlreadyExists.stocks.includes(String(stockAlreadyExists._id))
+    const stockIndex = await walletAlreadyExists.stocks.findIndex(s => s.stock === values.stock)
 
     // stock exists in db, but not included on wallet
-    if (!stockExistsOnWallet) {
-      stockId = stockAlreadyExists._id
-      await updateStock(stockId, values.price, values.quantity)
+    if (stockIndex === -1) {
       await Wallet.findByIdAndUpdate(walletAlreadyExists._id, {
-        stocks: [...walletAlreadyExists.stocks, { _id: stockId }]
+        stocks: [...walletAlreadyExists.stocks, {
+          stock: values.stock,
+          quantity: parseInt(values.quantity),
+          price: parseFloat(formattedPrice)
+        }]
       })
 
       return staticMessages.STOCK_CREATED
     }
 
     // stock is included on wallet
-    await updateStock(stockAlreadyExists._id, values.price, values.quantity)
+    walletAlreadyExists.stocks[stockIndex] = {
+      stock: values.stock,
+      quantity: parseInt(values.quantity),
+      price: parseFloat(formattedPrice)
+    }
+    await walletAlreadyExists.save()
+
     return staticMessages.STOCK_UPDATED
   }
 
   async listWalletById(chat_id) {
-    // TODO: listar ativo
     const wallet = await Wallet.find({
       chat_id
     }).populate('stocks')
@@ -101,7 +107,7 @@ class WalletRepository {
 
     for (let index = 0; index < wallet[0].stocks.length; index++) {
       if (index === 0) stocks.push('\n<b>SUA CARTEIRA</b> \n\n')
-      const picked = (({ stock, price, quantity }) => `${stock} \t${quantity} \t${price}\n`)(wallet[0].stocks[index])
+      const picked = (({ stock, price, quantity }) => `<code>R$${price}</code> \t<code>${quantity}</code> \t<code>${stock}</code>\n`)(wallet[0].stocks[index])
       stocks.push(picked)
     }
 

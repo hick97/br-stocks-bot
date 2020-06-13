@@ -11,9 +11,9 @@ const WalletSchema = new mongoose.Schema({
   },
   stocks: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Stock',
-      required: true
+      stock: { type: String, required: true },
+      quantity: { type: Number, required: true },
+      price: { type: Number, required: true }
     }
   ],
   createdAt: {
