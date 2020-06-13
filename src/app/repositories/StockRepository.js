@@ -69,6 +69,26 @@ class StockRepository {
     if (matchScore < 0.5) return undefined
     return match
   }
+
+  async getStockQuote(symbol) {
+    const { data } = await axios.get(`${Api.alphaVantageURL}&function=${alphaFunctions.globalQuote}&symbol=${symbol}`)
+    await new Promise(r => setTimeout(r, 10 * 6000))
+    const options = data['Global Quote']
+
+    const obj = {
+      symbol: parseFloat(options['01. symbol']).toFixed(2),
+      open: parseFloat(options['02. open']).toFixed(2),
+      high: parseFloat(options['03. high']).toFixed(2),
+      low: parseFloat(options['04. low']).toFixed(2),
+      price: parseFloat(options['05. price']).toFixed(2),
+      volume: options['06. volume'],
+      latestTradingDay: options['07. latest trading day'],
+      previousClose: parseFloat(options['08. previous close']).toFixed(2),
+      change: options['09. change'],
+      changePercent: options['10. change percent']
+    }
+    return obj
+  }
 }
 
 module.exports = new StockRepository()

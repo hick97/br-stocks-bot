@@ -25,16 +25,11 @@ class MessageController {
           case '/wallet':
             text = await listWalletById(message.chat.id)
             break
-          case '/details':
-            text = 'TODO'
-            break
 
           default:
+            text = staticMessages.INVALID_COMMAND
             break
         }
-      }
-      if (!text) {
-        text = staticMessages.INVALID_COMMAND
       }
 
       await sendMessage(message.chat.id, text, message.message_id)

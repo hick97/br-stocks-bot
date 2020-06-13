@@ -109,7 +109,7 @@ class WalletRepository {
   }
 
   async listAllWallets() {
-    const wallets = await Wallet.find({}).select('chat_id -_id')
+    const wallets = await Wallet.find({}).select('chat_id stocks -_id').populate('stocks')
 
     return wallets
   }

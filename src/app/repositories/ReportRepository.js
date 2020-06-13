@@ -1,9 +1,25 @@
+const StockRepository = require('../repositories/StockRepository')
 
 class ReportRepository {
-  async buildReport(chat_id) {
+  async buildReport(chat_id, stocks) {
+    var today = new Date()
+    var dd = String(today.getDate()).padStart(2, '0')
+    var mm = String(today.getMonth() + 1).padStart(2, '0') // January is 0!
+    var yyyy = today.getFullYear()
+
+    today = '<b>&#x1F4C5 ' + dd + '/' + mm + '/' + yyyy + '</b>\n\n'
+    const text = [today]
+    for (let index = 0; index < stocks.length; index++) {
+      const stock = stocks[index]
+      const stockData = await StockRepository.getStockQuote(stock.symbol)
+      const partial = `<b>${stock.stock}</b>\n<code>Volume</code>: <code>${stockData.volume}</code>\n<code>Máxima</code>: <code>${stockData.high}R$</code>\n<code>Mínima</code>: <code>${stockData.low}R$</code>\n<code>Abertura</code>: <code>${stockData.open}R$</code>\n<code>Fechamento</code>: <code>${stockData.price}R$</code>\n<code>Rentabilidade</code>: <code>${stockData.changePercent}</code>\n\n`
+      text.push(partial)
+      clearTimeout(1000 * 60)
+    }
+
     const report = {
       chat_id,
-      message: 'esse é o relatório'
+      message: text.join('')
     }
 
     return report
