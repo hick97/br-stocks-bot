@@ -73,11 +73,13 @@ class StockRepository {
   }
 
   async createStockQuote(symbol, count) {
-    const MAX_REQUESTS_PER_MINUTE = 5
+    const MAX_REQUESTS_PER_MINUTE = 4
     const FIRST_REQUEST = 0
 
     count !== FIRST_REQUEST && count % MAX_REQUESTS_PER_MINUTE === 0 && await new Promise(r => setTimeout(r, 10 * 6000))
+
     const { data } = await axios.get(`${Api.alphaVantageURL}&function=${alphaFunctions.globalQuote}&symbol=${symbol}`)
+
     const options = data['Global Quote']
 
     const obj = {
@@ -92,11 +94,18 @@ class StockRepository {
       change: options['09. change'],
       changePercent: options['10. change percent']
     }
-    await Quote.create(obj)
+
+    const quoteAlreadyExists = await Quote.findOne({ symbol: obj.symbol })
+
+    if (!quoteAlreadyExists) {
+      await Quote.create(obj)
+    } else {
+      await Quote.findByIdAndUpdate(quoteAlreadyExists._id, obj)
+    }
   }
 
   async getStockQuote(symbol) {
-    const stockQuoteDate = await Quote.findOne({ symbol })
+    const stockQuoteDate = await Quote.findOne({ symbol: `${symbol}.SAO` })
 
     return stockQuoteDate
   }

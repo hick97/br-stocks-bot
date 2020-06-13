@@ -7,9 +7,9 @@ const staticMessages = require('../enum/messages')
 
 class MessageController {
   async execute(req, res) {
-    try {
-      const { message } = req.body
+    const { message } = req.body
 
+    try {
       if (!message) {
         throw Error('Ocorreceu um erro com a mensagem recebida, tente novamente em alguns instantes.')
       }
@@ -37,6 +37,7 @@ class MessageController {
       return res.json({ text })
     } catch (err) {
       res.end('Error: ' + err.message)
+      await sendMessage(message.chat.id, 'Error: ' + err.message)
     }
   }
 }
