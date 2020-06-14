@@ -10,26 +10,30 @@ class MessageController {
     const { message } = req.body
 
     try {
-      if (!message) {
-        throw Error('Ocorreceu um erro com a mensagem recebida, tente novamente em alguns instantes.')
-      }
+      if (!message) throw Error('Ocorreceu um erro com a mensagem recebida, tente novamente em alguns instantes.')
 
       let text = null
+
       text = (isSingleCommand(message)) && singleCommands[message.text]
-
-      if (!text) {
-        text = stockIsValid(message) && await updateWallet(message)
+      if (text) {
+        await sendMessage(message.chat.id, text, message.message_id)
+        return res.json({ text })
       }
-      if (!text) {
-        switch (message.text) {
-          case '/wallet':
-            text = await listWalletById(message.chat.id)
-            break
 
-          default:
-            text = staticMessages.INVALID_COMMAND
-            break
-        }
+      text = stockIsValid(message) && await updateWallet(message)
+      if (text) {
+        await sendMessage(message.chat.id, text, message.message_id)
+        return res.json({ text })
+      }
+
+      switch (message.text) {
+        case '/wallet':
+          text = await listWalletById(message.chat.id)
+          break
+
+        default:
+          text = staticMessages.INVALID_COMMAND
+          break
       }
 
       await sendMessage(message.chat.id, text, message.message_id)

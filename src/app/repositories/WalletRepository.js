@@ -1,4 +1,5 @@
 const { getStockValues, findStockData, createStock } = require('../repositories/StockRepository')
+const { dynamicSort } = require('../helpers/sortHelper')
 
 const staticMessages = require('../enum/messages')
 
@@ -97,7 +98,10 @@ class WalletRepository {
   async listWalletById(chat_id) {
     const wallet = await Wallet.find({
       chat_id
-    }).populate('stocks')
+    })
+
+    const walletStocks = wallet[0].stocks
+    const orderedStocks = walletStocks.sort(dynamicSort('price', 'desc'))
 
     const stocks = []
 
@@ -105,10 +109,10 @@ class WalletRepository {
       return 'Calma lá!\nCadastre pelo menos um ativo para utilizar funcionalidades da carteira.'
     }
 
-    for (let index = 0; index < wallet[0].stocks.length; index++) {
-      if (index === 0) stocks.push('\n<b>SUA CARTEIRA</b> \n\n')
-      const picked = (({ stock, price, quantity }) => `<code>R$${price}</code> \t<code>${quantity}</code> \t<code>${stock}</code>\n`)(wallet[0].stocks[index])
-      stocks.push(picked)
+    for (let index = 0; index < orderedStocks.length; index++) {
+      if (index === 0) stocks.push('\n&#x1F4B0 <b>SUA CARTEIRA</b> \n\n' + '<code>PREÇO</code>\t\t<code>QNTD.</code>\t\t<code>ATIVO</code> \n\n')
+      const picked = (({ stock, price, quantity }) => `<code>R$${price}</code>\t\t\t\t<code>${quantity}</code>\t\t\t\t<code>${stock}</code>\n`)(wallet[0].stocks[index])
+      await stocks.push(picked)
     }
 
     return stocks.join('')

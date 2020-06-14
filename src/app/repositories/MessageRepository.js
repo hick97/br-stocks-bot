@@ -2,7 +2,6 @@ const axios = require('axios')
 
 const Api = require('../services/api')
 const singleCommands = require('../enum/singleCommands')
-const { getKeyboardOptions } = require('../helpers/keyboardOptions')
 
 class MessageRepository {
   isSingleCommand(message) {
@@ -18,7 +17,6 @@ class MessageRepository {
       text,
       reply_to_message_id: message_id,
       parse_mode: 'HTML'
-
     })
   }
 }
