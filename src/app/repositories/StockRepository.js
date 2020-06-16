@@ -1,9 +1,12 @@
 const axios = require('axios')
+
+const Wallet = require('../models/Wallet')
 const Stock = require('../models/Stock')
 const Quote = require('../models/Quote')
 
 const Api = require('../services/api')
 const alphaFunctions = require('../enum/alphaVantageFunctions')
+const staticMessages = require('../enum/messages')
 
 class StockRepository {
   stockIsValid(message) {
@@ -37,15 +40,21 @@ class StockRepository {
       timezone: symbol['7. timezone'],
       currency: symbol['8. currency']
     }
-    // Verificar se o ativo não ta no BD antes (poupar requisição)
 
     const { _id } = await Stock.create({ ...obj, stock })
     return _id
   }
 
-  deleteStock(stock) {
-    // TODO remover da wallet, mas deixa no BD
+  async deleteStock(chat_id, stock) {
+    const wallet = await Wallet.findOne({ chat_id })
+    const { stocks } = wallet
 
+    const newStocks = stocks.filter(s => s.stock !== stock)
+
+    wallet.stocks = newStocks
+    await wallet.save()
+
+    return staticMessages.WALLET_UPDATED
   }
 
   async getStockValues(text) {
@@ -105,7 +114,7 @@ class StockRepository {
   }
 
   async getStockQuote(symbol) {
-    const stockQuoteDate = await Quote.findOne({ symbol: `${symbol}.SAO` })
+    const stockQuoteDate = await Quote.findOne({ symbol: `${symbol.toUpperCase()}.SAO` })
 
     return stockQuoteDate
   }

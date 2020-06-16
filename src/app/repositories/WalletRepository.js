@@ -1,4 +1,4 @@
-const { getStockValues, findStockData, createStock } = require('../repositories/StockRepository')
+const { getStockValues, findStockData, createStock, deleteStock } = require('../repositories/StockRepository')
 const { dynamicSort } = require('../helpers/sortHelper')
 
 const staticMessages = require('../enum/messages')
@@ -17,6 +17,10 @@ class WalletRepository {
 
     // get action, stock, quantity and price
     const values = await getStockValues(text)
+
+    if (values.actions === '/del') {
+      return await deleteStock(chat.id, values.stock)
+    }
     const formattedPrice = values.price.replace(/,/g, '.')
 
     // check if stock already exists

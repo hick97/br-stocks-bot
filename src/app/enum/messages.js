@@ -18,9 +18,11 @@ const messages = {
     '<b>&#x1F449 <b>VISUALIZAR SUA CARTEIRA:</b></b>\n' +
     '/wallet\n\n' +
     '<code>BY:</code> @hick97',
+  WALLET_UPDATED: 'Carteira atualizada com sucesso!\n' +
+    ' Veja seus ativos com o comando /wallet.',
   STOCK_CREATED: 'Ativo inserido com sucesso!\n' +
     ' Veja seus ativos com o comando /wallet.',
-  STOCK_UPDATED: 'Ativo atualizado com sucesso\n' +
+  STOCK_UPDATED: 'Ativo atualizado com sucesso!\n' +
     ' Veja seus ativos com o comando /wallet.',
   REMOVE_STOCK: 'Ativo removido com sucesso!',
   INVALID_COMMAND: '&#x26A0 Comando inválido!\n' +

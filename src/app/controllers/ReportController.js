@@ -1,7 +1,7 @@
 const { listAllWallets } = require('../repositories/WalletRepository')
 const { listAllStocks } = require('../repositories/StockRepository')
 
-const { buildReport, createDailyQuotes } = require('../repositories/ReportRepository')
+const { buildReport, buildWalletReport, createDailyQuotes } = require('../repositories/ReportRepository')
 const { sendMessage } = require('../repositories/MessageRepository')
 
 class ReportController {
@@ -14,8 +14,11 @@ class ReportController {
 
     // create daily report to subscripted users
     for (let index = 0; index < subscriptions.length; index++) {
-      const reportData = await buildReport(subscriptions[index].chat_id, subscriptions[index].stocks)
-      await sendMessage(reportData.chat_id, reportData.message)
+      const stocksReport = await buildReport(subscriptions[index].chat_id, subscriptions[index].stocks)
+      const walletReport = await buildWalletReport(subscriptions[index].stocks, stocksReport.daily_result)
+
+      await sendMessage(subscriptions[index].chat_id, walletReport)
+      await sendMessage(stocksReport.chat_id, stocksReport.message)
     }
   }
 }
