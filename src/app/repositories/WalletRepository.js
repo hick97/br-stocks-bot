@@ -116,7 +116,7 @@ class WalletRepository {
     for (let index = 0; index < orderedStocks.length; index++) {
       if (index === 0) stocks.push('\n&#x1F4B0 <b>SUA CARTEIRA</b> \n\n' + '<code>PREÇO</code>\t\t<code>QNTD.</code>\t\t<code>ATIVO</code> \n\n')
       const picked = (({ stock, price, quantity }) => `<code>R$${price}</code>\t\t\t\t<code>${quantity}</code>\t\t\t\t<code>${stock}</code>\n`)(wallet[0].stocks[index])
-      await stocks.push(picked)
+      stocks.push(picked)
     }
 
     return stocks.join('')

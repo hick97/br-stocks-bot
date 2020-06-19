@@ -17,8 +17,10 @@ class ReportController {
       const stocksReport = await buildReport(subscriptions[index].chat_id, subscriptions[index].stocks)
       const walletReport = await buildWalletReport(subscriptions[index].stocks, stocksReport.daily_result)
 
+      // if (subscriptions[index].chat_id === 680912149) {
       await sendMessage(subscriptions[index].chat_id, walletReport)
       await sendMessage(stocksReport.chat_id, stocksReport.message)
+      // }
     }
   }
 }

@@ -38,6 +38,8 @@ class App {
   }
 
   jobs() {
+    // reportJob.execute()
+
     cron.schedule('50 18 * * *', () => {
       reportJob.execute()
     }, {
