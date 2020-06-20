@@ -8,6 +8,8 @@ const Api = require('../services/api')
 const alphaFunctions = require('../enum/alphaVantageFunctions')
 const staticMessages = require('../enum/messages')
 
+const { useSentryLogger } = require('../helpers/exceptionHelper')
+
 class StockRepository {
   stockIsValid(message) {
     const { text } = message
@@ -82,34 +84,38 @@ class StockRepository {
   }
 
   async createStockQuote(symbol, count) {
-    const MAX_REQUESTS_PER_MINUTE = 4
-    const FIRST_REQUEST = 0
+    try {
+      const MAX_REQUESTS_PER_MINUTE = 4
+      const FIRST_REQUEST = 0
 
-    count !== FIRST_REQUEST && count % MAX_REQUESTS_PER_MINUTE === 0 && await new Promise(r => setTimeout(r, 10 * 6000))
+      count !== FIRST_REQUEST && count % MAX_REQUESTS_PER_MINUTE === 0 && await new Promise(r => setTimeout(r, 10 * 6000))
 
-    const { data } = await axios.get(`${Api.alphaVantageURL}&function=${alphaFunctions.globalQuote}&symbol=${symbol}`)
+      const { data } = await axios.get(`${Api.alphaVantageURL}&function=${alphaFunctions.globalQuote}&symbol=${symbol}`)
 
-    const options = data['Global Quote']
+      const options = data['Global Quote']
 
-    const obj = {
-      symbol: options['01. symbol'],
-      open: parseFloat(options['02. open']).toFixed(2),
-      high: parseFloat(options['03. high']).toFixed(2),
-      low: parseFloat(options['04. low']).toFixed(2),
-      price: parseFloat(options['05. price']).toFixed(2),
-      volume: options['06. volume'],
-      latestTradingDay: options['07. latest trading day'],
-      previousClose: parseFloat(options['08. previous close']).toFixed(2),
-      change: options['09. change'],
-      changePercent: options['10. change percent']
-    }
+      const obj = {
+        symbol: options['01. symbol'],
+        open: parseFloat(options['02. open']).toFixed(2),
+        high: parseFloat(options['03. high']).toFixed(2),
+        low: parseFloat(options['04. low']).toFixed(2),
+        price: parseFloat(options['05. price']).toFixed(2),
+        volume: options['06. volume'],
+        latestTradingDay: options['07. latest trading day'],
+        previousClose: parseFloat(options['08. previous close']).toFixed(2),
+        change: options['09. change'],
+        changePercent: options['10. change percent']
+      }
 
-    const quoteAlreadyExists = await Quote.findOne({ symbol: obj.symbol })
+      const quoteAlreadyExists = await Quote.findOne({ symbol: obj.symbol })
 
-    if (!quoteAlreadyExists) {
-      await Quote.create(obj)
-    } else {
-      await Quote.findByIdAndUpdate(quoteAlreadyExists._id, obj)
+      if (!quoteAlreadyExists) {
+        await Quote.create(obj)
+      } else {
+        await Quote.findByIdAndUpdate(quoteAlreadyExists._id, obj)
+      }
+    } catch (err) {
+      useSentryLogger(err, `Falha ao coletar cotação diária para o ativo=${symbol} e count=${count}`)
     }
   }
 

@@ -1,26 +1,31 @@
 const { listAllWallets } = require('../repositories/WalletRepository')
 const { listAllStocks } = require('../repositories/StockRepository')
-
-const { buildReport, buildWalletReport, createDailyQuotes } = require('../repositories/ReportRepository')
 const { sendMessage } = require('../repositories/MessageRepository')
+const { buildReport, buildWalletReport, createDailyQuotes } = require('../repositories/ReportRepository')
+
+const { useSentryLogger } = require('../helpers/exceptionHelper')
 
 class ReportController {
   async execute() {
-    const subscriptions = await listAllWallets()
-    const stocks = await listAllStocks()
+    try {
+      const subscriptions = await listAllWallets()
+      const stocks = await listAllStocks()
 
-    // create daily quotes for all stocks in db
-    await createDailyQuotes(stocks)
+      // create daily quotes for all stocks in db
+      await createDailyQuotes(stocks)
 
-    // create daily report to subscripted users
-    for (let index = 0; index < subscriptions.length; index++) {
-      const stocksReport = await buildReport(subscriptions[index].chat_id, subscriptions[index].stocks)
-      const walletReport = await buildWalletReport(subscriptions[index].stocks, stocksReport.daily_result)
+      // create daily report to subscripted users
+      for (let index = 0; index < subscriptions.length; index++) {
+        const stocksReport = await buildReport(subscriptions[index].chat_id, subscriptions[index].stocks)
+        const walletReport = await buildWalletReport(subscriptions[index].stocks, stocksReport.daily_result)
 
-      // if (subscriptions[index].chat_id === 680912149) {
-      await sendMessage(subscriptions[index].chat_id, walletReport)
-      await sendMessage(stocksReport.chat_id, stocksReport.message)
-      // }
+        // if (subscriptions[index].chat_id === 680912149) {
+        await sendMessage(subscriptions[index].chat_id, walletReport)
+        await sendMessage(stocksReport.chat_id, stocksReport.message)
+        // }
+      }
+    } catch (err) {
+      useSentryLogger(err)
     }
   }
 }
