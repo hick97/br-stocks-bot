@@ -17,7 +17,7 @@ class ReportController {
       // create daily report to subscripted users
       for (let index = 0; index < subscriptions.length; index++) {
         const stocksReport = await buildReport(subscriptions[index].chat_id, subscriptions[index].stocks)
-        const walletReport = await buildWalletReport(subscriptions[index].stocks, stocksReport.daily_result)
+        const walletReport = await buildWalletReport(subscriptions[index].stocks, stocksReport)
 
         // if (subscriptions[index].chat_id === 680912149) {
         await sendMessage(subscriptions[index].chat_id, walletReport)
