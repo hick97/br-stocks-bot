@@ -107,6 +107,8 @@ class WalletRepository {
     const walletStocks = wallet[0].stocks
     const orderedStocks = walletStocks.sort(dynamicSort('price', 'desc'))
 
+    if (!orderedStocks) throw Error('Ocorreu uma falha ao ordenar os ativos do chat=' + chat_id)
+
     const stocks = []
 
     if (!wallet[0]) {
@@ -124,6 +126,8 @@ class WalletRepository {
 
   async listAllWallets() {
     const wallets = await Wallet.find({}).select('chat_id stocks -_id').populate('stocks')
+
+    if (!wallets) throw Error('Ocorreu uma falha ao todas as carteiras cadastradas.')
 
     return wallets
   }

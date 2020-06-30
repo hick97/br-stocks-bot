@@ -2,17 +2,17 @@ const { sendMessage, isSingleCommand } = require('../repositories/MessageReposit
 const { stockIsValid } = require('../repositories/StockRepository')
 const { updateWallet, listWalletById } = require('../repositories/WalletRepository')
 
+const { useSentryLogger } = require('../helpers/exceptionHelper')
 const singleCommands = require('../helpers/singleCommandsFunc')
 const staticMessages = require('../enum/messages')
 
 class MessageController {
   async execute(req, res) {
     const { message } = req.body
+    let text = null
 
     try {
       if (!message) throw Error('Ocorreceu um erro com a mensagem recebida, tente novamente em alguns instantes.')
-
-      let text = null
 
       text = (isSingleCommand(message)) && singleCommands[message.text]
       if (text) {
@@ -37,11 +37,11 @@ class MessageController {
       }
 
       await sendMessage(message.chat.id, text, message.message_id)
-
       return res.json({ text })
     } catch (err) {
-      res.end('Error: ' + err.message)
-      await sendMessage(message.chat.id, 'Error: ' + err.message)
+      useSentryLogger(err)
+      message && await sendMessage(message.chat.id, staticMessages.ERROR_MESSAGE)
+      return res.status(400).json({ error: err.message })
     }
   }
 }
