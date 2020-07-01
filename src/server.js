@@ -11,8 +11,11 @@ const cors = require('cors')
 
 const databaseConfig = require('./config/database')
 const reportJob = require('./app/controllers/ReportController')
+
 const routes = require('./routes')
 const staticMessages = require('./app/enum/messages')
+
+const ScrappyRepository = require('./app/repositories/ScrappyRepository')
 
 // const sentryConfig = require('./config/sentry')
 
@@ -49,6 +52,9 @@ class App {
   }
 
   jobs() {
+    // ScrappyRepository.getIbovData()
+    reportJob.execute()
+
     cron.schedule('50 18 * * *', () => {
       reportJob.execute()
     }, {
@@ -61,10 +67,10 @@ class App {
     this.express.use(async (err, req, res, next) => {
       if (process.env.NODE_ENV === 'development') {
         const errors = await new Youch(err, req).toJSON()
-        return res.status(500).json(errors)
+        return res.status(400).json(errors)
       }
       Sentry.captureException(err)
-      return res.status(500).json({ error: staticMessages.ERROR_MESSAGE })
+      return res.status(400).json({ error: staticMessages.ERROR_MESSAGE })
     })
   }
 }

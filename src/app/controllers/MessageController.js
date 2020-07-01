@@ -8,10 +8,11 @@ const staticMessages = require('../enum/messages')
 
 class MessageController {
   async execute(req, res) {
-    const { message } = req.body
+    let { message, edited_message } = req.body
     let text = null
 
     try {
+      if (!message) message = edited_message
       if (!message) throw Error('Ocorreceu um erro com a mensagem recebida, tente novamente em alguns instantes.')
 
       text = (isSingleCommand(message)) && singleCommands[message.text]
