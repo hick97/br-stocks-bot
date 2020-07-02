@@ -1,5 +1,7 @@
 const { sendMessage, isSingleCommand } = require('../repositories/MessageRepository')
 const { stockIsValid } = require('../repositories/StockRepository')
+const { isFundamentalsRequest, getStockFundamentals } = require('../repositories/FundamentalsRepository')
+
 const { updateWallet, listWalletById } = require('../repositories/WalletRepository')
 
 const { useSentryLogger } = require('../helpers/exceptionHelper')
@@ -22,6 +24,12 @@ class MessageController {
       }
 
       text = stockIsValid(message) && await updateWallet(message)
+      if (text) {
+        await sendMessage(message.chat.id, text, message.message_id)
+        return res.json({ text })
+      }
+
+      text = isFundamentalsRequest(message) && await getStockFundamentals(message)
       if (text) {
         await sendMessage(message.chat.id, text, message.message_id)
         return res.json({ text })

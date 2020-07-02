@@ -52,8 +52,8 @@ class App {
   }
 
   jobs() {
-    // ScrappyRepository.getIbovData()
-    reportJob.execute()
+    // ScrappyRepository.getFundamentals('SULA11')
+    // reportJob.execute()
 
     cron.schedule('50 18 * * *', () => {
       reportJob.execute()

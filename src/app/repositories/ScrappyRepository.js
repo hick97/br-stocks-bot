@@ -6,9 +6,9 @@ class ScrappyRepository {
   async getFundamentals(symbol) {
     const browser = await puppeteer.launch()
     const page = await browser.newPage()
-    await page.goto(`https://statusinvest.com.br/acoes/${symbol}`)
+    await page.goto(`https://statusinvest.com.br/acoes/${symbol.toLowerCase()}`)
     await page.waitForFunction(
-      `document.querySelector("body").innerText.includes("${symbol}")`
+      `document.querySelector("body").innerText.includes("${symbol.toUpperCase()}")`
     )
 
     const result = await page.evaluate(() => {
@@ -30,6 +30,8 @@ class ScrappyRepository {
 
       return fundamentals
     })
+
+    console.log(result)
 
     browser.close()
     return result

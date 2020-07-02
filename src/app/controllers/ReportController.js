@@ -24,13 +24,13 @@ class ReportController {
         // }
 
         console.log(stocksReport)
-        if (subscriptions[index].chat_id === 680912149) {
-          // await sendMessage(680912149, walletReport)
+        // if (subscriptions[index].chat_id === 680912149) {
+        // await sendMessage(680912149, walletReport)
 
-          //    await sendMessage(subscriptions[index].chat_id, walletReport)
-          //  await sendMessage(stocksReport.chat_id, stocksReport.message)
-          // await sendMessage(680912149, stocksReport.message)
-        }
+        await sendMessage(subscriptions[index].chat_id, walletReport)
+        await sendMessage(stocksReport.chat_id, stocksReport.message)
+        // await sendMessage(680912149, stocksReport.message)
+        // }
       }
     } catch (err) {
       useSentryLogger(err)
