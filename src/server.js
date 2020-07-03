@@ -67,10 +67,10 @@ class App {
     this.express.use(async (err, req, res, next) => {
       if (process.env.NODE_ENV === 'development') {
         const errors = await new Youch(err, req).toJSON()
-        return res.status(400).json(errors)
+        return res.status(500).json(errors)
       }
       Sentry.captureException(err)
-      return res.status(400).json({ error: staticMessages.ERROR_MESSAGE })
+      return res.json({ error: staticMessages.ERROR_MESSAGE })
     })
   }
 }

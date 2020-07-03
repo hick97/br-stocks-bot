@@ -52,7 +52,7 @@ class MessageController {
     } catch (err) {
       useSentryLogger(err)
       message && await sendMessage(message.chat.id, staticMessages.ERROR_MESSAGE)
-      return res.status(400).json({ error: err.message })
+      return res.json({ error: err.message })
     }
   }
 }
