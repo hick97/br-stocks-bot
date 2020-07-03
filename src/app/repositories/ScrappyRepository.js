@@ -8,25 +8,32 @@ class ScrappyRepository {
     const page = await browser.newPage()
     await page.goto(`https://statusinvest.com.br/acoes/${symbol.toLowerCase()}`)
 
+    await page.waitFor(1000)
+    /*
     await page.waitForFunction(
       `document.querySelector("body").innerText.includes("${symbol.toUpperCase()}")`
     )
+    */
 
     const result = await page.evaluate(() => {
       const fundamentals = []
 
-      const labels = document.querySelectorAll('.indicators h3')
-      const values = Array.prototype.slice.call(document.querySelectorAll('.indicators strong'))
+      const isInvalidPage = document.querySelector('body .indicators') === null
 
-      const filteredValues = values.filter((v, idx) => ![0, 13, 20, 25, 30].includes(idx))
+      if (!isInvalidPage) {
+        const labels = document.querySelectorAll('.indicators h3')
+        const values = Array.prototype.slice.call(document.querySelectorAll('.indicators strong'))
 
-      for (let index = 0; index < labels.length; index++) {
-        const fundamental = {
-          label: labels[index].innerText,
-          value: filteredValues[index].innerText
+        const filteredValues = values.filter((v, idx) => ![0, 13, 20, 25, 30].includes(idx))
+
+        for (let index = 0; index < labels.length; index++) {
+          const fundamental = {
+            label: labels[index].innerText,
+            value: filteredValues[index].innerText
+          }
+
+          fundamentals.push(fundamental)
         }
-
-        fundamentals.push(fundamental)
       }
 
       return fundamentals
