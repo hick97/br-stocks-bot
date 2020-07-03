@@ -35,7 +35,11 @@ class ReportRepository {
         stockData = stockAlreadyExists
       }
 
-      if (stockData.failed) continue
+      if (stockData.failed) {
+        const partialText = reportHelper.getStockReportText(stock.stock, stockData)
+        text.push(partialText)
+        continue
+      }
 
       const formattedPrice = parseFloat(stockData.price.replace(/,/g, '.'))
 

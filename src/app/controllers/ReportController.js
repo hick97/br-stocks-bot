@@ -12,7 +12,7 @@ class ReportController {
       const stocks = await listAllStocks()
 
       // create daily quotes for all stocks in db
-      // await createDailyQuotes(stocks)
+      await createDailyQuotes(stocks)
 
       // create daily report to subscripted users
       for (let index = 0; index < subscriptions.length; index++) {
