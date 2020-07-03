@@ -15,7 +15,7 @@ const getFormattedTextByIndicators = async (fundamentals, start, end) => {
   const indicators = []
   const aux = fundamentals.slice(start, end)
 
-  console.log(aux)
+  // console.log(aux)
 
   // await aux.sort(dynamicSort('value', 'asc'))
 

@@ -1,6 +1,32 @@
 const ScrappyRepository = require('./ScrappyRepository')
+const Fundamentals = require('../models/Fundamentals')
+
 const { getFormattedTextByIndicators } = require('../helpers/fundamentalsHelper')
+const { useSentryLogger } = require('../helpers/exceptionHelper')
+
 class FundamentalsRepository {
+  // TODO - Maybe schedule once a month
+  async updateAllFundamentals() { }
+
+  async getFundamentalsByStock(symbol) {
+    try {
+      let stock = await Fundamentals.findOne({ symbol: symbol.toUpperCase() })
+
+      if (!stock) {
+        console.log('CRIANDO FUNDAMENTOS NO DB PARA O ATIVO: ' + symbol)
+        const result = await ScrappyRepository.getFundamentals(symbol)
+        stock = await Fundamentals.create({
+          symbol: symbol.toUpperCase(),
+          indicators: result
+        })
+      }
+      // console.log('RETORNANDO FUNDAMENTOS DO ATIVO: ' + symbol)
+      return stock.indicators
+    } catch (error) {
+      useSentryLogger(error, `Falha ao pegar fundamentos para o  symbol=${symbol}`)
+    }
+  }
+
   async isFundamentalsRequest(message) {
     const { text } = message
     const regex = /\/fundamentals/i
@@ -13,21 +39,7 @@ class FundamentalsRepository {
     return true
   }
 
-  async getStockFundamentals(message) {
-    const { text } = message
-
-    const keys = text.split(' ').map(function (item) {
-      return item.trim()
-    })
-    const values = keys.filter(element => element !== '')
-
-    const symbol = values[1]
-    console.log(symbol)
-    const result = await ScrappyRepository.getFundamentals(symbol)
-
-    console.log(result)
-
-    // console.log(getFormattedTextByIndicators(result, 0, 11))
+  async getFundamentalsText(result, symbol) {
     const valuationIndicators = await getFormattedTextByIndicators(result, 0, 12)
     const indebtednessIndicators = await getFormattedTextByIndicators(result, 12, 18)
     const efficiencyIndicators = await getFormattedTextByIndicators(result, 18, 22)
@@ -47,10 +59,18 @@ class FundamentalsRepository {
       '<b>CRESCIMENTO</b>\n' +
       growthIndicators + '\n'
 
-    console.log(fundamentals)
+    // console.log(fundamentals)
 
     return fundamentals
   }
+  /*
+    async createStockFundamentals(symbol) {
+      // console.log(symbol)
+      const result = await ScrappyRepository.getFundamentals(symbol)
+
+      console.log(result)
+    }
+    */
 }
 
 module.exports = new FundamentalsRepository()

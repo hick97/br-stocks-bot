@@ -7,6 +7,7 @@ class ScrappyRepository {
     const browser = await puppeteer.launch()
     const page = await browser.newPage()
     await page.goto(`https://statusinvest.com.br/acoes/${symbol.toLowerCase()}`)
+
     await page.waitForFunction(
       `document.querySelector("body").innerText.includes("${symbol.toUpperCase()}")`
     )
@@ -31,7 +32,7 @@ class ScrappyRepository {
       return fundamentals
     })
 
-    console.log(result)
+    // console.log(result)
 
     browser.close()
     return result
@@ -79,7 +80,7 @@ class ScrappyRepository {
       await Daily.findByIdAndUpdate(quoteAlreadyExists._id, obj)
     }
 
-    console.log(JSON.stringify(result))
+    // console.log(JSON.stringify(result))
 
     browser.close()
     return result

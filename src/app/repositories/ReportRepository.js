@@ -28,10 +28,10 @@ class ReportRepository {
       const stockAlreadyExists = await Daily.findOne({ symbol: (stock.stock).toUpperCase() })
 
       if (!stockAlreadyExists) {
-        console.log('NAO ACHEI O ATIVO: ' + stock.stock + ' ADD AO BD')
+        // console.log('NAO ACHEI O ATIVO: ' + stock.stock + ' ADD AO BD')
         stockData = await ScrappyRepository.retryStockData(stock.stock)
       } else {
-        console.log('ACHEI O ATIVO: ' + stock.stock + ' ADD AO BD')
+        // console.log('ACHEI O ATIVO: ' + stock.stock + ' ADD AO BD')
         stockData = stockAlreadyExists
       }
 

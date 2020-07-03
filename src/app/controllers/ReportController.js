@@ -23,7 +23,7 @@ class ReportController {
         walletReport = await buildWalletReport(subscriptions[index].stocks, stocksReport)
         // }
 
-        console.log(stocksReport)
+        // console.log(stocksReport)
         // if (subscriptions[index].chat_id === 680912149) {
         // await sendMessage(680912149, walletReport)
 
