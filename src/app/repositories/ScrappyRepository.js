@@ -4,7 +4,7 @@ const puppeteer = require('puppeteer')
 
 class ScrappyRepository {
   async getFundamentals(symbol) {
-    const browser = await puppeteer.launch()
+    const browser = await puppeteer.launch({ args: ['--no-sandbox'] })
     const page = await browser.newPage()
     await page.goto(`https://statusinvest.com.br/acoes/${symbol.toLowerCase()}`)
 
@@ -41,7 +41,7 @@ class ScrappyRepository {
   async retryStockData(symbol) {
     console.log('Tentando ativo:' + symbol)
     const formattedSymbol = symbol.toLowerCase()
-    const browser = await puppeteer.launch()
+    const browser = await puppeteer.launch({ args: ['--no-sandbox'] })
     const page = await browser.newPage()
 
     await page.goto(`https://statusinvest.com.br/acoes/${formattedSymbol}`)
@@ -87,7 +87,7 @@ class ScrappyRepository {
   }
 
   async getIbovData() {
-    const browser = await puppeteer.launch({ headless: true })
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] })
     const page = await browser.newPage()
     await page.setDefaultNavigationTimeout(0)
 
