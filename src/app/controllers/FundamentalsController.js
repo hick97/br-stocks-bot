@@ -1,4 +1,5 @@
 const FundamentalsRepository = require('../repositories/FundamentalsRepository')
+const staticMessages = require('../enum/messages')
 
 class MessageController {
   async execute(message) {
@@ -8,6 +9,9 @@ class MessageController {
       return item.trim()
     })
     const values = keys.filter(element => element !== '')
+
+    if (values.length === 1 || values.length > 2) return staticMessages.INVALID_COMMAND
+
     const symbol = values[1]
 
     const fundamentals = await FundamentalsRepository.getFundamentalsByStock(symbol)
