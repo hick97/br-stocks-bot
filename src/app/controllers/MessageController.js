@@ -30,7 +30,8 @@ class MessageController {
         return res.json({ text })
       }
 
-      text = isFundamentalsRequest(message) && await FundamentalsController.execute(message)
+      text = await isFundamentalsRequest(message) && await FundamentalsController.execute(message)
+
       if (text) {
         await sendMessage(message.chat.id, text, message.message_id)
         return res.json({ text })

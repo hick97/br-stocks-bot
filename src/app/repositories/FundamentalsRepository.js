@@ -35,6 +35,7 @@ class FundamentalsRepository {
     if (match < 0) {
       return false
     }
+    console.log('entrei nos fundamentos')
 
     return true
   }
