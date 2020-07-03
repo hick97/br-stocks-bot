@@ -15,6 +15,9 @@ class MessageController {
     const symbol = values[1]
 
     const fundamentals = await FundamentalsRepository.getFundamentalsByStock(symbol)
+
+    if (!fundamentals) return staticMessages.NOT_FOUND
+
     const fundamentalsText = await FundamentalsRepository.getFundamentalsText(fundamentals, symbol)
 
     return fundamentalsText
