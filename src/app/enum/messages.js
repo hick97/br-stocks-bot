@@ -24,7 +24,7 @@ const messages = {
     '/fundamentals  <code>ITSA4</code> <code>(EXEMPLO)</code>\n\n' +
     '<b>CONFIRA TAMBÉM:</b>\n\n' +
     '<code>&#x1F4F1 INSTAGRAM:</code> @brstocksbot\n' +
-    '<code>&#x1F4D6 LEITURAS:</code> <a target="_blank" href="https://www.amazon.com.br/b?_encoding=UTF8&tag=brstocksbot-20&linkCode=ur2&linkId=8b9be8f8415641edcf80671df67fb8a6&camp=1789&creative=9325&node=7872854011">Dicas de leitura</a>\n' +
+    '<code>&#x1F4D6 LEITURAS:</code> <a href="https://amzn.to/31LNE6k">Dicas de leitura</a>\n' +
     '<code>&#x1F4B5 COLABORE:</code> <a href="picpay.me/hick97">PicPay</a>\n\n' +
     '@hick97',
   WALLET_UPDATED: 'Carteira atualizada com sucesso!\n' +
