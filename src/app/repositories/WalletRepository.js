@@ -1,5 +1,6 @@
 const { getStockValues, findStockData, createStock, deleteStock } = require('../repositories/StockRepository')
 const { dynamicSort } = require('../helpers/sortHelper')
+const { useSentryLogger } = require('../helpers/exceptionHelper')
 
 const staticMessages = require('../enum/messages')
 
@@ -47,6 +48,8 @@ class WalletRepository {
           price: parseFloat(formattedPrice)
         }]
       })
+
+      useSentryLogger(null, `Carteira criada por ${chat.first_name}(${chat.username})`)
 
       return staticMessages.STOCK_CREATED
     }
