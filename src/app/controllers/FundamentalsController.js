@@ -1,9 +1,10 @@
 const FundamentalsRepository = require('../repositories/FundamentalsRepository')
 const staticMessages = require('../enum/messages')
+const { useSentryLogger } = require('../helpers/exceptionHelper')
 
 class MessageController {
   async execute(message) {
-    const { text } = message
+    const { text, chat } = message
 
     const keys = text.split(' ').map(function (item) {
       return item.trim()
@@ -16,7 +17,12 @@ class MessageController {
 
     const fundamentals = await FundamentalsRepository.getFundamentalsByStock(symbol)
 
-    if (fundamentals.length === 0) return staticMessages.NOT_FOUND
+    const isInvalidStock = !fundamentals || fundamentals.length === 0
+
+    if (isInvalidStock) {
+      useSentryLogger(null, `Error(chat_id=${chat.id}) - Não foi possível achar fundamentos para o ativo=${symbol}.`)
+      return staticMessages.NOT_FOUND
+    }
 
     const fundamentalsText = await FundamentalsRepository.getFundamentalsText(fundamentals, symbol)
 

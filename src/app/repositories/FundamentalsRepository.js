@@ -15,10 +15,15 @@ class FundamentalsRepository {
       if (!stock) {
         console.log('CRIANDO FUNDAMENTOS NO DB PARA O ATIVO: ' + symbol)
         const result = await ScrappyRepository.getFundamentals(symbol)
-        stock = await Fundamentals.create({
-          symbol: symbol.toUpperCase(),
-          indicators: result
-        })
+
+        const isValid = result.length !== 0
+
+        if (isValid) {
+          stock = await Fundamentals.create({
+            symbol: symbol.toUpperCase(),
+            indicators: result
+          })
+        }
       }
       // console.log('RETORNANDO FUNDAMENTOS DO ATIVO: ' + symbol)
       return stock.indicators
