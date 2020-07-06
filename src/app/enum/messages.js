@@ -30,9 +30,11 @@ const messages = {
   WALLET_UPDATED: 'Carteira atualizada com sucesso!\n' +
     ' Veja seus ativos com o comando /wallet.',
   STOCK_CREATED: 'Ativo inserido com sucesso!\n' +
-    ' Veja seus ativos com o comando /wallet.',
+    ' Veja seus ativos com o comando:\n' +
+    '/wallet',
   STOCK_UPDATED: 'Ativo atualizado com sucesso!\n' +
-    ' Veja seus ativos com o comando /wallet.',
+    ' Veja seus ativos com o comando:\n' +
+    '/wallet',
   REMOVE_STOCK: 'Ativo removido com sucesso!',
   INVALID_COMMAND: '&#x26A0 Comando inválido!\n' +
     'Para mais informações use /help.',
