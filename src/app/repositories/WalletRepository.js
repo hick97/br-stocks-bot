@@ -28,7 +28,7 @@ class WalletRepository {
     const formattedPrice = values.price.replace(/,/g, '.')
 
     // check if stock already exists
-    const stockAlreadyExists = await Stock.findOne({ symbol: `${values.stock}.SAO` })
+    const stockAlreadyExists = await Stock.findOne({ symbol: `${(values.stock).toUpperCase()}.SAO` })
 
     // when wallet does not exists
     if (!walletAlreadyExists) {
