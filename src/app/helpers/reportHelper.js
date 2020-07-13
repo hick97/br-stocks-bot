@@ -1,4 +1,5 @@
-const getStockReportText = (symbol, stockData, difference = 0, partial = 0) => {
+
+const getStockReportText = (symbol, stockData, difference = 0, partial = 0, partialRentability = 0) => {
   const isPositive = stockData.change.indexOf('-') >= 0
   const defaultIcons = isPositive ? '&#x1F494' : '&#x1F49A'
 
@@ -6,10 +7,9 @@ const getStockReportText = (symbol, stockData, difference = 0, partial = 0) => {
     '<code>ATIVO INVÁLIDO</code>\n\n'
 
   const withoutError =
-    '<code>PREÇO</code>\t\t\t<code>R$ ' + stockData.price + '</code>\n' +
-    // '<code>RENT.</code>\t\t\t<code>' + stockData.change + '</code>\n\n'
-    '<code>RENT.</code>\t\t\t<code>R$ ' + parseFloat(difference).toFixed(2) + ' (' + stockData.change + ')' + '</code>\n' +
-    '<code>TOTAL</code>\t\t\t<code>R$ ' + parseFloat(partial).toFixed(2) + '</code>\n\n'
+    '<code>FECHAM.</code>\t\t\t<code>R$ ' + stockData.price + '</code>\n' +
+    '<code>RENTAB.</code>\t\t\t<code>R$ ' + parseFloat(difference).toFixed(2) + ' (' + stockData.change + ')' + '</code>\n' +
+    '<code>PARCIAL</code>\t\t\t<code>R$ ' + parseFloat(partial).toFixed(2) + ' (' + partialRentability + '%)' + '</code>\n\n'
 
   const report = stockData.failed ? withError : withoutError
   const customIcon = stockData.failed ? '&#x1F6AB' : defaultIcons
@@ -20,4 +20,17 @@ const getStockReportText = (symbol, stockData, difference = 0, partial = 0) => {
   )
 }
 
-module.exports = { getStockReportText }
+const getPartialRentability = (initialAmount, currentAmount) => parseFloat((currentAmount - initialAmount) / initialAmount * 100).toFixed(2)
+
+const getCurrentDate = () => {
+  var today = new Date()
+  var dd = String(today.getDate()).padStart(2, '0')
+  var mm = String(today.getMonth() + 1).padStart(2, '0') // January is 0!
+  var yyyy = today.getFullYear()
+
+  today = '<b>&#x1F4C5 ' + dd + '/' + mm + '/' + yyyy + '</b>'
+
+  return today
+}
+
+module.exports = { getStockReportText, getPartialRentability, getCurrentDate }

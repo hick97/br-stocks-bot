@@ -16,7 +16,8 @@ class ReportRepository {
   }
 
   async buildReport(chat_id, stocks) {
-    const text = ['<code>ATUALIZAÇÃO - 17h50</code>\n\n']
+    const text = [reportHelper.getCurrentDate() + '<code> ( 17h50 )</code>\n\n']
+    const data = []
     let sum = 0
     let dailyChange = 0
 
@@ -49,14 +50,22 @@ class ReportRepository {
       const difference = oldValue - formattedPrice
 
       const partial = formattedPrice * stock.quantity
+      const initialAmount = parseFloat(stock.price * stock.quantity)
 
       sum += formattedPrice * stock.quantity
       dailyChange += difference * stock.quantity
       // const stockData = await StockRepository.getStockQuote(stock.stock)
-      const partialText = reportHelper.getStockReportText(stock.stock, stockData, difference, partial)
-      text.push(partialText)
+      data.push({ stock: stock.stock, stockData, difference, partial, initialAmount })
 
       // console.log(`${stock.stock} - Adicionando ao Daily Change(${dailyChange}) -> ${difference} * ${stock.quantity}`)
+    }
+
+    for (let index = 0; index < data.length; index++) {
+      const d = data[index]
+      const partialRentability = reportHelper.getPartialRentability(d.initialAmount, d.partial)
+      const partialText = reportHelper.getStockReportText(d.stock, d.stockData, d.difference, d.partial, partialRentability)
+
+      text.push(partialText)
     }
 
     const daily_result = sum
