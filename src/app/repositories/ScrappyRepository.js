@@ -138,6 +138,52 @@ class ScrappyRepository {
     browser.close()
     return result
   }
+
+  async getIfixData() {
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] })
+    const page = await browser.newPage()
+    await page.setDefaultNavigationTimeout(0)
+
+    await page.goto('https://statusinvest.com.br/indices/ifix')
+    await page.waitFor(1000)
+    /*
+    await page.waitForFunction(
+      'document.querySelector("body").innerText.includes("IFIX")'
+    )
+    */
+
+    const result = await page.evaluate(() => {
+      const isInvalidPage = document.querySelector('body .top-info') === null
+
+      const stock = {
+        points: isInvalidPage ? 'Não aplicável' : document.querySelectorAll('body .top-info strong')[0].innerText,
+        change: isInvalidPage ? 'Não aplicável' : document.querySelectorAll('body .top-info strong')[3].innerText,
+        failed: isInvalidPage
+      }
+
+      return stock
+    })
+
+    const quoteAlreadyExists = await Daily.findOne({ symbol: 'IFIX' })
+
+    const obj = {
+      symbol: 'IFIX',
+      price: result.points,
+      change: result.change,
+      failed: result.failed
+    }
+
+    if (!quoteAlreadyExists) {
+      await Daily.create(obj)
+    } else {
+      await Daily.findByIdAndUpdate(quoteAlreadyExists._id, obj)
+    }
+
+    console.log(JSON.stringify(result))
+
+    browser.close()
+    return result
+  }
 }
 
 module.exports = new ScrappyRepository()

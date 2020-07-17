@@ -20,11 +20,11 @@ const messages = {
     '<b>&#x1F449 <b>VISUALIZAR SUA CARTEIRA:</b></b>\n' +
     '/wallet\n\n' +
     '<b>&#x1F449 <b>FUNDAMENTOS DE UM ATIVO:</b></b>\n' +
-    '/fundamentals  <code>ATIVO</code>\n' +
+    '/fundamentals  <code>AÇÃO</code>\n' +
     '/fundamentals  <code>ITSA4</code> <code>(EXEMPLO)</code>\n\n' +
     '<b>CONFIRA TAMBÉM:</b>\n\n' +
     '<code>&#x1F4F1 INSTAGRAM:</code> @brstocksbot\n' +
-    '<code>&#x1F4D6 LEITURAS:</code> <a href="https://amzn.to/31LNE6k">Dicas de leitura</a>\n' +
+    '<code>&#x1F4D6 LEITURAS:</code> <a href="https://amzn.to/30mMyvh">Dicas de leitura</a>\n' +
     '<code>&#x1F4B5 COLABORE:</code> <a href="picpay.me/hick97">PicPay</a>\n\n' +
     '@hick97',
   WALLET_UPDATED: 'Carteira atualizada com sucesso!\n' +
