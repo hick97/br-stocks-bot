@@ -20,7 +20,7 @@ const messages = {
     '<b>&#x1F449 <b>VISUALIZAR SUA CARTEIRA:</b></b>\n' +
     '/wallet\n\n' +
     '<b>&#x1F449 <b>FUNDAMENTOS DE UM ATIVO:</b></b>\n' +
-    '/fundamentals  <code>ATIVO</code>\n' +
+    '/fundamentals  <code>AÇÃO</code>\n' +
     '/fundamentals  <code>ITSA4</code> <code>(EXEMPLO)</code>\n\n' +
     '<b>CONFIRA TAMBÉM:</b>\n\n' +
     '<code>&#x1F4F1 INSTAGRAM:</code> @brstocksbot\n' +
