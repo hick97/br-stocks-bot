@@ -10,9 +10,10 @@ class ReportRepository {
       const stock = stocks[index].stock
       await ScrappyRepository.retryStockData(stock)
       console.log('DADOS DO ATIVO: ' + stock + ' ADD AO BD')
-      // clearTimeout(1000 * 60)
     }
+
     await ScrappyRepository.getIbovData()
+    await ScrappyRepository.getIfixData()
   }
 
   async buildReport(chat_id, stocks) {
@@ -108,20 +109,30 @@ class ReportRepository {
     for (let index = 0; index < stocks.length; index++) {
       total += stocks[index].price * stocks[index].quantity
     }
-    // const ibovSymbol = 'BOVA11'
-    // const ibovData = await StockRepository.getStockQuote(ibovSymbol)
-    let ibovData = {}
-    const stockAlreadyExists = await Daily.findOne({ symbol: 'IBOVESPA' })
 
-    if (!stockAlreadyExists) {
+    let ibovData = {}
+    let ifixData = {}
+    const ibovAlreadyExists = await Daily.findOne({ symbol: 'IBOVESPA' })
+    const ifixAlreadyExists = await Daily.findOne({ symbol: 'IFIX' })
+
+    if (!ibovAlreadyExists) {
       console.log('NAO ACHEI O ATIVO: ' + 'IBOVESPA' + ' ADD AO BD')
       ibovData = await ScrappyRepository.getIbovData()
     } else {
       console.log('ACHEI O ATIVO: ' + 'IBOVESPA' + ' ADD AO BD')
-      ibovData = stockAlreadyExists
+      ibovData = ibovAlreadyExists
+    }
+
+    if (!ifixAlreadyExists) {
+      console.log('NAO ACHEI O ATIVO: ' + 'IFIX' + ' ADD AO BD')
+      ifixData = await ScrappyRepository.getIbovData()
+    } else {
+      console.log('ACHEI O ATIVO: ' + 'IFIX' + ' ADD AO BD')
+      ifixData = ifixAlreadyExists
     }
 
     const ibovMessage = ibovData.failed ? 'Houve uma falha' : `${ibovData.change} (${ibovData.price})`
+    const ifixMessage = ifixData.failed ? 'Houve uma falha' : `${ifixData.change} (${ifixData.price}pts)`
 
     const text = '<b>Resumo da Carteira</b>\n\n' +
       today +
@@ -130,8 +141,10 @@ class ReportRepository {
       `<code>RETORNO:\t</code> <code>R$ ${parseFloat(daily_result).toFixed(2)}</code>\n` +
       `<code>RENTAB.:\t</code> <code>${parseFloat((daily_result - total) / total * 100).toFixed(2)}%</code>\n\n` +
       '<b>DIÁRIO</b>\n' +
-      `<code>CARTEIRA:</code> <code>${parseFloat(daily_percentual_result).toFixed(2)}% (R$${parseFloat(daily_result - previous_result).toFixed(2)})</code>\n` +
-      `<code>IBOVESPA:</code> <code>${ibovMessage}</code>\n`
+      `<code>IFIX: \t\t\t</code> <code>${ifixMessage}</code>\n` +
+      `<code>IBOVESPA:</code> <code>${ibovMessage}</code>\n` +
+      `<code>CARTEIRA:</code> <code>${parseFloat(daily_percentual_result).toFixed(2)}% (R$${parseFloat(daily_result - previous_result).toFixed(2)})</code>\n`
+
     return text
   }
 }
