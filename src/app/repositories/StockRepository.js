@@ -24,7 +24,7 @@ class StockRepository {
   }
 
   async listAllStocks() {
-    const stocks = await Stock.find({}).select('symbol -_id')
+    const stocks = await Stock.find({}).select('stock -_id')
 
     return stocks
   }
@@ -91,6 +91,7 @@ class StockRepository {
       count !== FIRST_REQUEST && count % MAX_REQUESTS_PER_MINUTE === 0 && await new Promise(r => setTimeout(r, 10 * 6000))
 
       const { data } = await axios.get(`${Api.alphaVantageURL}&function=${alphaFunctions.globalQuote}&symbol=${symbol}`)
+      console.log('Peguei dados do ativo: ' + symbol)
 
       const options = data['Global Quote']
 
@@ -115,7 +116,8 @@ class StockRepository {
         await Quote.findByIdAndUpdate(quoteAlreadyExists._id, obj)
       }
     } catch (err) {
-      useSentryLogger(err, `Falha ao coletar cotação diária para o ativo=${symbol} e count=${count}`)
+      console.log('Falha no ativo: ' + symbol)
+      // useSentryLogger(err, `Falha ao coletar cotação diária para o ativo=${symbol} e count=${count}`)
     }
   }
 

@@ -5,10 +5,10 @@ const dynamicSort = (property, order) => {
   }
   return function (a, b) {
     // a should come before b in the sorted order
-    if (a[property] < b[property]) {
+    if (parseFloat(a[property]) < parseFloat(b[property])) {
       return -1 * sort_order
       // a should come after b in the sorted order
-    } else if (a[property] > b[property]) {
+    } else if (parseFloat(a[property]) > parseFloat(b[property])) {
       return 1 * sort_order
       // a and b are the same
     } else {

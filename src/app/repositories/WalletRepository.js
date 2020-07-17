@@ -1,5 +1,9 @@
 const { getStockValues, findStockData, createStock, deleteStock } = require('../repositories/StockRepository')
 const { dynamicSort } = require('../helpers/sortHelper')
+const { walletTabulation } = require('../helpers/walletHelper')
+
+const { useSentryLogger } = require('../helpers/exceptionHelper')
+const { sendMessageToAdmin } = require('../helpers/adminHelper')
 
 const staticMessages = require('../enum/messages')
 
@@ -24,7 +28,7 @@ class WalletRepository {
     const formattedPrice = values.price.replace(/,/g, '.')
 
     // check if stock already exists
-    const stockAlreadyExists = await Stock.findOne({ symbol: `${values.stock}.SAO` })
+    const stockAlreadyExists = await Stock.findOne({ symbol: `${(values.stock).toUpperCase()}.SAO` })
 
     // when wallet does not exists
     if (!walletAlreadyExists) {
@@ -47,6 +51,9 @@ class WalletRepository {
           price: parseFloat(formattedPrice)
         }]
       })
+
+      useSentryLogger(null, `Carteira criada por ${chat.first_name}(${chat.username})`)
+      sendMessageToAdmin('INFO', `Carteira criada por ${chat.first_name}(${chat.username})`)
 
       return staticMessages.STOCK_CREATED
     }
@@ -116,8 +123,8 @@ class WalletRepository {
     }
 
     for (let index = 0; index < orderedStocks.length; index++) {
-      if (index === 0) stocks.push('\n&#x1F4B0 <b>SUA CARTEIRA</b> \n\n' + '<code>PREÇO</code>\t\t<code>QNTD.</code>\t\t<code>ATIVO</code> \n\n')
-      const picked = (({ stock, price, quantity }) => `<code>R$${price}</code>\t\t\t\t<code>${quantity}</code>\t\t\t\t<code>${stock}</code>\n`)(wallet[0].stocks[index])
+      if (index === 0) stocks.push('\n&#x1F4B0 <b>SUA CARTEIRA</b> \n\n' + '<code>ATIVO</code>\t\t\t\t\t\t\t\t<code>PM</code>\t\t\t\t\t\t\t\t\t\t\t\t<code>QNTD.</code> \n\n')
+      const picked = (({ stock, price, quantity }) => `<code>${stock}${walletTabulation(stock.length, 'stock')}</code><code>R$${price}${walletTabulation((price.toString()).length, 'price')}</code><code>${quantity}</code>\n`)(wallet[0].stocks[index])
       stocks.push(picked)
     }
 

@@ -1,28 +1,71 @@
-const StockRepository = require('../repositories/StockRepository')
+const Daily = require('../models/Daily')
+
+const ScrappyRepository = require('../repositories/ScrappyRepository')
+
 const reportHelper = require('../helpers/reportHelper')
 
 class ReportRepository {
   async createDailyQuotes(stocks) {
     for (let index = 0; index < stocks.length; index++) {
-      const stock = stocks[index].symbol
-      await StockRepository.createStockQuote(stock, index)
-      clearTimeout(1000 * 60)
+      const stock = stocks[index].stock
+      await ScrappyRepository.retryStockData(stock)
+      console.log('DADOS DO ATIVO: ' + stock + ' ADD AO BD')
+      // clearTimeout(1000 * 60)
     }
+    await ScrappyRepository.getIbovData()
   }
 
   async buildReport(chat_id, stocks) {
-    const text = []
+    const text = [reportHelper.getCurrentDate() + '<code> ( 17h50 )</code>\n\n']
+    const data = []
     let sum = 0
     let dailyChange = 0
 
     for (let index = 0; index < stocks.length; index++) {
       const stock = stocks[index]
-      const stockData = await StockRepository.getStockQuote(stock.stock)
-      const partialText = reportHelper.getStockReportText(stock.stock, stockData)
+      let stockData = {}
+
+      const stockAlreadyExists = await Daily.findOne({ symbol: (stock.stock).toUpperCase() })
+
+      if (!stockAlreadyExists) {
+        // console.log('NAO ACHEI O ATIVO: ' + stock.stock + ' ADD AO BD')
+        stockData = await ScrappyRepository.retryStockData(stock.stock)
+      } else {
+        // console.log('ACHEI O ATIVO: ' + stock.stock + ' ADD AO BD')
+        stockData = stockAlreadyExists
+      }
+
+      if (stockData.failed) {
+        const partialText = reportHelper.getStockReportText(stock.stock, stockData)
+        text.push(partialText)
+        continue
+      }
+
+      const formattedPrice = parseFloat(stockData.price.replace(/,/g, '.'))
+
+      const newChange = stockData.change.replace(/%/g, '')
+      const formattedChange = parseFloat(newChange.replace(/,/g, '.'))
+
+      const oldValue = (formattedPrice * 100) / (100 - formattedChange)
+      const difference = oldValue - formattedPrice
+
+      const partial = formattedPrice * stock.quantity
+      const initialAmount = parseFloat(stock.price * stock.quantity)
+
+      sum += formattedPrice * stock.quantity
+      dailyChange += difference * stock.quantity
+      // const stockData = await StockRepository.getStockQuote(stock.stock)
+      data.push({ stock: stock.stock, stockData, difference, partial, initialAmount })
+
+      // console.log(`${stock.stock} - Adicionando ao Daily Change(${dailyChange}) -> ${difference} * ${stock.quantity}`)
+    }
+
+    for (let index = 0; index < data.length; index++) {
+      const d = data[index]
+      const partialRentability = reportHelper.getPartialRentability(d.initialAmount, d.partial)
+      const partialText = reportHelper.getStockReportText(d.stock, d.stockData, d.difference, d.partial, partialRentability)
+
       text.push(partialText)
-      sum += stockData.price * stock.quantity
-      // console.log(`${stock.stock} - Adicionando ao Daily Change(${dailyChange}) -> ${parseFloat(stockData.change)} * ${stock.quantity}`)
-      dailyChange += parseFloat(stockData.change) * stock.quantity
     }
 
     const daily_result = sum
@@ -65,8 +108,20 @@ class ReportRepository {
     for (let index = 0; index < stocks.length; index++) {
       total += stocks[index].price * stocks[index].quantity
     }
-    const ibovSymbol = 'BOVA11'
-    const ibovData = await StockRepository.getStockQuote(ibovSymbol)
+    // const ibovSymbol = 'BOVA11'
+    // const ibovData = await StockRepository.getStockQuote(ibovSymbol)
+    let ibovData = {}
+    const stockAlreadyExists = await Daily.findOne({ symbol: 'IBOVESPA' })
+
+    if (!stockAlreadyExists) {
+      console.log('NAO ACHEI O ATIVO: ' + 'IBOVESPA' + ' ADD AO BD')
+      ibovData = await ScrappyRepository.getIbovData()
+    } else {
+      console.log('ACHEI O ATIVO: ' + 'IBOVESPA' + ' ADD AO BD')
+      ibovData = stockAlreadyExists
+    }
+
+    const ibovMessage = ibovData.failed ? 'Houve uma falha' : `${ibovData.change} (${ibovData.price})`
 
     const text = '<b>Resumo da Carteira</b>\n\n' +
       today +
@@ -75,8 +130,8 @@ class ReportRepository {
       `<code>RETORNO:\t</code> <code>R$ ${parseFloat(daily_result).toFixed(2)}</code>\n` +
       `<code>RENTAB.:\t</code> <code>${parseFloat((daily_result - total) / total * 100).toFixed(2)}%</code>\n\n` +
       '<b>DIÁRIO</b>\n' +
-      `<code>CARTEIRA:</code> <code>${parseFloat(daily_percentual_result).toFixed(3)}%${daily_percentual_result >= 0 ? '\t' : ''} (R$${parseFloat(daily_result - previous_result).toFixed(2)})</code>\n` +
-      `<code>IBOVESPA:</code> <code>${ibovData.changePercent} (BOVA11)</code>\n`
+      `<code>CARTEIRA:</code> <code>${parseFloat(daily_percentual_result).toFixed(2)}% (R$${parseFloat(daily_result - previous_result).toFixed(2)})</code>\n` +
+      `<code>IBOVESPA:</code> <code>${ibovMessage}</code>\n`
     return text
   }
 }

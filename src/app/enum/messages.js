@@ -12,18 +12,29 @@ const messages = {
   HELP_MESSAGE: '<b>&#x1F4C8 @BRStocksBot</b>\n\n' +
     '<b>INTRUÇÕES</b>\n\n' +
     '<b>&#x1F449 <b>CADASTRE UM ATIVO:</b> </b>\n' +
-    '/stock  <code>ATIVO</code>\t\t<code>QTDADE.</code>\t\t<code>PM</code>\n\n' +
+    '/stock  <code>ATIVO</code>\t\t<code>QTDADE.</code>\t\t<code>PM</code>\n' +
+    '/stock  <code>ITSA4</code>\t\t<code>100</code>\t\t<code>9.80</code> <code>(EXEMPLO)</code>\n\n' +
     '<b>&#x1F449 <b>DELETE UM ATIVO:</b></b>\n' +
-    '/del  <code>ATIVO</code>\n\n' +
+    '/del  <code>ATIVO</code>\n' +
+    '/del  <code>ITSA4</code> <code>(EXEMPLO)</code>\n\n' +
     '<b>&#x1F449 <b>VISUALIZAR SUA CARTEIRA:</b></b>\n' +
     '/wallet\n\n' +
-    '<code>BY:</code> @hick97',
+    '<b>&#x1F449 <b>FUNDAMENTOS DE UM ATIVO:</b></b>\n' +
+    '/fundamentals  <code>ATIVO</code>\n' +
+    '/fundamentals  <code>ITSA4</code> <code>(EXEMPLO)</code>\n\n' +
+    '<b>CONFIRA TAMBÉM:</b>\n\n' +
+    '<code>&#x1F4F1 INSTAGRAM:</code> @brstocksbot\n' +
+    '<code>&#x1F4D6 LEITURAS:</code> <a href="https://amzn.to/31LNE6k">Dicas de leitura</a>\n' +
+    '<code>&#x1F4B5 COLABORE:</code> <a href="picpay.me/hick97">PicPay</a>\n\n' +
+    '@hick97',
   WALLET_UPDATED: 'Carteira atualizada com sucesso!\n' +
     ' Veja seus ativos com o comando /wallet.',
   STOCK_CREATED: 'Ativo inserido com sucesso!\n' +
-    ' Veja seus ativos com o comando /wallet.',
+    ' Veja seus ativos com o comando:\n' +
+    '/wallet',
   STOCK_UPDATED: 'Ativo atualizado com sucesso!\n' +
-    ' Veja seus ativos com o comando /wallet.',
+    ' Veja seus ativos com o comando:\n' +
+    '/wallet',
   REMOVE_STOCK: 'Ativo removido com sucesso!',
   INVALID_COMMAND: '&#x26A0 Comando inválido!\n' +
     'Para mais informações use /help.',

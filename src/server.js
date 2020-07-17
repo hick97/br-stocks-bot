@@ -11,8 +11,11 @@ const cors = require('cors')
 
 const databaseConfig = require('./config/database')
 const reportJob = require('./app/controllers/ReportController')
+
 const routes = require('./routes')
 const staticMessages = require('./app/enum/messages')
+
+const ScrappyRepository = require('./app/repositories/ScrappyRepository')
 
 // const sentryConfig = require('./config/sentry')
 
@@ -49,7 +52,10 @@ class App {
   }
 
   jobs() {
-    cron.schedule('50 18 * * *', () => {
+    // ScrappyRepository.getFundamentals('SULA11')
+    // reportJob.execute()
+
+    cron.schedule('30 18 * * *', () => {
       reportJob.execute()
     }, {
       scheduled: true,
@@ -64,7 +70,7 @@ class App {
         return res.status(500).json(errors)
       }
       Sentry.captureException(err)
-      return res.status(500).json({ error: staticMessages.ERROR_MESSAGE })
+      return res.json({ error: staticMessages.ERROR_MESSAGE })
     })
   }
 }

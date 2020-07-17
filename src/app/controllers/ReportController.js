@@ -16,12 +16,20 @@ class ReportController {
 
       // create daily report to subscripted users
       for (let index = 0; index < subscriptions.length; index++) {
-        const stocksReport = await buildReport(subscriptions[index].chat_id, subscriptions[index].stocks)
-        const walletReport = await buildWalletReport(subscriptions[index].stocks, stocksReport)
-
+        let stocksReport = null
+        let walletReport = null
         // if (subscriptions[index].chat_id === 680912149) {
+        stocksReport = await buildReport(subscriptions[index].chat_id, subscriptions[index].stocks)
+        walletReport = await buildWalletReport(subscriptions[index].stocks, stocksReport)
+        // }
+
+        // console.log(stocksReport)
+        // if (subscriptions[index].chat_id === 680912149) {
+        // await sendMessage(680912149, walletReport)
+
         await sendMessage(subscriptions[index].chat_id, walletReport)
         await sendMessage(stocksReport.chat_id, stocksReport.message)
+        // await sendMessage(680912149, stocksReport.message)
         // }
       }
     } catch (err) {
