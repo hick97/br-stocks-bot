@@ -134,6 +134,11 @@ class ReportRepository {
     const ibovMessage = ibovData.failed ? 'Houve uma falha' : `${ibovData.change} (${ibovData.price})`
     const ifixMessage = ifixData.failed ? 'Houve uma falha' : `${ifixData.change} (${ifixData.price}pts)`
 
+    const formattedPercentualResult = parseFloat(daily_percentual_result).toFixed(2)
+    const formattedRealResult = parseFloat(daily_result - previous_result).toFixed(2)
+
+    const walletRentability = `${reportHelper.formatNumberWithOperator(formattedPercentualResult)}${formattedPercentualResult}% (R$ ${reportHelper.formatNumberWithOperator(formattedRealResult)}${formattedRealResult})`
+
     const text = '<b>Resumo da Carteira</b>\n\n' +
       today +
       '<b>GERAL</b>\n' +
@@ -143,7 +148,7 @@ class ReportRepository {
       '<b>DIÁRIO</b>\n' +
       `<code>IFIX: \t\t\t</code> <code>${ifixMessage}</code>\n` +
       `<code>IBOVESPA:</code> <code>${ibovMessage}</code>\n` +
-      `<code>CARTEIRA:</code> <code>${parseFloat(daily_percentual_result).toFixed(2)}% (R$${parseFloat(daily_result - previous_result).toFixed(2)})</code>\n`
+      `<code>CARTEIRA:</code> <code>${walletRentability}</code>\n`
 
     return text
   }
