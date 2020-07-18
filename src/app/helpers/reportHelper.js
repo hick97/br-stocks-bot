@@ -33,4 +33,6 @@ const getCurrentDate = () => {
   return today
 }
 
-module.exports = { getStockReportText, getPartialRentability, getCurrentDate }
+const formatNumberWithOperator = (number) => number > 0 ? '+' : ''
+
+module.exports = { getStockReportText, getPartialRentability, getCurrentDate, formatNumberWithOperator }
