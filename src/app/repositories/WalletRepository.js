@@ -52,8 +52,9 @@ class WalletRepository {
         }]
       })
 
-      useSentryLogger(null, `Carteira criada por ${chat.first_name}(${chat.username})`)
-      sendMessageToAdmin('INFO', `Carteira criada por ${chat.first_name}(${chat.username})`)
+      const logMessage = `Wallet was created by:\n${chat.first_name} ${chat.username ? '(@' + chat.username + ')' : ''}`
+      useSentryLogger(null, logMessage)
+      sendMessageToAdmin('INFO', logMessage)
 
       return staticMessages.STOCK_CREATED
     }
