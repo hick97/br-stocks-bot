@@ -13,6 +13,10 @@ const DailySchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  class: {
+    type: String,
+    required: true
+  },
   failed: {
     type: Boolean,
     required: true

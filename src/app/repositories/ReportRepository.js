@@ -1,6 +1,7 @@
 const Daily = require('../models/Daily')
 
 const ScrappyRepository = require('../repositories/ScrappyRepository')
+const DailyRepository = require('../repositories/DailyRepository')
 
 const reportHelper = require('../helpers/reportHelper')
 
@@ -17,8 +18,15 @@ class ReportRepository {
   }
 
   async buildReport(chat_id, stocks) {
-    const text = [reportHelper.getCurrentDate() + '<code> ( 17h50 )</code>\n\n']
-    const data = []
+    const currentDate = reportHelper.getCurrentDate() + '<code> ( 17h50 )</code>\n\n'
+
+    const stockText = [currentDate]
+    const fiisText = [currentDate]
+    const othersText = []
+
+    const fiisData = []
+    const stocksData = []
+
     let sum = 0
     let dailyChange = 0
 
@@ -38,7 +46,7 @@ class ReportRepository {
 
       if (stockData.failed) {
         const partialText = reportHelper.getStockReportText(stock.stock, stockData)
-        text.push(partialText)
+        othersText.push(partialText)
         continue
       }
 
@@ -56,17 +64,31 @@ class ReportRepository {
       sum += formattedPrice * stock.quantity
       dailyChange += difference * stock.quantity
       // const stockData = await StockRepository.getStockQuote(stock.stock)
-      data.push({ stock: stock.stock, stockData, difference, partial, initialAmount })
+      const symbolClass = await DailyRepository.getClassBySymbol(stock.stock)
+      const dataToPush = { stock: stock.stock, stockData, difference, partial, initialAmount }
+
+      symbolClass === 'Ações' ? stocksData.push(dataToPush) : fiisData.push(dataToPush)
 
       // console.log(`${stock.stock} - Adicionando ao Daily Change(${dailyChange}) -> ${difference} * ${stock.quantity}`)
     }
+    stockText.push('<b>&#x1F4CA AÇÕES</b>\n\n')
+    for (let index = 0; index < stocksData.length; index++) {
+      const d = stocksData[index]
 
-    for (let index = 0; index < data.length; index++) {
-      const d = data[index]
       const partialRentability = reportHelper.getPartialRentability(d.initialAmount, d.partial)
       const partialText = reportHelper.getStockReportText(d.stock, d.stockData, d.difference, d.partial, partialRentability)
 
-      text.push(partialText)
+      stockText.push(partialText)
+    }
+
+    fiisText.push('<b>&#x1F3E2 FIIS</b>\n\n')
+    for (let index = 0; index < fiisData.length; index++) {
+      const d = fiisData[index]
+
+      const partialRentability = reportHelper.getPartialRentability(d.initialAmount, d.partial)
+      const partialText = reportHelper.getStockReportText(d.stock, d.stockData, d.difference, d.partial, partialRentability)
+
+      fiisText.push(partialText)
     }
 
     const daily_result = sum
@@ -82,7 +104,11 @@ class ReportRepository {
 
     const report = {
       chat_id,
-      message: text.join(''),
+      message: {
+        fiis: fiisText.join(''),
+        stocks: stockText.join(''),
+        others: othersText.join('')
+      },
       daily_result,
       previous_result,
       daily_percentual_result

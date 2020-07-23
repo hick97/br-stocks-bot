@@ -50,6 +50,7 @@ class ScrappyRepository {
     const formattedSymbol = symbol.toLowerCase()
     const browser = await puppeteer.launch({ args: ['--no-sandbox'] })
     const page = await browser.newPage()
+    await page.setDefaultNavigationTimeout(0)
 
     await page.goto(`https://statusinvest.com.br/acoes/${formattedSymbol}`)
     await page.waitFor(1000)
@@ -66,6 +67,7 @@ class ScrappyRepository {
       const stock = {
         price: isInvalidPage ? 'Não aplicável' : document.querySelector('body .top-info strong').innerText,
         change: isInvalidPage ? 'Não aplicável' : document.querySelector('body .top-info span b').innerText,
+        class: isInvalidPage ? 'Não aplicável' : document.querySelectorAll('body .main-breadcrumb span')[1].innerText,
         failed: isInvalidPage
       }
 
@@ -78,6 +80,7 @@ class ScrappyRepository {
       symbol: symbol.toUpperCase(),
       price: result.price,
       change: result.change,
+      class: result.class,
       failed: result.failed
     }
 
