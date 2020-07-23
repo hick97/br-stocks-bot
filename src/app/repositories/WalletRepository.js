@@ -38,7 +38,6 @@ class WalletRepository {
         if (!stockData) {
           return staticMessages.NOT_FOUND
         }
-
         await createStock(stockData, values.stock)
       }
 
@@ -81,7 +80,7 @@ class WalletRepository {
     }
 
     // check if stock already exists on chat wallet
-    const stockIndex = await walletAlreadyExists.stocks.findIndex(s => s.stock === values.stock)
+    const stockIndex = await walletAlreadyExists.stocks.findIndex(s => (s.stock).toUpperCase() === (values.stock).toUpperCase())
 
     // stock exists in db, but not included on wallet
     if (stockIndex === -1) {
@@ -98,7 +97,7 @@ class WalletRepository {
 
     // stock is included on wallet
     walletAlreadyExists.stocks[stockIndex] = {
-      stock: values.stock,
+      stock: (values.stock).toUpperCase(),
       quantity: parseInt(values.quantity),
       price: parseFloat(formattedPrice)
     }
