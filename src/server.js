@@ -55,7 +55,7 @@ class App {
     // ScrappyRepository.getFundamentals('SULA11')
     // reportJob.execute()
 
-    cron.schedule('30 18 * * *', () => {
+    cron.schedule('30 22 * * *', () => {
       reportJob.execute()
     }, {
       scheduled: true,
