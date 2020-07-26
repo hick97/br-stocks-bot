@@ -11,11 +11,12 @@ const cors = require('cors')
 
 const databaseConfig = require('./config/database')
 const reportJob = require('./app/controllers/ReportController')
+const fundamentalsJob = require('./app/controllers/FundamentalsController')
 
 const routes = require('./routes')
 const staticMessages = require('./app/enum/messages')
 
-const ScrappyRepository = require('./app/repositories/ScrappyRepository')
+// const ScrappyRepository = require('./app/repositories/ScrappyRepository')
 
 // const sentryConfig = require('./config/sentry')
 
@@ -54,6 +55,12 @@ class App {
   jobs() {
     // ScrappyRepository.getFundamentals('SULA11')
     // reportJob.execute()
+    cron.schedule('10 20 * * *', () => {
+      fundamentalsJob.updateFundamentals()
+    }, {
+      scheduled: true,
+      timezone: 'America/Sao_Paulo'
+    })
 
     cron.schedule('40 18 * * *', () => {
       reportJob.execute()
