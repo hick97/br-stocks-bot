@@ -101,7 +101,7 @@ class ScrappyRepository {
     const page = await browser.newPage()
     await page.setDefaultNavigationTimeout(0)
 
-    await page.goto('http://www.b3.com.br/pt_br/')
+    await page.goto('https://statusinvest.com.br/indices/ibovespa')
     await page.waitFor(1000)
     /*
     await page.waitForFunction(
@@ -110,11 +110,11 @@ class ScrappyRepository {
     */
 
     const result = await page.evaluate(() => {
-      const isInvalidPage = document.querySelector('body #ibovPct') === null
+      const isInvalidPage = document.querySelector('body .top-info') === null
 
       const stock = {
-        points: isInvalidPage ? 'Não aplicável' : document.querySelector('body #ibovPts').innerText,
-        change: isInvalidPage ? 'Não aplicável' : document.querySelector('body #ibovPct').innerText,
+        points: isInvalidPage ? 'Não aplicável' : document.querySelectorAll('body .top-info strong')[0].innerText,
+        change: isInvalidPage ? 'Não aplicável' : document.querySelectorAll('body .top-info strong')[3].innerText,
         failed: isInvalidPage
       }
 
