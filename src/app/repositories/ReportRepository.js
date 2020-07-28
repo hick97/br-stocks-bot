@@ -157,7 +157,7 @@ class ReportRepository {
       ifixData = ifixAlreadyExists
     }
 
-    const ibovMessage = ibovData.failed ? 'Houve uma falha' : `${ibovData.change} (${ibovData.price})`
+    const ibovMessage = ibovData.failed ? 'Houve uma falha' : `${ibovData.change} (${ibovData.price}pts)`
     const ifixMessage = ifixData.failed ? 'Houve uma falha' : `${ifixData.change} (${ifixData.price}pts)`
 
     const formattedPercentualResult = parseFloat(daily_percentual_result).toFixed(2)
