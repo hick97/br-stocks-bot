@@ -6,7 +6,26 @@ const { useSentryLogger } = require('../helpers/exceptionHelper')
 
 class FundamentalsRepository {
   // TODO - Maybe schedule once a month
-  async updateAllFundamentals() { }
+  async updateAllFundamentals() {
+    const stocksToUpdate = await Fundamentals.find()
+
+    for (let index = 0; index < stocksToUpdate.length; index++) {
+      const { symbol, _id } = stocksToUpdate[index]
+
+      console.log('ATUALIZANDO FUNDAMENTOS NO DB PARA O ATIVO: ' + symbol)
+      const result = await ScrappyRepository.getFundamentals(symbol)
+
+      const isValid = result.length !== 0
+
+      if (isValid) {
+        await Fundamentals.findByIdAndUpdate(_id, {
+          indicators: result
+        })
+      } else {
+        useSentryLogger(`Falha ao pegar fundamentos para o  symbol=${symbol}`)
+      }
+    }
+  }
 
   async getFundamentalsByStock(symbol) {
     try {

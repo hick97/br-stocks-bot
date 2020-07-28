@@ -2,7 +2,7 @@ const FundamentalsRepository = require('../repositories/FundamentalsRepository')
 const staticMessages = require('../enum/messages')
 const { useSentryLogger } = require('../helpers/exceptionHelper')
 
-class MessageController {
+class FundamentalsController {
   async execute(message) {
     const { text, chat } = message
 
@@ -28,6 +28,14 @@ class MessageController {
 
     return fundamentalsText
   }
+
+  async updateFundamentals() {
+    try {
+      await FundamentalsRepository.updateAllFundamentals()
+    } catch (err) {
+      useSentryLogger(err)
+    }
+  }
 }
 
-module.exports = new MessageController()
+module.exports = new FundamentalsController()
