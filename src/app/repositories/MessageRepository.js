@@ -12,15 +12,13 @@ class MessageRepository {
     return textIsValid
   }
 
-  async sendMessage(chat_id, text, message_id = '', reply_markup = {}) {
+  async sendMessage(chat_id, text, message_id = '') {
     try {
       await axios.post(`${Api.telegramURL}/sendMessage`, {
         chat_id,
         text,
         reply_to_message_id: message_id,
-        parse_mode: 'HTML',
-        reply_markup
-
+        parse_mode: 'HTML'
       })
     } catch (error) {
       useSentryLogger(error, `Falha ao enviar mensagem para o chat_id=${chat_id} com o message_id=${message_id || 'null'} e text=${text}`)
