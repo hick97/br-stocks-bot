@@ -129,7 +129,8 @@ class ReportRepository {
     var mm = String(today.getMonth() + 1).padStart(2, '0') // January is 0!
     var yyyy = today.getFullYear()
 
-    today = '<b>&#x1F4C5 ' + dd + '/' + mm + '/' + yyyy + '</b>\n\n'
+    const todayForTelegram = '<b>&#x1F4C5 ' + dd + '/' + mm + '/' + yyyy + '</b>\n\n'
+    const todayForWhats = '* %F0%9F%93%85 ' + dd + '/' + mm + '/' + yyyy + '*' + '\n\n'
 
     let total = 0
     for (let index = 0; index < stocks.length; index++) {
@@ -165,8 +166,8 @@ class ReportRepository {
 
     const walletRentability = `${reportHelper.formatNumberWithOperator(formattedPercentualResult)}${formattedPercentualResult}% (R$ ${reportHelper.formatNumberWithOperator(formattedRealResult)}${formattedRealResult})`
 
-    const text = '<b>Resumo da Carteira</b>\n\n' +
-      today +
+    const telegramText = '<b>Resumo da Carteira</b>\n\n' +
+      todayForTelegram +
       '<b>GERAL</b>\n' +
       `<code>INVEST.:\t</code> <code>R$ ${parseFloat(total).toFixed(2)}</code>\n` +
       `<code>RETORNO:\t</code> <code>R$ ${parseFloat(daily_result).toFixed(2)}</code>\n` +
@@ -176,7 +177,20 @@ class ReportRepository {
       `<code>IBOVESPA:</code> <code>${ibovMessage}</code>\n` +
       `<code>CARTEIRA:</code> <code>${walletRentability}</code>\n`
 
-    return text
+    const whatsappText = '*Resumo da Carteira*\n\n' +
+      todayForWhats +
+      '*GERAL*\n' +
+      `INVEST.:\t R$ ${parseFloat(total).toFixed(2)}\n` +
+      `RETORNO:\t R$ ${parseFloat(daily_result).toFixed(2)}\n` +
+      `RENTAB.:\t ${parseFloat((daily_result - total) / total * 100).toFixed(2)} %25 \n\n` +
+      '*DIÁRIO*\n' +
+      `IFIX: ${ifixMessage.replace('%', '%25')}\n` +
+      `IBOVESPA: ${ibovMessage.replace('%', '%25')}\n` +
+      `CARTEIRA: ${walletRentability.replace('%', '%25')}\n\n` +
+      '*@brstocksbot* (Instagram)\n' +
+      'https://t.me/brstocksbot'
+
+    return { telegramText, whatsappText }
   }
 }
 module.exports = new ReportRepository()
