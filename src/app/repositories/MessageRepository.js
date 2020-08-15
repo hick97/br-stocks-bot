@@ -24,6 +24,20 @@ class MessageRepository {
       useSentryLogger(error, `Falha ao enviar mensagem para o chat_id=${chat_id} com o message_id=${message_id || 'null'} e text=${text}`)
     }
   }
+
+  async sendCustomMessage({ chat_id, text, options }) {
+    try {
+      await axios.post(`${Api.telegramURL}/sendMessage`, {
+        chat_id,
+        text,
+        parse_mode: 'HTML',
+        ...options
+
+      })
+    } catch (error) {
+      useSentryLogger(error, `Falha ao enviar mensagem para o chat_id=${chat_id} com o message_id=${options.message_id || 'null'} e text=${text}`)
+    }
+  }
 }
 
 module.exports = new MessageRepository()

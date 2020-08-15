@@ -1,6 +1,6 @@
 const { listAllWallets } = require('../repositories/WalletRepository')
 const { listAllStocks } = require('../repositories/StockRepository')
-const { sendMessage } = require('../repositories/MessageRepository')
+const { sendMessage, sendCustomMessage } = require('../repositories/MessageRepository')
 const { buildReport, buildWalletReport, createDailyQuotes } = require('../repositories/ReportRepository')
 
 const { useSentryLogger } = require('../helpers/exceptionHelper')
@@ -28,7 +28,16 @@ class ReportController {
         // await sendMessage(680912149, walletReport)
         const { stocks, fiis, others } = stocksReport.message
 
-        await sendMessage(subscriptions[index].chat_id, walletReport)
+        const reply_markup = {
+          inline_keyboard: [
+            [{
+              text: 'Compartilhar - Whatsapp',
+              url: `https://api.whatsapp.com/send?text=${walletReport.whatsappText}`
+            }]
+          ]
+        }
+
+        await sendCustomMessage({ chat_id: subscriptions[index].chat_id, text: walletReport.telegramText, options: { reply_markup } })
         stocks.length > 0 && await sendMessage(stocksReport.chat_id, stocks)
         fiis.length > 0 && await sendMessage(stocksReport.chat_id, fiis)
         others.length > 0 && await sendMessage(stocksReport.chat_id, '<b>OUTROS</b>\n\n' + others + '<code>Atenção: Até o momento, o @brstocksbot suporta apenas as seguintes classes de ativos: AÇÕES ou Fundo de Investimento Imobiliário. Em breve daremos suporte a ETFs também &#x1F916</code>')
