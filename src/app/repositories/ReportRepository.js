@@ -63,7 +63,7 @@ class ReportRepository {
 
       sum += formattedPrice * stock.quantity
       dailyChange += difference * stock.quantity
-      // const stockData = await StockRepository.getStockQuote(stock.stock)
+
       const symbolClass = await DailyRepository.getClassBySymbol(stock.stock)
       const dataToPush = { stock: stock.stock, stockData, difference, partial, initialAmount }
 
