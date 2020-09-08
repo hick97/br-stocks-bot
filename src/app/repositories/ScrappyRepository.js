@@ -27,9 +27,12 @@ class ScrappyRepository {
         const filteredValues = values.filter((v, idx) => ![0, 13, 20, 25, 30].includes(idx))
 
         for (let index = 0; index < labels.length; index++) {
+          const label = labels[index].innerText
+          const value = filteredValues[index].innerText
+
           const fundamental = {
-            label: labels[index].innerText,
-            value: filteredValues[index].innerText
+            label,
+            value: value === '-' || value === '-%' ? 'N/A' : value
           }
 
           fundamentals.push(fundamental)
