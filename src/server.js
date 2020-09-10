@@ -24,7 +24,7 @@ class App {
   constructor() {
     this.express = express()
 
-    Sentry.init({ dsn: 'https://1ccb884af5624f3da3fefd1bb389b80d@o257510.ingest.sentry.io/5283610' })
+    Sentry.init({ dsn: process.env.SENTRY_DSN })
 
     this.middlewares()
     this.database()

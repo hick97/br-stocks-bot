@@ -34,7 +34,8 @@ const messages = {
     '<code>&#x1F4B5 COLABORE:</code> <a href="picpay.me/hick97">PicPay</a>\n\n' +
     '@hick97',
   WALLET_UPDATED: 'Carteira atualizada com sucesso!\n' +
-    ' Veja seus ativos com o comando /wallet.',
+    ' Veja seus ativos com o comando:\n' +
+    '/wallet',
   STOCK_CREATED: 'Ativo inserido com sucesso!\n' +
     ' Veja seus ativos com o comando:\n' +
     '/wallet',
