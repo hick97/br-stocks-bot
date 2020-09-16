@@ -1,4 +1,4 @@
-const { sendMessage, isSingleCommand } = require('../repositories/MessageRepository')
+const { sendMessage, isSingleCommand, sendGifAnimation } = require('../repositories/MessageRepository')
 const { stockIsValid } = require('../repositories/StockRepository')
 const { isFundamentalsRequest } = require('../repositories/FundamentalsRepository')
 const { updateWallet, listWalletById } = require('../repositories/WalletRepository')
@@ -6,6 +6,8 @@ const { updateWallet, listWalletById } = require('../repositories/WalletReposito
 const FundamentalsController = require('./FundamentalsController')
 
 const { useSentryLogger } = require('../helpers/exceptionHelper')
+const { needAnimation } = require('../helpers/animationHelper')
+
 const singleCommands = require('../helpers/singleCommandsFunc')
 const staticMessages = require('../enum/messages')
 
@@ -21,6 +23,10 @@ class MessageController {
       text = (isSingleCommand(message)) && singleCommands[message.text]
       if (text) {
         await sendMessage(message.chat.id, text, message.message_id)
+        needAnimation(message.text) && await sendGifAnimation({
+          chat_id: message.chat.id,
+          fileName: 'gif-start'
+        })
         return res.json({ text })
       }
 

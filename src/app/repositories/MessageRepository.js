@@ -1,4 +1,7 @@
 const axios = require('axios')
+const fs = require('fs')
+const path = require('path')
+const FormData = require('form-data')
 
 const Api = require('../services/api')
 const singleCommands = require('../enum/singleCommands')
@@ -36,6 +39,28 @@ class MessageRepository {
       })
     } catch (error) {
       useSentryLogger(error, `Falha ao enviar mensagem para o chat_id=${chat_id} com o message_id=${options.message_id || 'null'} e text=${text}`)
+    }
+  }
+
+  async sendGifAnimation({ chat_id, fileName }) {
+    const formData = new FormData()
+    const filePath = `${fileName}.mp4`
+    const file = fs.createReadStream(path.resolve(__dirname, '..', 'assets', 'gifs', filePath))
+
+    formData.append('animation', file, {
+      filename: filePath
+    })
+
+    formData.append('chat_id', chat_id)
+
+    const config = {
+      headers: formData.getHeaders()
+    }
+
+    try {
+      await axios.post(`${Api.telegramURL}/sendAnimation`, formData, config)
+    } catch (error) {
+      useSentryLogger(error, `Falha ao enviar animação para o chat_id=${chat_id}`)
     }
   }
 }
