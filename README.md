@@ -37,6 +37,13 @@ yarn run start
 yarn run dev
 ```
 
+## Connecting your bot
+
+```sh
+curl -F "url=https://your-bot-domain/message"  https://api.telegram.org/bot<your_api_token>/setWebhook
+```
+
+
 
 ## Author
 
