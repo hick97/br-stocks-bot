@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to Bot do Investidor (@brstocksbot) 👋</h1>
+<h1 align="center">Bot do Investidor (@brstocksbot) 🤖</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
@@ -6,9 +6,7 @@
   </a>
 </p>
 
-> Um chatbot criado com objetivo de monitorar e analisar seus ativos favoritos na bolsa de valores 🤖
-
-### 🏠 [Homepage](https://t.me/brstocksbot)
+> Um chatbot criado com objetivo de monitorar e analisar seus ativos favoritos na bolsa de valores. 
 
 ### ✨ [Demo](https://t.me/brstocksbot)
 
@@ -26,7 +24,7 @@ yarn run start
 
 ## Author
 
-👤 **Henrique Augusto (@hick97)**
+👤 **Henrique Augusto**
 
 * Website: https://linktr.ee/hick97
 * Github: [@hick97](https://github.com/hick97)
