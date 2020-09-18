@@ -27,9 +27,9 @@ yarn run start
 
 👤 **Henrique Augusto**
 
-* Website: https://linktr.ee/hick97
-* Github: [@hick97](https://github.com/hick97)
-* LinkedIn: [@henrique-augusto-84b490133](https://linkedin.com/in/henrique-augusto-84b490133)
+* [Website](https://linktr.ee/hick97)
+* [Github](https://github.com/hick97)
+* [LinkedIn](https://linkedin.com/in/henrique-augusto-84b490133)
 
 ## Show your support
 
