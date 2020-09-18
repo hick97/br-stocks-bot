@@ -11,6 +11,14 @@
 ### :iphone: [Beta version](https://t.me/brstocksbot)
 ### :iphone: [Instagram](https://t.me/brstocksbot)
 
+## Enviroment
+
+- Create an `.env` file similar to `.env.example`;
+- Add `mongoose.connect('mongodb://localhost/yourDatabaseName')` in DB_MONGO_URI
+- Add your [Telegram key](https://telegram.me/BotFather) in TELEGRAM_KEY
+- Add your [Alpha Vantage key](https://www.alphavantage.co/support/#api-key) in ALPHA_VANTAGE_KEY
+- Add your [Sentry DNS](https://sentry.io/auth/login/) in SENTRY_DSN
+
 ## Install
 
 ```sh
@@ -22,6 +30,20 @@ yarn install
 ```sh
 yarn run start
 ```
+
+## Development mode
+
+```sh
+yarn run dev
+```
+
+## Connecting your bot
+
+```sh
+curl -F "url=https://your-bot-domain/message"  https://api.telegram.org/bot<your_api_token>/setWebhook
+```
+
+
 
 ## Author
 
