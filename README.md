@@ -6,9 +6,10 @@
   </a>
 </p>
 
-> Um chatbot criado com objetivo de monitorar e analisar seus ativos favoritos na bolsa de valores. 
+> Telegram bot to provide information about your favorite brazilian stocks 
 
 ### ✨ [Demo](https://t.me/brstocksbot)
+### :iphone: [Instagram](https://t.me/brstocksbot)
 
 ## Install
 
