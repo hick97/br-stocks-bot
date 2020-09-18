@@ -18,6 +18,7 @@
     "mongoose": "^5.9.18",
     "node-cron": "^2.0.3",
     "puppeteer": "^4.0.1",
+    "readme-md-generator": "^1.0.0",
     "youch": "^2.0.10"
   },
   "devDependencies": {
