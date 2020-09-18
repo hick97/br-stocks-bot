@@ -6,9 +6,9 @@
   </a>
 </p>
 
-> Telegram bot to provide information about your favorite brazilian stocks 
+>  A Telegram bot to provide analysis about your favorite brazilian stocks 
 
-### ✨ [Demo](https://t.me/brstocksbot)
+### :iphone: [Beta version](https://t.me/brstocksbot)
 ### :iphone: [Instagram](https://t.me/brstocksbot)
 
 ## Install
