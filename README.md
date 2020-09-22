@@ -1,4 +1,4 @@
-<h1 align="center">Bot do Investidor (@brstocksbot) 🤖</h1>
+<h1 align="center">Bot do Investidor (@brstocksbot) </h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
@@ -8,7 +8,7 @@
 
 >  A Telegram bot to provide analysis about your favorite brazilian stocks 
 
-### :iphone: [Beta version](https://t.me/brstocksbot)
+### 🤖 [Beta version](https://t.me/brstocksbot)
 ### :iphone: [Instagram](https://t.me/brstocksbot)
 
 ## Enviroment
