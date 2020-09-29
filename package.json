@@ -5,6 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "dev": "nodemon src/index.js"
   },
   "dependencies": {
@@ -30,7 +32,9 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
+    "jest": "^26.4.2",
     "nodemon": "^2.0.4",
-    "prettier": "^2.1.1"
+    "prettier": "^2.1.1",
+    "supertest": "^5.0.0"
   }
 }
