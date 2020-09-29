@@ -4,7 +4,7 @@ const MessageController = require('../app/controllers/MessageController')
 const routes = express.Router()
 
 routes.get('/', (req, res) => {
-  res.send('ROBOT ONLINE')
+  res.json({ status: 'ROBOT ONLINE' })
 })
 
 routes.post('/message', MessageController.execute)
