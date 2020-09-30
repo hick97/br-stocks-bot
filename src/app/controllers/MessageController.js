@@ -1,4 +1,4 @@
-const { sendMessage, isSingleCommand, sendGifAnimation } = require('../repositories/MessageRepository')
+const { sendMessage, sendGifAnimation } = require('../repositories/MessageRepository')
 const { stockIsValid } = require('../repositories/StockRepository')
 const { isFundamentalsRequest } = require('../repositories/FundamentalsRepository')
 const { updateWallet, listWalletById } = require('../repositories/WalletRepository')
@@ -8,8 +8,9 @@ const FundamentalsController = require('./FundamentalsController')
 const { useSentryLogger } = require('../helpers/exceptionHelper')
 const { needAnimation } = require('../helpers/animationHelper')
 
-const singleCommands = require('../helpers/singleCommandsFunc')
 const staticMessages = require('../enum/messages')
+
+const Actions = require('../repositories/ActionsRepository')
 
 class MessageController {
   async execute(req, res) {
@@ -20,7 +21,9 @@ class MessageController {
       if (!message) message = edited_message
       if (!message) throw Error('Ocorreceu um erro com a mensagem recebida, tente novamente em alguns instantes.')
 
-      text = (isSingleCommand(message)) && singleCommands[message.text]
+      // Done
+      text = await Actions.staticMessage(message)
+
       if (text) {
         await sendMessage(message.chat.id, text, message.message_id)
         needAnimation(message.text) && await sendGifAnimation({
@@ -30,6 +33,7 @@ class MessageController {
         return res.json({ text })
       }
 
+      // TODO
       text = stockIsValid(message) && await updateWallet(message)
       if (text) {
         await sendMessage(message.chat.id, text, message.message_id)
