@@ -25,9 +25,9 @@ class MessageController {
       const action = Actions.getAction(command)
       const response = await ActionsHandler[action](command) || ActionsHandler.default
 
-      await sendMessage(message.chat.id, response, message.message_id)
-      needAnimation(message.text) && await sendGifAnimation({
-        chat_id: message.chat.id,
+      await sendMessage(command.chat.id, response, command.message_id)
+      needAnimation(command.text) && await sendGifAnimation({
+        chat_id: command.chat.id,
         fileName: 'gif-start'
       })
 
