@@ -2,8 +2,10 @@ const { listAllWallets } = require('../repositories/WalletRepository')
 const { listAllStocks } = require('../repositories/StockRepository')
 const { sendMessage, sendCustomMessage } = require('../repositories/MessageRepository')
 const { buildReport, buildWalletReport, createDailyQuotes } = require('../repositories/ReportRepository')
+const { getInvalidDailies } = require('../repositories/DailyRepository')
 
 const { useSentryLogger } = require('../helpers/exceptionHelper')
+const { getCurrentDate } = require('../helpers/reportHelper')
 
 class ReportController {
   async execute() {
@@ -12,7 +14,13 @@ class ReportController {
       const allStocks = await listAllStocks()
 
       // create daily quotes for all stocks in db
+      useSentryLogger(null, `Starting daily quotes on ${getCurrentDate({ withHTML: false })}...`)
       await createDailyQuotes(allStocks)
+
+      // retry failed quotes
+      const failedQuotes = await getInvalidDailies(false)
+      const quotesToRetry = failedQuotes.map(({ symbol: stock }) => ({ stock }))
+      await createDailyQuotes(quotesToRetry)
 
       // create daily report to subscripted users
       for (let index = 0; index < subscriptions.length; index++) {
@@ -43,6 +51,8 @@ class ReportController {
         others.length > 0 && await sendMessage(stocksReport.chat_id, '<b>OUTROS</b>\n\n' + others + '<code>Atenção: Até o momento, o @brstocksbot suporta apenas as seguintes classes de ativos: AÇÕES ou Fundo de Investimento Imobiliário. Em breve daremos suporte a ETFs também &#x1F916</code>')
 
         // await sendMessage(680912149, stocksReport.message)
+        useSentryLogger(null, `All reports were sent on ${getCurrentDate({ withHTML: false })}...`)
+
         // }
       }
     } catch (err) {

@@ -1,6 +1,12 @@
 const Daily = require('../models/Daily')
 
-const puppeteer = require('puppeteer')
+// const puppeteer = require('puppeteer')
+
+const puppeteer = require('puppeteer-extra')
+
+// add stealth plugin and use defaults (all evasion techniques)
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+puppeteer.use(StealthPlugin())
 
 class ScrappyRepository {
   async getFundamentals(symbol) {
@@ -50,6 +56,7 @@ class ScrappyRepository {
 
   async retryStockData(symbol) {
     console.log('Tentando ativo:' + symbol)
+    let result = {}
     const formattedSymbol = symbol.toLowerCase()
     const browser = await puppeteer.launch({ args: ['--no-sandbox'] })
     const page = await browser.newPage()
@@ -64,7 +71,25 @@ class ScrappyRepository {
     )
     */
 
-    const result = await page.evaluate(() => {
+    result = await page.evaluate(async () => {
+      const isInvalidPage = document.querySelector('body .top-info') === null
+
+      const stock = {
+        price: isInvalidPage ? 'Não aplicável' : document.querySelector('body .top-info strong').innerText,
+        change: isInvalidPage ? 'Não aplicável' : document.querySelector('body .top-info span b').innerText,
+        class: isInvalidPage ? 'Não aplicável' : document.querySelectorAll('body .main-breadcrumb span')[1].innerText,
+        failed: isInvalidPage
+      }
+
+      return stock
+    })
+
+    if (result.failed) {
+      await page.goto(`https://statusinvest.com.br/fundos-imobiliarios/${formattedSymbol}`)
+      await page.waitFor(1000)
+    }
+
+    result = await page.evaluate(async () => {
       const isInvalidPage = document.querySelector('body .top-info') === null
 
       const stock = {

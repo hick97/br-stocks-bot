@@ -22,13 +22,15 @@ const getStockReportText = (symbol, stockData, difference = 0, partial = 0, part
 
 const getPartialRentability = (initialAmount, currentAmount) => parseFloat((currentAmount - initialAmount) / initialAmount * 100).toFixed(2)
 
-const getCurrentDate = () => {
+const getCurrentDate = ({ withHTML = true }) => {
   var today = new Date()
   var dd = String(today.getDate()).padStart(2, '0')
   var mm = String(today.getMonth() + 1).padStart(2, '0') // January is 0!
   var yyyy = today.getFullYear()
 
-  today = '<b>&#x1F4C5 ' + dd + '/' + mm + '/' + yyyy + '</b>'
+  const currentDate = dd + '/' + mm + '/' + yyyy
+
+  today = withHTML ? ('<b>&#x1F4C5 ' + currentDate + '</b>') : currentDate
 
   return today
 }

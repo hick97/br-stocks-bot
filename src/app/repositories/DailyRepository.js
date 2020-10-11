@@ -21,6 +21,12 @@ class DailyRepository {
 
     return symbolClass
   }
+
+  async getInvalidDailies() {
+    const result = await Daily.find({ failed: true }).select('symbol -_id')
+
+    return result
+  }
 }
 
 module.exports = new DailyRepository()
