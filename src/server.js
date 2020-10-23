@@ -5,13 +5,13 @@ const mongoose = require('mongoose')
 const Youch = require('youch')
 const Sentry = require('@sentry/node')
 require('express-async-errors')
-// const cron = require('node-cron')
+const cron = require('node-cron')
 
 const cors = require('cors')
 
 const databaseConfig = require('./config/database')
-// const reportJob = require('./app/controllers/ReportController')
-// const fundamentalsJob = require('./app/controllers/FundamentalsController')
+const reportJob = require('./app/controllers/ReportController')
+const fundamentalsJob = require('./app/controllers/FundamentalsController')
 
 const routes = require('./routes')
 const staticMessages = require('./app/enum/messages')
@@ -55,7 +55,7 @@ class App {
   jobs() {
     // ScrappyRepository.getFundamentals('SULA11')
     // reportJob.execute()
-    /*
+
     cron.schedule('10 20 * * *', () => {
       fundamentalsJob.updateFundamentals()
     }, {
@@ -69,7 +69,6 @@ class App {
       scheduled: true,
       timezone: 'America/Sao_Paulo'
     })
-    */
   }
 
   exceptionHandler() {

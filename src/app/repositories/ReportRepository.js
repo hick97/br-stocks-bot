@@ -18,7 +18,7 @@ class ReportRepository {
   }
 
   async buildReport(chat_id, stocks) {
-    const currentDate = reportHelper.getCurrentDate() + '<code> ( 17h50 )</code>\n\n'
+    const currentDate = reportHelper.getCurrentDate({ withHTML: true }) + '<code> ( 17h50 )</code>\n\n'
 
     const stockText = [currentDate]
     const fiisText = [currentDate]
