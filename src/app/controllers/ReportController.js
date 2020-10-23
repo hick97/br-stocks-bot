@@ -51,10 +51,10 @@ class ReportController {
         others.length > 0 && await sendMessage(stocksReport.chat_id, '<b>OUTROS</b>\n\n' + others + '<code>Atenção: Até o momento, o @brstocksbot suporta apenas as seguintes classes de ativos: AÇÕES ou Fundo de Investimento Imobiliário. Em breve daremos suporte a ETFs também &#x1F916</code>')
 
         // await sendMessage(680912149, stocksReport.message)
-        useSentryLogger(null, `All reports were sent on ${getCurrentDate({ withHTML: false })}...`)
 
         // }
       }
+      useSentryLogger(null, `All reports were sent on ${getCurrentDate({ withHTML: false })}...`)
     } catch (err) {
       useSentryLogger(err)
     }
