@@ -1,0 +1,18 @@
+const { splitCommand } = require('./index')
+
+describe('CommandHelper', () => {
+  it('splitCommand -> should return the correct splitted values given a command', async () => {
+    const regularMessage = { text: '/stock ITSA4 10 8.90' }
+    const unformattedMessage = { text: ' /stock   ITSA4  10   8.90' }
+
+    const resultWithRegularMessage = await splitCommand(regularMessage.text)
+    const resultWithUnformattedMessage = await splitCommand(unformattedMessage.text)
+    const expectedResult = ['/stock', 'ITSA4', '10', '8.90']
+
+    expect(resultWithRegularMessage).toHaveLength(4)
+    expect(resultWithRegularMessage).toStrictEqual(expectedResult)
+
+    expect(resultWithUnformattedMessage).toHaveLength(4)
+    expect(resultWithUnformattedMessage).toStrictEqual(expectedResult)
+  })
+})
