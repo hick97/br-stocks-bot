@@ -7,12 +7,14 @@ describe('CommandHelper', () => {
 
     const resultWithRegularMessage = await splitCommand(regularMessage.text)
     const resultWithUnformattedMessage = await splitCommand(unformattedMessage.text)
+
+    const expectedLength = 4
     const expectedResult = ['/stock', 'ITSA4', '10', '8.90']
 
-    expect(resultWithRegularMessage).toHaveLength(4)
+    expect(resultWithRegularMessage).toHaveLength(expectedLength)
     expect(resultWithRegularMessage).toStrictEqual(expectedResult)
 
-    expect(resultWithUnformattedMessage).toHaveLength(4)
+    expect(resultWithUnformattedMessage).toHaveLength(expectedLength)
     expect(resultWithUnformattedMessage).toStrictEqual(expectedResult)
   })
 })
