@@ -6,12 +6,15 @@ const { isFundamentalsRequest } = require('../FundamentalsRepository')
 const FundamentalsController = require('../../controllers/FundamentalsController')
 
 const singleCommands = require('../../helpers/singleCommandsFunc')
+const commandHelper = require('../../helpers/CommandHelper')
 
 class ActionsRepository {
   getAction(message) {
     const { text } = message
+    const cleanedValues = commandHelper.splitCommand(text)
+    const action = cleanedValues[0].trim()
 
-    return text.split(' ')[0].trim()
+    return action
   }
 
   async staticMessage(message) {
