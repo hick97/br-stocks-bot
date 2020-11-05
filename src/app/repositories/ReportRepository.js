@@ -17,7 +17,7 @@ class ReportRepository {
     await ScrappyRepository.getIfixData()
   }
 
-  async buildReport(chat_id, stocks) {
+  async buildReport(stocks) {
     const currentDate = reportHelper.getCurrentDate({ withHTML: true }) + '<code> ( 17h50 )</code>\n\n'
 
     const stockText = [currentDate]
@@ -103,7 +103,6 @@ class ReportRepository {
     */
 
     const report = {
-      chat_id,
       message: {
         fiis: fiisText.join(''),
         stocks: stockText.join(''),
@@ -187,7 +186,7 @@ class ReportRepository {
       `IFIX: ${ifixMessage.replace('%', '%25')}\n` +
       `IBOVESPA: ${ibovMessage.replace('%', '%25')}\n` +
       `CARTEIRA: ${walletRentability.replace('%', '%25')}\n\n` +
-      '*@brstocksbot* (Instagram)\n' +
+      '*@botdoinvestidor* (Instagram)\n' +
       'https://t.me/brstocksbot'
 
     return { telegramText, whatsappText }
