@@ -1,6 +1,12 @@
-const { getCurrentDate } = require('../../helpers/reportHelper')
+const { getCurrentDate } = require('../../../helpers/ReportHelper')
 
-export const logMessages = {
+const logMessages = {
   start: `Starting daily quotes on ${getCurrentDate({ withHTML: false })}...`,
   finish: `All reports were sent on ${getCurrentDate({ withHTML: false })}...`
 }
+
+const alertMessages = {
+  support: '<code>Atenção: Até o momento, o @brstocksbot suporta apenas as seguintes classes de ativos: AÇÕES ou Fundo de Investimento Imobiliário. Em breve daremos suporte a ETFs também &#x1F916</code>'
+}
+
+module.exports = { alertMessages, logMessages }
