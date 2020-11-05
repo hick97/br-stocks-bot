@@ -1,11 +1,11 @@
-const { sendMessage, sendGifAnimation } = require('../repositories/MessageRepository')
+const { sendMessage, sendGifAnimation } = require('../../repositories/MessageRepository')
 
-const Actions = require('../repositories/ActionsRepository')
+const Actions = require('../../repositories/ActionsRepository')
 
-const { useSentryLogger } = require('../helpers/exceptionHelper')
-const { needAnimation } = require('../helpers/animationHelper')
+const { useSentryLogger } = require('../../helpers/exceptionHelper')
+const { needAnimation } = require('../../helpers/animationHelper')
 
-const staticMessages = require('../enum/messages')
+const staticMessages = require('../../enum/messages')
 
 class MessageController {
   async execute(req, res) {

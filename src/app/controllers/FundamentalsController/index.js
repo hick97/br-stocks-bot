@@ -1,8 +1,9 @@
-const FundamentalsRepository = require('../repositories/FundamentalsRepository')
-const staticMessages = require('../enum/messages')
+const FundamentalsRepository = require('../../repositories/FundamentalsRepository')
 
-const { useSentryLogger } = require('../helpers/exceptionHelper')
-const { splitCommand } = require('../helpers/CommandHelper')
+const { useSentryLogger } = require('../../helpers/exceptionHelper')
+const { splitCommand } = require('../../helpers/CommandHelper')
+
+const staticMessages = require('../../enum/messages')
 
 class FundamentalsController {
   async execute(message) {

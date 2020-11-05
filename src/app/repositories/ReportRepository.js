@@ -3,7 +3,7 @@ const Daily = require('../models/Daily')
 const ScrappyRepository = require('../repositories/ScrappyRepository')
 const DailyRepository = require('../repositories/DailyRepository')
 
-const reportHelper = require('../helpers/reportHelper')
+const reportHelper = require('../helpers/ReportHelper')
 
 class ReportRepository {
   async createDailyQuotes(stocks) {

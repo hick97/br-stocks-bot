@@ -37,4 +37,13 @@ const getCurrentDate = ({ withHTML = true }) => {
 
 const formatNumberWithOperator = (number) => number > 0 ? '+' : ''
 
-module.exports = { getStockReportText, getPartialRentability, getCurrentDate, formatNumberWithOperator }
+const shareByWhatsapp = (text) => ({
+  inline_keyboard: [
+    [{
+      text: 'Compartilhar - Whatsapp',
+      url: `https://api.whatsapp.com/send?text=${text}`
+    }]
+  ]
+})
+
+module.exports = { getStockReportText, getPartialRentability, getCurrentDate, formatNumberWithOperator, shareByWhatsapp }

@@ -2,7 +2,7 @@ const axios = require('axios')
 const Api = require('../services/api')
 
 const { useSentryLogger } = require('../helpers/exceptionHelper')
-const { getCurrentDate } = require('../helpers/reportHelper')
+const { getCurrentDate } = require('./ReportHelper')
 
 const ADMINS = [680912149, 1059457054]
 // const ADMINS = [680912149]
