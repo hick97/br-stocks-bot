@@ -15,6 +15,7 @@
   },
   "rules": {
     "space-before-function-paren": "off",
-    "camelcase": "off"
+    "camelcase": "off",
+    "eqeqeq": "warn"
   }
 }
