@@ -1,4 +1,4 @@
-const alphaFunctions = {
+const AlphaActions = {
   /**
    * Look a specific symbol or company
    */
@@ -17,4 +17,4 @@ const alphaFunctions = {
   timeSeriesMonthlyAdjusted: 'TIME_SERIES_MONTHLY_ADJUSTED'
 }
 
-module.exports = alphaFunctions
+module.exports = { AlphaActions }

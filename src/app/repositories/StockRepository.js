@@ -4,7 +4,7 @@ const Wallet = require('../models/Wallet')
 const Stock = require('../models/Stock')
 
 const Api = require('../services/api')
-const alphaFunctions = require('../enum/alphaVantageFunctions')
+const { AlphaActions } = require('../enum/AlphaVantageEnum')
 const staticMessages = require('../enum/messages')
 
 class StockRepository {
@@ -72,7 +72,7 @@ class StockRepository {
   }
 
   async findStockData(stock) {
-    const { data } = await axios.get(`${Api.alphaVantageURL}&function=${alphaFunctions.symbolSearch}&keywords=${stock}.SAO`)
+    const { data } = await axios.get(`${Api.alphaVantageURL}&function=${AlphaActions.symbolSearch}&keywords=${stock}.SAO`)
     const match = data.bestMatches[0]
     const matchScore = match ? parseFloat(match.matchScore) : 0
 
