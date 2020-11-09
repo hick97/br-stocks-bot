@@ -22,7 +22,7 @@ class ActionsRepository {
     const { text } = message
     const isSingleCommand = SingleCommands.includes(text)
 
-    return isSingleCommand && singleCommandsAction[text.text]
+    return isSingleCommand && singleCommandsAction[text]
   }
 
   async handleWallet(message) {
