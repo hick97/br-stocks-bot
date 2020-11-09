@@ -4,17 +4,9 @@ const path = require('path')
 const FormData = require('form-data')
 
 const Api = require('../services/api')
-const singleCommands = require('../enum/singleCommands')
 const { useSentryLogger } = require('../helpers/exceptionHelper')
 
 class MessageRepository {
-  isSingleCommand(message) {
-    const { text } = message
-    const textIsValid = singleCommands.includes(text)
-
-    return textIsValid
-  }
-
   async sendMessage(chat_id, text, message_id = '') {
     try {
       await axios.post(`${Api.telegramURL}/sendMessage`, {
