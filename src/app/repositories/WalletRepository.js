@@ -5,7 +5,7 @@ const { walletTabulation } = require('../helpers/walletHelper')
 const { useSentryLogger } = require('../helpers/exceptionHelper')
 const { sendMessageToAdmin } = require('../helpers/adminHelper')
 
-const staticMessages = require('../enum/messages')
+const { ErrorMessages, ActionMessages } = require('../enum/MessagesEnum')
 
 const Wallet = require('../models/Wallet')
 const Stock = require('../models/Stock')
@@ -36,7 +36,7 @@ class WalletRepository {
         stockData = await findStockData(values.stock)
 
         if (!stockData) {
-          return staticMessages.NOT_FOUND
+          return ErrorMessages.NOT_FOUND
         }
         await createStock(stockData, values.stock)
       }
@@ -55,7 +55,7 @@ class WalletRepository {
       useSentryLogger(null, logMessage)
       sendMessageToAdmin('INFO', logMessage)
 
-      return staticMessages.STOCK_CREATED
+      return ActionMessages.STOCK_CREATED
     }
 
     // when wallet exists, but stock do not
@@ -63,7 +63,7 @@ class WalletRepository {
       stockData = await findStockData(values.stock)
 
       if (!stockData) {
-        return staticMessages.NOT_FOUND
+        return ErrorMessages.NOT_FOUND
       }
 
       await createStock(stockData, values.stock)
@@ -76,7 +76,7 @@ class WalletRepository {
         }]
       })
 
-      return staticMessages.STOCK_CREATED
+      return ActionMessages.STOCK_CREATED
     }
 
     // check if stock already exists on chat wallet
@@ -92,7 +92,7 @@ class WalletRepository {
         }]
       })
 
-      return staticMessages.STOCK_CREATED
+      return ActionMessages.STOCK_CREATED
     }
 
     // stock is included on wallet
@@ -103,7 +103,7 @@ class WalletRepository {
     }
     await walletAlreadyExists.save()
 
-    return staticMessages.STOCK_UPDATED
+    return ActionMessages.STOCK_UPDATED
   }
 
   async listWalletById(chat_id) {

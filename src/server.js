@@ -14,7 +14,8 @@ const reportJob = require('./app/controllers/ReportController')
 const fundamentalsJob = require('./app/controllers/FundamentalsController')
 
 const routes = require('./routes')
-const staticMessages = require('./app/enum/messages')
+
+const { ErrorMessages } = require('./app/enum/MessagesEnum')
 
 // const ScrappyRepository = require('./app/repositories/ScrappyRepository')
 
@@ -78,7 +79,7 @@ class App {
         return res.status(500).json(errors)
       }
       Sentry.captureException(err)
-      return res.json({ error: staticMessages.ERROR_MESSAGE })
+      return res.json({ error: ErrorMessages.GENERAL_ERROR })
     })
   }
 }

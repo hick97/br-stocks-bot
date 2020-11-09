@@ -1,8 +1,8 @@
-const staticMessages = require('../enum/messages')
+const { GeneralMessages } = require('../enum/MessagesEnum')
 
 const singleCommandsFunc = {
-  '/start': staticMessages.START_MESSAGE,
-  '/help': staticMessages.HELP_MESSAGE
+  '/start': GeneralMessages.START_MESSAGE,
+  '/help': GeneralMessages.HELP_MESSAGE
 }
 
 module.exports = singleCommandsFunc

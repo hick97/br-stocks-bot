@@ -5,7 +5,7 @@ const Stock = require('../models/Stock')
 
 const Api = require('../services/api')
 const { AlphaActions } = require('../enum/AlphaVantageEnum')
-const staticMessages = require('../enum/messages')
+const { ActionMessages } = require('../enum/MessagesEnum')
 
 class StockRepository {
   stockIsValid(message) {
@@ -53,7 +53,7 @@ class StockRepository {
     wallet.stocks = newStocks
     await wallet.save()
 
-    return staticMessages.WALLET_UPDATED
+    return ActionMessages.WALLET_UPDATED
   }
 
   async getStockValues(text) {

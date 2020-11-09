@@ -5,7 +5,7 @@ const Actions = require('../../repositories/ActionsRepository')
 const { useSentryLogger } = require('../../helpers/exceptionHelper')
 const { needAnimation } = require('../../helpers/animationHelper')
 
-const staticMessages = require('../../enum/messages')
+const { ErrorMessages } = require('../../enum/MessagesEnum')
 
 class MessageController {
   async execute(req, res) {
@@ -18,7 +18,7 @@ class MessageController {
       '/stock': Actions.handleWallet,
       '/del': Actions.handleWallet,
       '/fundamentals': Actions.handleFundamentals,
-      default: staticMessages.INVALID_COMMAND
+      default: ErrorMessages.INVALID_COMMAND
     }
 
     try {
