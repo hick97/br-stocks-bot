@@ -8,6 +8,18 @@ const { AlphaActions } = require('../enum/AlphaVantageEnum')
 const { ActionMessages } = require('../enum/MessagesEnum')
 
 class StockRepository {
+  stockIsValid(message) {
+    const { text } = message
+    const regex = /\/stock |\/del /i
+    const match = text.search(regex)
+
+    if (match < 0) {
+      return false
+    }
+
+    return true
+  }
+
   async listAllStocks() {
     const stocks = await Stock.find({}).select('stock -_id')
 
