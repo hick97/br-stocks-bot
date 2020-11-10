@@ -31,7 +31,7 @@ const GeneralMessages = {
     '<b>DÚVIDAS?</b>\n' +
     'Mais informações em: <i>/help</i>.\n\n' +
     '<b>CONFIRA TAMBÉM:</b>\n' +
-    '<code>&#x1F4F1 INSTAGRAM:</code> @botdoinvestidor\n' +
+    '<code>&#x1F4F1 INSTAGRAM:</code> <a href="https://www.instagram.com/botdoinvestidor/">@botdoinvestidor</a>\n' +
     '<code>&#x1F4D6 LEITURAS:</code> <a href="https://amzn.to/30mMyvh">Dicas de leitura</a>\n' +
     '<code>&#x1F4B5 COLABORE:</code> <a href="picpay.me/hick97">PicPay</a>\n\n',
 
@@ -50,7 +50,7 @@ const GeneralMessages = {
     '/fundamentals  <code>AÇÃO</code>\n' +
     '/fundamentals  <code>ITSA4</code> <code>(EXEMPLO)</code>\n\n' +
     '<b>CONFIRA TAMBÉM:</b>\n\n' +
-    '<code>&#x1F4F1 INSTAGRAM:</code> @botdoinvestidor\n' +
+    '<code>&#x1F4F1 INSTAGRAM:</code> <a href="https://www.instagram.com/botdoinvestidor/">@botdoinvestidor</a>\n' +
     '<code>&#x1F4D6 LEITURAS:</code> <a href="https://amzn.to/30mMyvh">Dicas de leitura</a>\n' +
     '<code>&#x1F4B5 COLABORE:</code> <a href="picpay.me/hick97">PicPay</a>\n\n' +
     '@hick97'
