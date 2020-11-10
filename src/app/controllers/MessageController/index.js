@@ -16,6 +16,7 @@ class MessageController {
       '/start': Actions.staticMessage,
       '/help': Actions.staticMessage,
       '/stock': Actions.handleWallet,
+      '/wallet': Actions.handleWallet,
       '/del': Actions.handleWallet,
       '/fundamentals': Actions.handleFundamentals,
       default: ErrorMessages.INVALID_COMMAND
