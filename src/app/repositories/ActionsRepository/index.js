@@ -26,8 +26,11 @@ class ActionsRepository {
   }
 
   async handleWallet(message) {
-    return message.text === '/wallet'
-      ? await listWalletById(message.text)
+    const { chat, text } = message
+    const isWalletCommand = text === '/wallet'
+
+    return isWalletCommand
+      ? await listWalletById(chat.id)
       : stockIsValid(message) && await updateWallet(message)
   }
 
