@@ -4,8 +4,8 @@ const { emojis } = require('../../enum/EmojiEnum')
 const getPartialRentability = (initialAmount = 0, currentAmount = 0) => parseToFixedFloat((currentAmount - initialAmount) / initialAmount * 100)
 
 const getStockReportText = (symbol, stockData, difference = 0, partial = 0, partialRentability = 0) => {
-  const isPositive = !isNegativeCheck(stockData.change)
-  const defaultEmojis = isPositive ? emojis.greenHeart : emojis.brokenHeart
+  const isNegative = isNegativeCheck(stockData.change)
+  const defaultEmojis = isNegative ? emojis.brokenHeart : emojis.greenHeart
 
   const withError =
     '<code>ATIVO INVÁLIDO</code>\n\n'
