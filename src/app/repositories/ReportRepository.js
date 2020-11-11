@@ -4,6 +4,7 @@ const ScrappyRepository = require('../repositories/ScrappyRepository')
 const DailyRepository = require('../repositories/DailyRepository')
 
 const reportHelper = require('../helpers/ReportHelper')
+const dateHelper = require('../helpers/DateHelper')
 const currencyHelper = require('../helpers/CurrencyHelper')
 
 class ReportRepository {
@@ -19,7 +20,7 @@ class ReportRepository {
   }
 
   async buildReport(stocks) {
-    const currentDate = reportHelper.getCurrentDate() + '<code> ( 17h50 )</code>\n\n'
+    const currentDate = dateHelper.getCurrentDate() + '<code> ( 17h50 )</code>\n\n'
 
     const stockText = [currentDate]
     const fiisText = [currentDate]
@@ -76,7 +77,7 @@ class ReportRepository {
     for (let index = 0; index < stocksData.length; index++) {
       const d = stocksData[index]
 
-      const partialRentability = reportHelper.getPartialRentability(d.initialAmount, d.partial)
+      const partialRentability = currencyHelper.getPartialRentability(d.initialAmount, d.partial)
       const partialText = reportHelper.getStockReportText(d.stock, d.stockData, d.difference, d.partial, partialRentability)
 
       stockText.push(partialText)
@@ -86,7 +87,7 @@ class ReportRepository {
     for (let index = 0; index < fiisData.length; index++) {
       const d = fiisData[index]
 
-      const partialRentability = reportHelper.getPartialRentability(d.initialAmount, d.partial)
+      const partialRentability = currencyHelper.getPartialRentability(d.initialAmount, d.partial)
       const partialText = reportHelper.getStockReportText(d.stock, d.stockData, d.difference, d.partial, partialRentability)
 
       fiisText.push(partialText)

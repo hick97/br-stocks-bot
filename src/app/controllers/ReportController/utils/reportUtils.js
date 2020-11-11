@@ -1,4 +1,4 @@
-const { getCurrentDate } = require('../../../helpers/ReportHelper')
+const { getCurrentDate } = require('../../../helpers/DateHelper')
 
 const logMessages = {
   start: `Starting daily quotes on ${getCurrentDate(false)}...`,
