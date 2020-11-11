@@ -4,6 +4,7 @@ const ScrappyRepository = require('../repositories/ScrappyRepository')
 const DailyRepository = require('../repositories/DailyRepository')
 
 const reportHelper = require('../helpers/ReportHelper')
+const currencyHelper = require('../helpers/CurrencyHelper')
 
 class ReportRepository {
   async createDailyQuotes(stocks) {
@@ -163,7 +164,7 @@ class ReportRepository {
     const formattedPercentualResult = parseFloat(daily_percentual_result).toFixed(2)
     const formattedRealResult = parseFloat(daily_result - previous_result).toFixed(2)
 
-    const walletRentability = `${reportHelper.formatNumberWithOperator(formattedPercentualResult)}% (R$ ${reportHelper.formatNumberWithOperator(formattedRealResult)})`
+    const walletRentability = `${currencyHelper.formatNumberWithOperator(formattedPercentualResult)}% (R$ ${currencyHelper.formatNumberWithOperator(formattedRealResult)})`
 
     const telegramText = '<b>Resumo da Carteira</b>\n\n' +
       todayForTelegram +
