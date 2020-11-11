@@ -18,7 +18,7 @@ class ReportRepository {
   }
 
   async buildReport(stocks) {
-    const currentDate = reportHelper.getCurrentDate({ withHTML: true }) + '<code> ( 17h50 )</code>\n\n'
+    const currentDate = reportHelper.getCurrentDate() + '<code> ( 17h50 )</code>\n\n'
 
     const stockText = [currentDate]
     const fiisText = [currentDate]
@@ -163,7 +163,7 @@ class ReportRepository {
     const formattedPercentualResult = parseFloat(daily_percentual_result).toFixed(2)
     const formattedRealResult = parseFloat(daily_result - previous_result).toFixed(2)
 
-    const walletRentability = `${reportHelper.formatNumberWithOperator(formattedPercentualResult)}${formattedPercentualResult}% (R$ ${reportHelper.formatNumberWithOperator(formattedRealResult)}${formattedRealResult})`
+    const walletRentability = `${reportHelper.formatNumberWithOperator(formattedPercentualResult)}% (R$ ${reportHelper.formatNumberWithOperator(formattedRealResult)})`
 
     const telegramText = '<b>Resumo da Carteira</b>\n\n' +
       todayForTelegram +

@@ -1,8 +1,8 @@
 const { getCurrentDate } = require('../../../helpers/ReportHelper')
 
 const logMessages = {
-  start: `Starting daily quotes on ${getCurrentDate({ withHTML: false })}...`,
-  finish: `All reports were sent on ${getCurrentDate({ withHTML: false })}...`
+  start: `Starting daily quotes on ${getCurrentDate(false)}...`,
+  finish: `All reports were sent on ${getCurrentDate(false)}...`
 }
 
 const alertMessages = {

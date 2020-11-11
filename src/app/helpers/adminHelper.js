@@ -9,7 +9,7 @@ const ADMINS = [680912149, 1059457054]
 
 const sendMessageToAdmin = async (level, message) => {
   const text =
-    `${getCurrentDate({ withHTML: true })}\n\n` +
+    `${getCurrentDate()}\n\n` +
     `<b>levelname: ${level}</b>\n\n` +
     `<code>${message}</code>`
 
