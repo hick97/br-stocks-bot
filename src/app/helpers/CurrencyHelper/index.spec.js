@@ -1,4 +1,4 @@
-const { parseToFixedFloat, isNegativeCheck, formatNumberWithOperator } = require('./index')
+const { parseToFixedFloat, isNegativeCheck, formatNumberWithOperator, getPartialRentability } = require('./index')
 
 describe('CurrencyHelper', () => {
   it('parseToFixedFloat -> should return the correct parsed value', async () => {
@@ -33,5 +33,15 @@ describe('CurrencyHelper', () => {
 
     expect(negativeResult).toBe('-7.38')
     expect(positiveResult).toBe('+7.38')
+  })
+
+  it('getPartialRentability -> should return the correct partial rentability with two decimal places', async () => {
+    const initialAmount = '2000'
+    const currentAmount = '3000'
+
+    const result = getPartialRentability(initialAmount, currentAmount)
+    const expectedRentability = '50.00' // percentual
+
+    expect(result).toBe(expectedRentability)
   })
 })
