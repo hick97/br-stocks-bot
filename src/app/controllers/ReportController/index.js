@@ -5,7 +5,7 @@ const { sendMessage, sendCustomMessage } = require('../../repositories/MessageRe
 const { buildReport, buildWalletReport, createDailyQuotes } = require('../../repositories/ReportRepository')
 
 const { useSentryLogger } = require('../../helpers/exceptionHelper')
-const { shareByWhatsapp } = require('../../helpers/ReportHelper')
+const { shareByWhatsapp } = require('../../helpers/SocialHelper')
 
 const { logMessages, alertMessages } = require('./utils/reportUtils')
 
