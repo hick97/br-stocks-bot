@@ -3,7 +3,7 @@ const { dynamicSort } = require('../helpers/sortHelper')
 const { walletTabulation } = require('../helpers/walletHelper')
 
 const { useSentryLogger } = require('../helpers/exceptionHelper')
-const { sendMessageToAdmin } = require('../helpers/adminHelper')
+const { sendMessageToAdmin } = require('../helpers/AdminHelper')
 
 const { ErrorMessages, ActionMessages } = require('../enum/MessagesEnum')
 
@@ -53,7 +53,7 @@ class WalletRepository {
 
       const logMessage = `Wallet was created by:\n${chat.first_name} ${chat.username ? '(@' + chat.username + ')' : ''}`
       useSentryLogger(null, logMessage)
-      sendMessageToAdmin('INFO', logMessage)
+      sendMessageToAdmin({ level: 'INFO', message: logMessage })
 
       return ActionMessages.STOCK_CREATED
     }
