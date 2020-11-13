@@ -1,7 +1,7 @@
 const ScrappyRepository = require('./ScrappyRepository')
 const Fundamentals = require('../models/Fundamentals')
 
-const { getFormattedTextByIndicators } = require('../helpers/fundamentalsHelper')
+const { formatTextByIndicatorsType } = require('../helpers/FundamentalsHelper')
 const { useSentryLogger } = require('../helpers/LogHelper')
 
 class FundamentalsRepository {
@@ -64,11 +64,11 @@ class FundamentalsRepository {
   }
 
   async getFundamentalsText(result, symbol) {
-    const valuationIndicators = await getFormattedTextByIndicators(result, 0, 12)
-    const indebtednessIndicators = await getFormattedTextByIndicators(result, 12, 18)
-    const efficiencyIndicators = await getFormattedTextByIndicators(result, 18, 22)
-    const rentabilityIndicators = await getFormattedTextByIndicators(result, 22, 26)
-    const growthIndicators = await getFormattedTextByIndicators(result, 26, 28)
+    const valuationIndicators = await formatTextByIndicatorsType(result, 'valuation')
+    const indebtednessIndicators = await formatTextByIndicatorsType(result, 'indebtedness')
+    const efficiencyIndicators = await formatTextByIndicatorsType(result, 'efficiency')
+    const rentabilityIndicators = await formatTextByIndicatorsType(result, 'rentability')
+    const growthIndicators = await formatTextByIndicatorsType(result, 'growth')
 
     const fundamentals =
       `<b>${symbol.toUpperCase()}</b>\n\n` +
