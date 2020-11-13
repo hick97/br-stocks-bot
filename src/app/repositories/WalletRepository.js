@@ -2,7 +2,7 @@ const { getStockValues, findStockData, createStock, deleteStock } = require('../
 const { dynamicSort } = require('../helpers/sortHelper')
 const { walletTabulation } = require('../helpers/walletHelper')
 
-const { useSentryLogger } = require('../helpers/exceptionHelper')
+const { useSentryLogger } = require('../helpers/LogHelper')
 const { sendMessageToAdmin } = require('../helpers/AdminHelper')
 
 const { ErrorMessages, ActionMessages } = require('../enum/MessagesEnum')

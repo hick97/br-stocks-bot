@@ -2,7 +2,7 @@ const ScrappyRepository = require('./ScrappyRepository')
 const Fundamentals = require('../models/Fundamentals')
 
 const { getFormattedTextByIndicators } = require('../helpers/fundamentalsHelper')
-const { useSentryLogger } = require('../helpers/exceptionHelper')
+const { useSentryLogger } = require('../helpers/LogHelper')
 
 class FundamentalsRepository {
   // TODO - Maybe schedule once a month

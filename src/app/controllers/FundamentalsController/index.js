@@ -1,6 +1,6 @@
 const FundamentalsRepository = require('../../repositories/FundamentalsRepository')
 
-const { useSentryLogger } = require('../../helpers/exceptionHelper')
+const { useSentryLogger } = require('../../helpers/LogHelper')
 const { splitCommand } = require('../../helpers/CommandHelper')
 
 const { ErrorMessages } = require('../../enum/MessagesEnum')

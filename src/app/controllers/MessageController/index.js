@@ -2,7 +2,7 @@ const { sendMessage, sendGifAnimation } = require('../../repositories/MessageRep
 
 const Actions = require('../../repositories/ActionsRepository')
 
-const { useSentryLogger } = require('../../helpers/exceptionHelper')
+const { useSentryLogger } = require('../../helpers/LogHelper')
 const { getAnimationFile } = require('../../helpers/AnimationHelper')
 
 const { ErrorMessages } = require('../../enum/MessagesEnum')

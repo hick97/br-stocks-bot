@@ -1,7 +1,7 @@
 
 const { sendCustomMessage } = require('../../repositories/MessageRepository')
 
-const { useSentryLogger } = require('../exceptionHelper')
+const { useSentryLogger } = require('../LogHelper')
 const { getCurrentDate } = require('../DateHelper')
 
 const ADMINS = [680912149, 1059457054]

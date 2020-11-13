@@ -4,7 +4,7 @@ const { getInvalidDailies } = require('../../repositories/DailyRepository')
 const { sendMessage, sendCustomMessage } = require('../../repositories/MessageRepository')
 const { buildReport, buildWalletReport, createDailyQuotes } = require('../../repositories/ReportRepository')
 
-const { useSentryLogger } = require('../../helpers/exceptionHelper')
+const { useSentryLogger } = require('../../helpers/LogHelper')
 const { shareByWhatsapp } = require('../../helpers/SocialHelper')
 
 const { logMessages, alertMessages } = require('./utils/reportUtils')

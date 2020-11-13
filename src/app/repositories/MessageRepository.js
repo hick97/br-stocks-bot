@@ -4,7 +4,7 @@ const path = require('path')
 const FormData = require('form-data')
 
 const Api = require('../services/api')
-const { useSentryLogger } = require('../helpers/exceptionHelper')
+const { useSentryLogger } = require('../helpers/LogHelper')
 
 class MessageRepository {
   async sendMessage(chat_id, text, message_id = '') {
