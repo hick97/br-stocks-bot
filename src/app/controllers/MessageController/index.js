@@ -3,7 +3,7 @@ const { sendMessage, sendGifAnimation } = require('../../repositories/MessageRep
 const Actions = require('../../repositories/ActionsRepository')
 
 const { useSentryLogger } = require('../../helpers/exceptionHelper')
-const { needAnimation } = require('../../helpers/animationHelper')
+const { getAnimationFile } = require('../../helpers/AnimationHelper')
 
 const { ErrorMessages } = require('../../enum/MessagesEnum')
 
@@ -27,9 +27,10 @@ class MessageController {
       const response = await ActionsHandler[action](command) || ActionsHandler.default
 
       await sendMessage(command.chat.id, response, command.message_id)
-      needAnimation(command.text) && await sendGifAnimation({
+      const fileName = getAnimationFile(command.text)
+      !!fileName && await sendGifAnimation({
         chat_id: command.chat.id,
-        fileName: 'gif-start'
+        fileName
       })
 
       return res.json({ result: response })
