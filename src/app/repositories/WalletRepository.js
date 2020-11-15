@@ -1,6 +1,6 @@
 const { getStockValues, findStockData, createStock, deleteStock } = require('../repositories/StockRepository')
 const { dynamicSort } = require('../helpers/SortHelper')
-const { walletTabulation } = require('../helpers/walletHelper')
+const { walletTabulation } = require('../helpers/TabulationHelper')
 
 const { useSentryLogger } = require('../helpers/LogHelper')
 const { sendMessageToAdmin } = require('../helpers/AdminHelper')
@@ -112,7 +112,6 @@ class WalletRepository {
     })
 
     const walletStocks = wallet[0].stocks
-    console.log(walletStocks)
     const orderedStocks = walletStocks.sort(dynamicSort({ property: 'price', order: 'desc' }))
 
     if (!orderedStocks) throw Error('Ocorreu uma falha ao ordenar os ativos do chat=' + chat_id)
@@ -125,7 +124,7 @@ class WalletRepository {
 
     for (let index = 0; index < orderedStocks.length; index++) {
       if (index === 0) stocks.push('\n&#x1F4B0 <b>SUA CARTEIRA</b> \n\n' + '<code>ATIVO</code>\t\t\t\t\t\t\t\t<code>PM</code>\t\t\t\t\t\t\t\t\t\t\t\t<code>QNTD.</code> \n\n')
-      const picked = (({ stock, price, quantity }) => `<code>${stock}${walletTabulation(stock.length, 'stock')}</code><code>R$${price}${walletTabulation((price.toString()).length, 'price')}</code><code>${quantity}</code>\n`)(wallet[0].stocks[index])
+      const picked = (({ stock, price, quantity }) => `<code>${stock}${walletTabulation(stock.length)}</code><code>R$${price}${walletTabulation((price.toString()).length)}</code><code>${quantity}</code>\n`)(wallet[0].stocks[index])
       stocks.push(picked)
     }
 
