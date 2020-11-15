@@ -1,5 +1,5 @@
 const { getStockValues, findStockData, createStock, deleteStock } = require('../repositories/StockRepository')
-const { dynamicSort } = require('../helpers/sortHelper')
+const { dynamicSort } = require('../helpers/SortHelper')
 const { walletTabulation } = require('../helpers/walletHelper')
 
 const { useSentryLogger } = require('../helpers/LogHelper')
@@ -112,7 +112,8 @@ class WalletRepository {
     })
 
     const walletStocks = wallet[0].stocks
-    const orderedStocks = walletStocks.sort(dynamicSort('price', 'desc'))
+    console.log(walletStocks)
+    const orderedStocks = walletStocks.sort(dynamicSort({ property: 'price', order: 'desc' }))
 
     if (!orderedStocks) throw Error('Ocorreu uma falha ao ordenar os ativos do chat=' + chat_id)
 
