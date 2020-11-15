@@ -1,3 +1,5 @@
+const { GeneralMessages } = require('../enum/MessagesEnum')
+
 const SingleCommands = [
   '/start',
   '/wallet',
@@ -5,4 +7,9 @@ const SingleCommands = [
   '/help'
 ]
 
-module.exports = { SingleCommands }
+const SingleCommandsActions = {
+  '/start': GeneralMessages.START_MESSAGE,
+  '/help': GeneralMessages.HELP_MESSAGE
+}
+
+module.exports = { SingleCommands, SingleCommandsActions }

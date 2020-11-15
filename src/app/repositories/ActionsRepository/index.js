@@ -1,13 +1,12 @@
 const { stockIsValid } = require('../StockRepository')
-const { updateWallet, listWalletById } = require('../WalletRepository')
 const { isFundamentalsRequest } = require('../FundamentalsRepository')
+const { updateWallet, listWalletById } = require('../WalletRepository')
 
 const FundamentalsController = require('../../controllers/FundamentalsController')
 
-const singleCommandsAction = require('../../helpers/singleCommandsFunc')
 const commandHelper = require('../../helpers/CommandHelper')
 
-const { SingleCommands } = require('../../enum/CommandEnum')
+const { SingleCommands, SingleCommandsActions } = require('../../enum/CommandEnum')
 
 class ActionsRepository {
   getAction(message) {
@@ -22,7 +21,7 @@ class ActionsRepository {
     const { text } = message
     const isSingleCommand = SingleCommands.includes(text)
 
-    return isSingleCommand && singleCommandsAction[text]
+    return isSingleCommand && SingleCommandsActions[text]
   }
 
   async handleWallet(message) {
