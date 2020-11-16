@@ -12,9 +12,9 @@ class ActionsRepository {
   getAction(message) {
     const { text } = message
     const cleanedValues = commandHelper.splitCommand(text)
-    const action = cleanedValues[0].trim()
+    const [action] = cleanedValues
 
-    return action
+    return action.trim()
   }
 
   async staticMessage(message) {
