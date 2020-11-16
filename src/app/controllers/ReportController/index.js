@@ -21,7 +21,7 @@ class ReportController {
       await createDailyQuotes(allStocks)
 
       // retry failed quotes
-      const failedQuotes = await getInvalidDailies(false)
+      const failedQuotes = await getInvalidDailies()
       const quotesToRetry = failedQuotes.map(({ symbol: stock }) => ({ stock }))
       await createDailyQuotes(quotesToRetry)
 
