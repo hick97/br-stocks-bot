@@ -1,4 +1,5 @@
 const FundamentalsRepository = require('../../repositories/FundamentalsRepository')
+const { getFundamentalsText } = require('../../helpers/FundamentalsHelper')
 
 const { useSentryLogger } = require('../../helpers/LogHelper')
 const { splitCommand } = require('../../helpers/CommandHelper')
@@ -25,7 +26,7 @@ class FundamentalsController {
       return ErrorMessages.NOT_FOUND
     }
 
-    return await FundamentalsRepository.getFundamentalsText(fundamentals, symbol)
+    return await getFundamentalsText(fundamentals, symbol)
   }
 
   async updateFundamentals() {
