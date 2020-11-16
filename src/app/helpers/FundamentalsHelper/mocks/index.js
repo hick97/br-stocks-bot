@@ -86,4 +86,21 @@ const valuationResultMock =
   '<code>LPA</code>\n<code>16,09\t\t\t</code> <code>P/SR</code>\n<code>23,05\t\t\t</code> ' +
   '<code>P/CAP. GIRO</code>\n<code>-1,45\t\t\t</code> <code>P/ATIVO CIRC. LIQ.</code>\n'
 
-module.exports = { indicatorsMock, valuationResultMock }
+const completeFundamentalsTextMock =
+  '<b>ITSA4</b>\n\n<b>VALUATION</b>\n<code>12,87\t\t\t</code> ' +
+  '<code>P/L</code>\n<code>5,83\t\t\t\t</code> <code>EV/EBITDA</code>\n' +
+  '<code>1,62\t\t\t\t</code> <code>P/VP</code>\n<code>11,50\t\t\t</code> ' +
+  '<code>EV/EBIT</code>\n<code>5,62\t\t\t\t</code> <code>P/EBITDA</code>\n<code>11,08\t\t\t</code> ' +
+  '<code>P/EBIT</code>\n<code>6,48\t\t\t\t</code> <code>VPA</code>\n<code>1,30\t\t\t\t</code> ' +
+  '<code>P/ATIVO</code>\n<code>0,81\t\t\t\t</code> <code>LPA</code>\n<code>16,09\t\t\t</code> ' +
+  '<code>P/SR</code>\n<code>23,05\t\t\t</code> <code>P/CAP. GIRO</code>\n<code>-1,45\t\t\t</code> ' +
+  '<code>P/ATIVO CIRC. LIQ.</code>\n\n<b>ENDIVIDAMENTO</b>\n<code>0,02\t\t\t\t</code> ' +
+  '<code>DÍV. LÍQUIDA/PL</code>\n<code>0,05\t\t\t\t</code> <code>DÍV. LÍQUIDA/EBITDA</code>\n<code>0,11\t\t\t\t</code> ' +
+  '<code>DÍV. LÍQUIDA/EBIT</code>\n<code>0,81\t\t\t\t</code> <code>PL/ATIVOS</code>\n<code>0,15\t\t\t\t</code> ' +
+  '<code>PASSIVO/ATIVOS</code>\n<code>2,32\t\t\t\t</code> <code>LIQ. CORRENTE</code>\n\n<b>EFICIÊNCIA</b>\n<code>28,31%\t\t</code> ' +
+  '<code>M. BRUTA</code>\n<code>286,29%\t</code> <code>M. EBITDA</code>\n<code>145,27%\t</code> <code>M. EBIT</code>\n<code>125,07%\t</code> ' +
+  '<code>M. LÍQUIDA</code>\n\n<b>RENTABILIDADE</b>\n<code>12,56%\t\t</code> <code>ROE</code>\n<code>10,13%\t\t</code> <code>ROA</code>\n<code>12,49%\t\t</code> ' +
+  '<code>ROIC</code>\n<code>0,08\t\t\t\t</code> <code>GIRO ATIVOS</code>\n\n<b>CRESCIMENTO</b>\n<code>-0,05%\t\t</code> ' +
+  '<code>CAGR RECEITAS 5 ANOS</code>\n<code>5,31%\t\t\t</code> <code>CAGR LUCROS 5 ANOS</code>\n\n'
+
+module.exports = { indicatorsMock, valuationResultMock, completeFundamentalsTextMock }
