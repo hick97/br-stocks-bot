@@ -1,5 +1,5 @@
 const { stockIsValid } = require('../StockRepository')
-const { isFundamentalsRequest } = require('../FundamentalsRepository')
+const { fundamentalsCommandIsValid } = require('../../helpers/FundamentalsHelper')
 const { updateWallet, listWalletById } = require('../WalletRepository')
 
 const FundamentalsController = require('../../controllers/FundamentalsController')
@@ -34,7 +34,8 @@ class ActionsRepository {
   }
 
   async handleFundamentals(message) {
-    return await isFundamentalsRequest(message) && await FundamentalsController.execute(message)
+    const [firstCommandTerm] = commandHelper.splitCommand(message.text)
+    return fundamentalsCommandIsValid(firstCommandTerm) && await FundamentalsController.execute(message)
   }
 }
 
