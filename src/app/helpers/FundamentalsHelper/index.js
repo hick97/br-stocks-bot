@@ -26,4 +26,29 @@ const formatTextByIndicatorsType = async (fundamentals, type) => {
   return indicatorsText.join('')
 }
 
-module.exports = { formatTextByIndicatorsType, fundamentalsCommandIsValid }
+const getFundamentalsText = async (result, symbol) => {
+  const valuationIndicators = await formatTextByIndicatorsType(result, 'valuation')
+  const indebtednessIndicators = await formatTextByIndicatorsType(result, 'indebtedness')
+  const efficiencyIndicators = await formatTextByIndicatorsType(result, 'efficiency')
+  const rentabilityIndicators = await formatTextByIndicatorsType(result, 'rentability')
+  const growthIndicators = await formatTextByIndicatorsType(result, 'growth')
+
+  const formattedSymbol = symbol.toUpperCase()
+
+  const fundamentals =
+    `<b>${formattedSymbol}</b>\n\n` +
+    '<b>VALUATION</b>\n' +
+    valuationIndicators + '\n' +
+    '<b>ENDIVIDAMENTO</b>\n' +
+    indebtednessIndicators + '\n' +
+    '<b>EFICIÊNCIA</b>\n' +
+    efficiencyIndicators + '\n' +
+    '<b>RENTABILIDADE</b>\n' +
+    rentabilityIndicators + '\n' +
+    '<b>CRESCIMENTO</b>\n' +
+    growthIndicators + '\n'
+
+  return fundamentals
+}
+
+module.exports = { formatTextByIndicatorsType, fundamentalsCommandIsValid, getFundamentalsText }
