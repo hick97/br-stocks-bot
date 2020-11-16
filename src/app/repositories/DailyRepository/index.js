@@ -1,11 +1,14 @@
 
-const Daily = require('../models/Daily')
+const Daily = require('../../models/Daily')
+const { stockClasses } = require('../../enum/StockEnum')
 
 class DailyRepository {
   async getDailiesByClass() {
-    const fiis = await Daily.find({ class: 'Fundos Imobiliários' })
-    const stocks = await Daily.find({ class: 'Ações' })
-    const others = await Daily.find({ class: 'Não aplicável' })
+    const dailies = await Daily.find()
+
+    const stocks = dailies.filter(item => item.class === stockClasses.STOCK)
+    const fiis = dailies.filter(item => item.class === stockClasses.FII)
+    const others = dailies.filter(item => item.class === stockClasses.OTHERS)
 
     const result = {
       fiis,
