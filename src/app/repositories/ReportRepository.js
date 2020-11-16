@@ -1,7 +1,7 @@
 const Daily = require('../models/Daily')
 
 const ScrappyRepository = require('../repositories/ScrappyRepository')
-const DailyRepository = require('../repositories/DailyRepository')
+const DailyRepository = require('./DailyRepository')
 
 const reportHelper = require('../helpers/ReportHelper')
 const dateHelper = require('../helpers/DateHelper')
