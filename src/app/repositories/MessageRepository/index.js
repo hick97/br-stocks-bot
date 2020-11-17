@@ -3,8 +3,8 @@ const fs = require('fs')
 const path = require('path')
 const FormData = require('form-data')
 
-const Api = require('../services/api')
-const { useSentryLogger } = require('../helpers/LogHelper')
+const Api = require('../../services/api')
+const { useSentryLogger } = require('../../helpers/LogHelper')
 
 class MessageRepository {
   async sendCustomMessage({ chat_id, text, message_id, options }) {
@@ -24,11 +24,12 @@ class MessageRepository {
 
   async sendGifAnimation({ chat_id, fileName }) {
     const formData = new FormData()
-    const filePath = `${fileName}.mp4`
-    const file = fs.createReadStream(path.resolve(__dirname, '..', 'assets', 'gifs', filePath))
+    const formattedFileName = `${fileName}.mp4`
+    const filePath = path.resolve(__dirname, '..', '..', 'assets', 'gifs', formattedFileName)
+    const file = fs.createReadStream(filePath)
 
     formData.append('animation', file, {
-      filename: filePath
+      filename: formattedFileName
     })
 
     formData.append('chat_id', chat_id)
