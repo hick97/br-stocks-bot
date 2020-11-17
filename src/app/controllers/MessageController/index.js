@@ -1,4 +1,4 @@
-const { sendMessage, sendGifAnimation } = require('../../repositories/MessageRepository')
+const { sendGifAnimation, sendCustomMessage } = require('../../repositories/MessageRepository')
 
 const Actions = require('../../repositories/ActionsRepository')
 
@@ -26,7 +26,14 @@ class MessageController {
       const action = Actions.getAction(command)
       const response = await ActionsHandler[action](command) || ActionsHandler.default
 
-      await sendMessage(command.chat.id, response, command.message_id)
+      await sendCustomMessage(
+        {
+          text: response,
+          chat_id: command.chat.id,
+          message_id: command.message_id
+        }
+      )
+
       const fileName = getAnimationFile(command.text)
       !!fileName && await sendGifAnimation({
         chat_id: command.chat.id,

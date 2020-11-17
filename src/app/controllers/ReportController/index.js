@@ -1,7 +1,7 @@
 const { listAllStocks } = require('../../repositories/StockRepository')
 const { listAllWallets } = require('../../repositories/WalletRepository')
 const { getInvalidDailies } = require('../../repositories/DailyRepository')
-const { sendMessage, sendCustomMessage } = require('../../repositories/MessageRepository')
+const { sendCustomMessage } = require('../../repositories/MessageRepository')
 const { buildReport, buildWalletReport, createDailyQuotes } = require('../../repositories/ReportRepository')
 
 const { useSentryLogger } = require('../../helpers/LogHelper')
@@ -39,9 +39,9 @@ class ReportController {
           const { telegramText, whatsappText } = walletReport
 
           await sendCustomMessage({ chat_id: currentChatId, text: telegramText, options: { reply_markup: shareByWhatsapp(whatsappText) } })
-          stocks.length > 0 && await sendMessage(currentChatId, stocksMessage)
-          fiis.length > 0 && await sendMessage(currentChatId, fiis)
-          others.length > 0 && await sendMessage(currentChatId, '<b>OUTROS</b>\n\n' + others + alertMessages.support)
+          stocks.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: stocksMessage })
+          fiis.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: fiis })
+          others.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: '<b>OUTROS</b>\n\n' + others + alertMessages.support })
 
           useSentryLogger(null, logMessages.finish)
         }
