@@ -5,9 +5,7 @@ const ScrappyRepository = require('../repositories/ScrappyRepository')
 
 const { getCurrentDate } = require('../helpers/DateHelper')
 const { getStockReportTextWhenFailed, getCompleteReportByClass } = require('../helpers/ReportHelper')
-const { parseToCleanedFloat, formatNumberWithOperator, parseToFixedFloat, getPercentualFromAmount } = require('../helpers/CurrencyHelper')
-
-const { emojis } = require('../enum/EmojiEnum')
+const { parseToCleanedFloat, formatNumberWithOperator, parseToFixedFloat, getPercentualFromAmount, getPartialRentability } = require('../helpers/CurrencyHelper')
 
 class ReportRepository {
   async createDailyQuotes(stocks) {
@@ -17,7 +15,7 @@ class ReportRepository {
     }
   }
 
-  async buildReport(stocks) {
+  async buildSharePerfomance(stocks) {
     const othersText = []
     const fiisData = []
     const stocksData = []
@@ -80,76 +78,54 @@ class ReportRepository {
     return report
   }
 
-  async buildWalletReport(stocks, stockReport) {
+  async buildWalletPerfomance(stocks, report) {
     const {
       previous_result,
       daily_result,
       daily_percentual_result
-    } = stockReport
+    } = report
 
-    var today = new Date()
-    var dd = String(today.getDate()).padStart(2, '0')
-    var mm = String(today.getMonth() + 1).padStart(2, '0') // January is 0!
-    var yyyy = today.getFullYear()
+    const todayForTelegram = getCurrentDate() + '\n\n'
+    const todayForWhats = '* %F0%9F%93%85 ' + getCurrentDate(false) + '*' + '\n\n'
 
-    const todayForTelegram = '<b>&#x1F4C5 ' + dd + '/' + mm + '/' + yyyy + '</b>\n\n'
-    const todayForWhats = '* %F0%9F%93%85 ' + dd + '/' + mm + '/' + yyyy + '*' + '\n\n'
-
-    let total = 0
-    for (let index = 0; index < stocks.length; index++) {
-      total += stocks[index].price * stocks[index].quantity
-    }
-
-    let ibovData = {}
-    let ifixData = {}
     const ibovAlreadyExists = await Daily.findOne({ symbol: 'IBOVESPA' })
     const ifixAlreadyExists = await Daily.findOne({ symbol: 'IFIX' })
 
-    if (!ibovAlreadyExists) {
-      console.log('NAO ACHEI O ATIVO: ' + 'IBOVESPA' + ' ADD AO BD')
-      ibovData = await ScrappyRepository.getIbovData()
-    } else {
-      console.log('ACHEI O ATIVO: ' + 'IBOVESPA' + ' ADD AO BD')
-      ibovData = ibovAlreadyExists
-    }
+    const ibovData = !ibovAlreadyExists ? await ScrappyRepository.getIbovData() : ibovAlreadyExists
+    const ifixData = !ifixAlreadyExists ? await ScrappyRepository.getIfixData() : ifixAlreadyExists
 
-    if (!ifixAlreadyExists) {
-      console.log('NAO ACHEI O ATIVO: ' + 'IFIX' + ' ADD AO BD')
-      ifixData = await ScrappyRepository.getIbovData()
-    } else {
-      console.log('ACHEI O ATIVO: ' + 'IFIX' + ' ADD AO BD')
-      ifixData = ifixAlreadyExists
-    }
+    const errorMessage = 'Houve uma falha'
+    const ibovMessage = ibovData.failed ? errorMessage : `${ibovData.change} (${ibovData.price}pts)`
+    const ifixMessage = ifixData.failed ? errorMessage : `${ifixData.change} (${ifixData.price}pts)`
 
-    const ibovMessage = ibovData.failed ? 'Houve uma falha' : `${ibovData.change} (${ibovData.price}pts)`
-    const ifixMessage = ifixData.failed ? 'Houve uma falha' : `${ifixData.change} (${ifixData.price}pts)`
+    const amountInvested = stocks.reduce((acc, stock) => acc + (stock.price * stock.quantity), 0)
+    const formattedPercentualResult = parseToFixedFloat(daily_percentual_result)
+    const formattedRealResult = parseToFixedFloat(daily_result - previous_result)
 
-    const formattedPercentualResult = parseFloat(daily_percentual_result).toFixed(2)
-    const formattedRealResult = parseFloat(daily_result - previous_result).toFixed(2)
-
-    const walletRentability = `${formatNumberWithOperator(formattedPercentualResult)}% (R$ ${formatNumberWithOperator(formattedRealResult)})`
+    const dailyWalletRentability = `${formatNumberWithOperator(formattedPercentualResult)}% (R$ ${formatNumberWithOperator(formattedRealResult)})`
+    const generalWalletRentability = getPartialRentability(amountInvested, daily_result)
 
     const telegramText = '<b>Resumo da Carteira</b>\n\n' +
       todayForTelegram +
       '<b>GERAL</b>\n' +
-      `<code>INVEST.:\t</code> <code>R$ ${parseFloat(total).toFixed(2)}</code>\n` +
-      `<code>RETORNO:\t</code> <code>R$ ${parseFloat(daily_result).toFixed(2)}</code>\n` +
-      `<code>RENTAB.:\t</code> <code>${parseFloat((daily_result - total) / total * 100).toFixed(2)}%</code>\n\n` +
+      `<code>INVEST.:\t</code> <code>R$ ${parseToFixedFloat(amountInvested)}</code>\n` +
+      `<code>RETORNO:\t</code> <code>R$ ${parseToFixedFloat(daily_result)}</code>\n` +
+      `<code>RENTAB.:\t</code> <code>${parseToFixedFloat(generalWalletRentability)}%</code>\n\n` +
       '<b>DIÁRIO</b>\n' +
       `<code>IFIX: \t\t\t</code> <code>${ifixMessage}</code>\n` +
-      `<code>IBOVESPA:</code> <code>${ibovMessage}</code>\n` +
-      `<code>CARTEIRA:</code> <code>${walletRentability}</code>\n`
+      `<code>IBOVESPA:</code> <code>${ibovMessage}%</code>\n` +
+      `<code>CARTEIRA:</code> <code>${dailyWalletRentability}</code>\n`
 
     const whatsappText = '*Resumo da Carteira*\n\n' +
       todayForWhats +
       '*GERAL*\n' +
-      `INVEST.:\t R$ ${parseFloat(total).toFixed(2)}\n` +
-      `RETORNO:\t R$ ${parseFloat(daily_result).toFixed(2)}\n` +
-      `RENTAB.:\t ${parseFloat((daily_result - total) / total * 100).toFixed(2)} %25 \n\n` +
+      `INVEST.:\t R$ ${parseToFixedFloat(amountInvested)}\n` +
+      `RETORNO:\t R$ ${parseToFixedFloat(daily_result)}\n` +
+      `RENTAB.:\t ${parseToFixedFloat(generalWalletRentability)} %25 \n\n` +
       '*DIÁRIO*\n' +
       `IFIX: ${ifixMessage.replace('%', '%25')}\n` +
       `IBOVESPA: ${ibovMessage.replace('%', '%25')}\n` +
-      `CARTEIRA: ${walletRentability.replace('%', '%25')}\n\n` +
+      `CARTEIRA: ${dailyWalletRentability.replace('%', '%25')}\n\n` +
       '*@botdoinvestidor* (Instagram)\n' +
       'https://t.me/brstocksbot'
 
