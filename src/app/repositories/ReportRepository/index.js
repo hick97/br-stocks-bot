@@ -1,11 +1,11 @@
-const Daily = require('../models/Daily')
+const Daily = require('../../models/Daily')
 
-const DailyRepository = require('./DailyRepository')
-const ScrappyRepository = require('../repositories/ScrappyRepository')
+const DailyRepository = require('../DailyRepository')
+const ScrappyRepository = require('../ScrappyRepository')
 
-const { getCurrentDate } = require('../helpers/DateHelper')
-const { getStockReportTextWhenFailed, getCompleteReportByClass } = require('../helpers/ReportHelper')
-const { parseToCleanedFloat, formatNumberWithOperator, parseToFixedFloat, getPercentualFromAmount, getPartialRentability } = require('../helpers/CurrencyHelper')
+const { getCurrentDate } = require('../../helpers/DateHelper')
+const { getStockReportTextWhenFailed, getCompleteReportByClass } = require('../../helpers/ReportHelper')
+const { parseToCleanedFloat, formatNumberWithOperator, parseToFixedFloat, getPercentualFromAmount, getPartialRentability } = require('../../helpers/CurrencyHelper')
 
 class ReportRepository {
   async createDailyQuotes(stocks) {

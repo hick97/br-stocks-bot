@@ -2,7 +2,7 @@ const { listAllStocks } = require('../../repositories/StockRepository')
 const { listAllWallets } = require('../../repositories/WalletRepository')
 const { getInvalidDailies } = require('../../repositories/DailyRepository')
 const { sendCustomMessage } = require('../../repositories/MessageRepository')
-const { buildReport, buildWalletReport, createDailyQuotes } = require('../../repositories/ReportRepository')
+const { buildWalletPerfomance, buildSharePerfomance, createDailyQuotes } = require('../../repositories/ReportRepository')
 
 const { useSentryLogger } = require('../../helpers/LogHelper')
 const { shareByWhatsapp } = require('../../helpers/SocialHelper')
@@ -32,8 +32,8 @@ class ReportController {
         const shouldSendReport = currentChatId == chat_id
 
         if (shouldSendReport) {
-          const stocksReport = await buildReport(stocks)
-          const walletReport = await buildWalletReport(stocks, stocksReport)
+          const stocksReport = await buildSharePerfomance(stocks)
+          const walletReport = await buildWalletPerfomance(stocks, stocksReport)
 
           const { stocks: stocksMessage, fiis, others } = stocksReport.message
           const { telegramText, whatsappText } = walletReport
