@@ -6,12 +6,6 @@ const successfullStockData = {
   failed: false
 }
 
-const failedStockData = {
-  price: 'Não suportado',
-  change: 'Não suportado',
-  failed: true
-}
-
 const symbol = 'itsa4'
 const partialResult = '300.23'
 const dailyCurrencyVariation = '0.20'
@@ -28,7 +22,6 @@ module.exports = {
   symbol,
   messages,
   partialResult,
-  failedStockData,
   successfullStockData,
   dailyCurrencyVariation,
   partialPercentualVariation
