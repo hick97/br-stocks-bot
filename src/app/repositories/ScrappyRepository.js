@@ -108,6 +108,7 @@ class ScrappyRepository {
       symbol: symbol.toUpperCase(),
       price: result.price,
       change: result.change,
+      last: quoteAlreadyExists.price || result.price,
       class: result.class,
       failed: result.failed
     }
@@ -155,6 +156,7 @@ class ScrappyRepository {
       symbol: 'IBOVESPA',
       price: result.points,
       change: result.change,
+      last: quoteAlreadyExists.price || result.points,
       failed: result.failed
     }
 
@@ -201,6 +203,7 @@ class ScrappyRepository {
       symbol: 'IFIX',
       price: result.points,
       change: result.change,
+      last: quoteAlreadyExists.price || result.points,
       failed: result.failed
     }
 
