@@ -19,6 +19,12 @@ class DailyRepository {
     return result
   }
 
+  async getDailyBySymbol(symbol) {
+    const daily = await Daily.findOne({ symbol: symbol.toUpperCase() })
+
+    return daily
+  }
+
   async getClassBySymbol(symbol) {
     const { class: symbolClass } = await Daily.findOne({ symbol: symbol.toUpperCase() })
 
