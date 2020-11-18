@@ -4,7 +4,8 @@ const
     isNegativeCheck,
     formatNumberWithOperator,
     getPartialRentability,
-    parseToCleanedFloat
+    parseToCleanedFloat,
+    getPercentualFromAmount
   } = require('./index')
 
 describe('CurrencyHelper', () => {
@@ -59,5 +60,15 @@ describe('CurrencyHelper', () => {
     const result = parseToCleanedFloat(initialValue)
 
     expect(result).toBe(expectedParsedValue)
+  })
+
+  it('getPercentualFromAmount -> should return the correct percentual value applied in some Amount', async () => {
+    const amount = '100'
+    const value = '10'
+    const expectedPercentual = '10.00'
+
+    const result = getPercentualFromAmount(amount, value)
+
+    expect(result).toBe(expectedPercentual)
   })
 })

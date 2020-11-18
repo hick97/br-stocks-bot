@@ -6,4 +6,14 @@ const formatNumberWithOperator = (number) => number > 0 ? `+${number}` : number
 
 const getPartialRentability = (initialAmount = 0, currentAmount = 0) => parseToFixedFloat((currentAmount - initialAmount) / initialAmount * 100)
 
-module.exports = { parseToFixedFloat, isNegativeCheck, formatNumberWithOperator, getPartialRentability }
+const getPercentualFromAmount = (amount = 0, value = 0) => parseToFixedFloat(value / amount * 100)
+
+const parseToCleanedFloat = (value) => {
+  const valueWithDots = value.replace(/,/g, '.')
+  const valueWithoutPercentage = valueWithDots.replace(/%/g, '')
+  const formattedFloatValue = parseFloat(valueWithoutPercentage)
+
+  return formattedFloatValue
+}
+
+module.exports = { parseToFixedFloat, isNegativeCheck, formatNumberWithOperator, getPartialRentability, parseToCleanedFloat, getPercentualFromAmount }
