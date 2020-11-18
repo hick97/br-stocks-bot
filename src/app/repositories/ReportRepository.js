@@ -1,118 +1,80 @@
 const Daily = require('../models/Daily')
 
-const ScrappyRepository = require('../repositories/ScrappyRepository')
 const DailyRepository = require('./DailyRepository')
+const ScrappyRepository = require('../repositories/ScrappyRepository')
 
-const reportHelper = require('../helpers/ReportHelper')
-const dateHelper = require('../helpers/DateHelper')
-const currencyHelper = require('../helpers/CurrencyHelper')
+const { getCurrentDate } = require('../helpers/DateHelper')
+const { getStockReportTextWhenFailed, getCompleteReportByClass } = require('../helpers/ReportHelper')
+const { parseToCleanedFloat, formatNumberWithOperator, parseToFixedFloat, getPercentualFromAmount } = require('../helpers/CurrencyHelper')
+
+const { emojis } = require('../enum/EmojiEnum')
 
 class ReportRepository {
   async createDailyQuotes(stocks) {
     for (let index = 0; index < stocks.length; index++) {
       const stock = stocks[index].stock
       await ScrappyRepository.retryStockData(stock)
-      console.log('DADOS DO ATIVO: ' + stock + ' ADD AO BD')
     }
-
-    await ScrappyRepository.getIbovData()
-    await ScrappyRepository.getIfixData()
   }
 
   async buildReport(stocks) {
-    const currentDate = dateHelper.getCurrentDate() + '<code> ( 17h50 )</code>\n\n'
-
-    const stockText = [currentDate]
-    const fiisText = [currentDate]
     const othersText = []
-
     const fiisData = []
     const stocksData = []
 
-    let sum = 0
-    let dailyChange = 0
+    let walletResult = 0
+    let walletVariation = 0
 
     for (let index = 0; index < stocks.length; index++) {
-      const stock = stocks[index]
-      let stockData = {}
+      const { stock: symbol, quantity, price } = stocks[index]
 
-      const stockAlreadyExists = await Daily.findOne({ symbol: (stock.stock).toUpperCase() })
+      // check if daily already exists
+      const stockAlreadyExists = await DailyRepository.getDailyBySymbol(symbol)
+      const dailyResult = !stockAlreadyExists ? await ScrappyRepository.retryStockData(symbol) : stockAlreadyExists
 
-      if (!stockAlreadyExists) {
-        // console.log('NAO ACHEI O ATIVO: ' + stock.stock + ' ADD AO BD')
-        stockData = await ScrappyRepository.retryStockData(stock.stock)
-      } else {
-        // console.log('ACHEI O ATIVO: ' + stock.stock + ' ADD AO BD')
-        stockData = stockAlreadyExists
-      }
-
-      if (stockData.failed) {
-        const partialText = reportHelper.getStockReportText(stock.stock, stockData)
+      // check if scrappy failed
+      if (dailyResult.failed) {
+        const partialText = getStockReportTextWhenFailed({ symbol })
         othersText.push(partialText)
         continue
       }
 
-      const formattedPrice = parseFloat(stockData.price.replace(/,/g, '.'))
+      // when not failed
+      const formattedPrice = parseToCleanedFloat(dailyResult.price)
+      const formmatedLastPrice = parseToCleanedFloat(dailyResult.last)
+      const dailyCurrencyVariation = formattedPrice - formmatedLastPrice
 
-      const newChange = stockData.change.replace(/%/g, '')
-      const formattedChange = parseFloat(newChange.replace(/,/g, '.'))
+      const partialResult = formattedPrice * quantity
+      const initialAmount = parseToFixedFloat(price * quantity)
 
-      const oldValue = (formattedPrice * 100) / (100 - formattedChange)
-      const difference = oldValue - formattedPrice
+      walletResult += partialResult
+      walletVariation += dailyCurrencyVariation * quantity
 
-      const partial = formattedPrice * stock.quantity
-      const initialAmount = parseFloat(stock.price * stock.quantity)
+      const symbolClass = await DailyRepository.getClassBySymbol(symbol)
+      const dataToPush = { stock: symbol, dailyResult, dailyCurrencyVariation, partialResult, initialAmount }
 
-      sum += formattedPrice * stock.quantity
-      dailyChange += difference * stock.quantity
-
-      const symbolClass = await DailyRepository.getClassBySymbol(stock.stock)
-      const dataToPush = { stock: stock.stock, stockData, difference, partial, initialAmount }
-
-      symbolClass === 'Ações' ? stocksData.push(dataToPush) : fiisData.push(dataToPush)
-
-      // console.log(`${stock.stock} - Adicionando ao Daily Change(${dailyChange}) -> ${difference} * ${stock.quantity}`)
-    }
-    stockText.push('<b>&#x1F4CA AÇÕES</b>\n\n')
-    for (let index = 0; index < stocksData.length; index++) {
-      const d = stocksData[index]
-
-      const partialRentability = currencyHelper.getPartialRentability(d.initialAmount, d.partial)
-      const partialText = reportHelper.getStockReportText(d.stock, d.stockData, d.difference, d.partial, partialRentability)
-
-      stockText.push(partialText)
+      // push share data by class
+      const isStock = symbolClass === 'Ações'
+      isStock ? stocksData.push(dataToPush) : fiisData.push(dataToPush)
     }
 
-    fiisText.push('<b>&#x1F3E2 FIIS</b>\n\n')
-    for (let index = 0; index < fiisData.length; index++) {
-      const d = fiisData[index]
+    // creating report text by class
+    const stockText = getCompleteReportByClass({ shares: stocksData, type: 'AÇÕES', emoji: 'graphic' })
+    const fiisText = getCompleteReportByClass({ shares: fiisData, type: 'FIIS', emoji: 'building' })
 
-      const partialRentability = currencyHelper.getPartialRentability(d.initialAmount, d.partial)
-      const partialText = reportHelper.getStockReportText(d.stock, d.stockData, d.difference, d.partial, partialRentability)
-
-      fiisText.push(partialText)
-    }
-
-    const daily_result = sum
-    const previous_result = daily_result - dailyChange
-    const daily_percentual_result = dailyChange / previous_result * 100
-
-    /*
-    console.log(`Total = ${sum}`)
-    console.log(`dailyChange = ${dailyChange}`)
-    console.log(`previous_result = ${previous_result}`)
-    console.log(`dailyPercentual = ${daily_percentual_result}`)
-    */
+    // get wallet rentability
+    const previousResult = walletResult - walletVariation
+    const dailyPercentualResult = getPercentualFromAmount(previousResult, walletVariation)
 
     const report = {
       message: {
-        fiis: fiisText.join(''),
-        stocks: stockText.join(''),
+        fiis: fiisText,
+        stocks: stockText,
         others: othersText.join('')
       },
-      daily_result,
-      previous_result,
-      daily_percentual_result
+      daily_result: walletResult,
+      previous_result: previousResult,
+      daily_percentual_result: dailyPercentualResult
     }
 
     return report
@@ -165,7 +127,7 @@ class ReportRepository {
     const formattedPercentualResult = parseFloat(daily_percentual_result).toFixed(2)
     const formattedRealResult = parseFloat(daily_result - previous_result).toFixed(2)
 
-    const walletRentability = `${currencyHelper.formatNumberWithOperator(formattedPercentualResult)}% (R$ ${currencyHelper.formatNumberWithOperator(formattedRealResult)})`
+    const walletRentability = `${formatNumberWithOperator(formattedPercentualResult)}% (R$ ${formatNumberWithOperator(formattedRealResult)})`
 
     const telegramText = '<b>Resumo da Carteira</b>\n\n' +
       todayForTelegram +
