@@ -11,8 +11,10 @@ class ReportRepository {
   async createDailyQuotes(stocks) {
     for (let index = 0; index < stocks.length; index++) {
       const stock = stocks[index].stock
-      await ScrappyRepository.retryStockData(stock)
+      await ScrappyRepository.scrappyDailyData(stock)
     }
+
+    await ScrappyRepository.scrappyBenchmarks()
   }
 
   async buildSharePerfomance(stocks) {
@@ -28,7 +30,7 @@ class ReportRepository {
 
       // check if daily already exists
       const stockAlreadyExists = await DailyRepository.getDailyBySymbol(symbol)
-      const dailyResult = !stockAlreadyExists ? await ScrappyRepository.retryStockData(symbol) : stockAlreadyExists
+      const dailyResult = !stockAlreadyExists ? await ScrappyRepository.scrappyDailyData(symbol) : stockAlreadyExists
 
       // check if scrappy failed
       if (dailyResult.failed) {
@@ -88,11 +90,15 @@ class ReportRepository {
     const todayForTelegram = getCurrentDate() + '\n\n'
     const todayForWhats = '* %F0%9F%93%85 ' + getCurrentDate(false) + '*' + '\n\n'
 
-    const ibovAlreadyExists = await Daily.findOne({ symbol: 'IBOVESPA' })
-    const ifixAlreadyExists = await Daily.findOne({ symbol: 'IFIX' })
+    const ibovResult = await Daily.findOne({ symbol: 'IBOVESPA' })
+    const ifixResult = await Daily.findOne({ symbol: 'IFIX' })
 
-    const ibovData = !ibovAlreadyExists ? await ScrappyRepository.getIbovData() : ibovAlreadyExists
-    const ifixData = !ifixAlreadyExists ? await ScrappyRepository.getIfixData() : ifixAlreadyExists
+    const existingBenchmarks = {
+      ibovResult,
+      ifixResult
+    }
+
+    const { ibovResult: ibovData, ifixResult: ifixData } = !ibovResult || !ifixResult ? await ScrappyRepository.scrappyBenchmarks() : existingBenchmarks
 
     const errorMessage = 'Houve uma falha'
     const ibovMessage = ibovData.failed ? errorMessage : `${ibovData.change} (${ibovData.price}pts)`
@@ -113,7 +119,7 @@ class ReportRepository {
       `<code>RENTAB.:\t</code> <code>${parseToFixedFloat(generalWalletRentability)}%</code>\n\n` +
       '<b>DIÁRIO</b>\n' +
       `<code>IFIX: \t\t\t</code> <code>${ifixMessage}</code>\n` +
-      `<code>IBOVESPA:</code> <code>${ibovMessage}%</code>\n` +
+      `<code>IBOVESPA:</code> <code>${ibovMessage}</code>\n` +
       `<code>CARTEIRA:</code> <code>${dailyWalletRentability}</code>\n`
 
     const whatsappText = '*Resumo da Carteira*\n\n' +

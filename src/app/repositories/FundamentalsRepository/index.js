@@ -9,7 +9,7 @@ class FundamentalsRepository {
 
     for (let index = 0; index < stocksToUpdate.length; index++) {
       const { symbol, _id: stockId } = stocksToUpdate[index]
-      const indicators = await ScrappyRepository.getFundamentals(symbol)
+      const indicators = await ScrappyRepository.scrappyFundamentalsData(symbol)
       const isValid = indicators.length !== 0
 
       isValid
@@ -25,7 +25,7 @@ class FundamentalsRepository {
       const fundamentalsNotFound = !fundamentals
 
       if (fundamentalsNotFound) {
-        const result = await ScrappyRepository.getFundamentals(symbol)
+        const result = await ScrappyRepository.scrappyFundamentalsData(symbol)
         const isValid = result.length !== 0
 
         if (isValid) {
