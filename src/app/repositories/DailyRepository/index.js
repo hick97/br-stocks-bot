@@ -36,6 +36,26 @@ class DailyRepository {
 
     return result
   }
+
+  async updateDailyData(symbol, scrappyResult) {
+    const formattedSymbol = symbol.toUpperCase()
+    const quoteAlreadyExists = await Daily.findOne({ symbol: formattedSymbol })
+
+    const obj = {
+      symbol: formattedSymbol,
+      price: scrappyResult.price || scrappyResult.points,
+      change: scrappyResult.change,
+      last: quoteAlreadyExists.price || scrappyResult.price || scrappyResult.points,
+      class: scrappyResult.class,
+      failed: scrappyResult.failed
+    }
+
+    if (!quoteAlreadyExists) {
+      await Daily.create(obj)
+    } else {
+      await Daily.findByIdAndUpdate(quoteAlreadyExists._id, obj)
+    }
+  }
 }
 
 module.exports = new DailyRepository()
