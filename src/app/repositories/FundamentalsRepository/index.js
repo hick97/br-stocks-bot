@@ -10,7 +10,7 @@ class FundamentalsRepository {
     for (let index = 0; index < stocksToUpdate.length; index++) {
       const { symbol, _id: stockId } = stocksToUpdate[index]
       const indicators = await ScrappyRepository.scrappyFundamentalsData(symbol)
-      const isValid = indicators.length !== 0
+      const isValid = !!indicators && indicators.length !== 0
 
       isValid
         ? await Fundamentals.findByIdAndUpdate(stockId, { indicators })
@@ -25,13 +25,12 @@ class FundamentalsRepository {
       const fundamentalsNotFound = !fundamentals
 
       if (fundamentalsNotFound) {
-        const result = await ScrappyRepository.scrappyFundamentalsData(symbol)
-        const isValid = result.length !== 0
-
+        const indicators = await ScrappyRepository.scrappyFundamentalsData(symbol)
+        const isValid = !!indicators && indicators.length !== 0
         if (isValid) {
           const newFundamentals = await Fundamentals.create({
             symbol: formattedSymbol,
-            indicators: result
+            indicators
           })
           return newFundamentals.indicators
         }
