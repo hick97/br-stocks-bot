@@ -1,17 +1,17 @@
-const { stockIsValid } = require('../StockRepository')
 const { fundamentalsCommandIsValid } = require('../../helpers/FundamentalsHelper')
 const { updateWallet, listWalletById } = require('../WalletRepository')
 
 const FundamentalsController = require('../../controllers/FundamentalsController')
 
-const commandHelper = require('../../helpers/CommandHelper')
+const { splitCommand } = require('../../helpers/CommandHelper')
+const { validStockCommand } = require('../../helpers/StockHelper')
 
 const { SingleCommands, SingleCommandsActions } = require('../../enum/CommandEnum')
 
 class ActionsRepository {
   getAction(message) {
     const { text } = message
-    const cleanedValues = commandHelper.splitCommand(text)
+    const cleanedValues = splitCommand(text)
     const [action] = cleanedValues
 
     return action.trim()
@@ -30,11 +30,11 @@ class ActionsRepository {
 
     return isWalletCommand
       ? await listWalletById(chat.id)
-      : stockIsValid(message) && await updateWallet(message)
+      : validStockCommand(text) && await updateWallet(message)
   }
 
   async handleFundamentals(message) {
-    const [firstCommandTerm] = commandHelper.splitCommand(message.text)
+    const [firstCommandTerm] = splitCommand(message.text)
     return fundamentalsCommandIsValid(firstCommandTerm) && await FundamentalsController.execute(message)
   }
 }
