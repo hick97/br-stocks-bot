@@ -19,12 +19,13 @@ class MessageController {
       '/wallet': Actions.handleWallet,
       '/del': Actions.handleWallet,
       '/fundamentals': Actions.handleFundamentals,
-      default: ErrorMessages.INVALID_COMMAND
+      default: () => ErrorMessages.INVALID_COMMAND
     }
 
     try {
       const action = Actions.getAction(command)
-      const response = await ActionsHandler[action](command) || ActionsHandler.default
+      const actionHandler = ActionsHandler[action] || ActionsHandler.default
+      const response = await actionHandler(command)
 
       await sendCustomMessage(
         {
