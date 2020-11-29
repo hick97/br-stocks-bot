@@ -1,5 +1,8 @@
-const { getStockValues, findStockData, createStock, deleteStock } = require('../repositories/StockRepository')
+const { findStockData, createStock, deleteStock } = require('../repositories/StockRepository')
+
 const { dynamicSort } = require('../helpers/SortHelper')
+const { getStockValues } = require('../helpers/StockHelper')
+
 const { walletTabulation } = require('../helpers/TabulationHelper')
 
 const { useSentryLogger } = require('../helpers/LogHelper')
@@ -20,11 +23,12 @@ class WalletRepository {
     const walletAlreadyExists = await Wallet.findOne({ chat_id: chat.id })
 
     // get action, stock, quantity and price
-    const values = await getStockValues(text)
+    const values = getStockValues(text)
 
-    if (values.actions === '/del') {
-      return await deleteStock(chat.id, values.stock)
-    }
+    if (values.actions === '/del') return await deleteStock(chat.id, values.stock)
+
+    if (Object.keys(values).length === 0) return ErrorMessages.INVALID_COMMAND
+
     const formattedPrice = values.price.replace(/,/g, '.')
 
     // check if stock already exists
