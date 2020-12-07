@@ -1,6 +1,7 @@
+const { listWalletById } = require('../WalletRepository')
 const { fundamentalsCommandIsValid } = require('../../helpers/FundamentalsHelper')
-const { updateWallet, listWalletById } = require('../WalletRepository')
 
+const WalletController = require('../../controllers/WalletController')
 const FundamentalsController = require('../../controllers/FundamentalsController')
 
 const { splitCommand } = require('../../helpers/CommandHelper')
@@ -30,7 +31,7 @@ class ActionsRepository {
 
     return isWalletCommand
       ? await listWalletById(chat.id)
-      : validStockCommand(text) && await updateWallet(message)
+      : validStockCommand(text) && await WalletController.execute(message)
   }
 
   async handleFundamentals(message) {
