@@ -4,7 +4,8 @@ const emojis = {
   prohibited: '&#x1F6AB',
   calendar: '&#x1F4C5',
   graphic: '&#x1F4CA',
-  building: '&#x1F3E2'
+  building: '&#x1F3E2',
+  moneyBag: '&#x1F4B0'
 }
 
 module.exports = { emojis }
