@@ -1,14 +1,14 @@
-const Wallet = require('../models/Wallet')
+const Wallet = require('../../models/Wallet')
 
-const { dynamicSort } = require('../helpers/SortHelper')
-const { useSentryLogger } = require('../helpers/LogHelper')
-const { sendMessageToAdmin } = require('../helpers/AdminHelper')
-const { walletTabulation, walletTabulationHeader } = require('../helpers/TabulationHelper')
+const { dynamicSort } = require('../../helpers/SortHelper')
+const { useSentryLogger } = require('../../helpers/LogHelper')
+const { sendMessageToAdmin } = require('../../helpers/AdminHelper')
+const { walletTabulation, walletTabulationHeader } = require('../../helpers/TabulationHelper')
 
-const { ErrorMessages, ActionMessages } = require('../enum/MessagesEnum')
-const { emojis } = require('../enum/EmojiEnum')
+const { ErrorMessages, ActionMessages } = require('../../enum/MessagesEnum')
+const { emojis } = require('../../enum/EmojiEnum')
 
-const { findStockData, createStock } = require('../repositories/StockRepository')
+const { findStockData, createStock } = require('../StockRepository')
 
 class WalletRepository {
   async createWallet(chat, stockData, withNewStock = false) {
