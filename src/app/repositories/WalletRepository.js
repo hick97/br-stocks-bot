@@ -1,145 +1,89 @@
-const { findStockData, createStock, deleteStock } = require('../repositories/StockRepository')
+const Wallet = require('../models/Wallet')
 
 const { dynamicSort } = require('../helpers/SortHelper')
-const { getStockValues } = require('../helpers/StockHelper')
-
-const { walletTabulation } = require('../helpers/TabulationHelper')
-
 const { useSentryLogger } = require('../helpers/LogHelper')
 const { sendMessageToAdmin } = require('../helpers/AdminHelper')
+const { walletTabulation, walletTabulationHeader } = require('../helpers/TabulationHelper')
 
 const { ErrorMessages, ActionMessages } = require('../enum/MessagesEnum')
+const { emojis } = require('../enum/EmojiEnum')
 
-const Wallet = require('../models/Wallet')
-const Stock = require('../models/Stock')
+const { findStockData, createStock } = require('../repositories/StockRepository')
 
 class WalletRepository {
-  async updateWallet(message) {
-    const { text, chat } = message
-    let stockData = {}
-    // let stockId
-
-    // check if wallet already exists
-    const walletAlreadyExists = await Wallet.findOne({ chat_id: chat.id })
-
-    // get action, stock, quantity and price
-    const values = getStockValues(text)
-
-    if (values.actions === '/del') return await deleteStock(chat.id, values.stock)
-
-    if (Object.keys(values).length === 0) return ErrorMessages.INVALID_COMMAND
-
-    const formattedPrice = values.price.replace(/,/g, '.')
-
-    // check if stock already exists
-    const stockAlreadyExists = await Stock.findOne({ symbol: `${(values.stock).toUpperCase()}.SAO` })
-
-    // when wallet does not exists
-    if (!walletAlreadyExists) {
-      if (!stockAlreadyExists) {
-        stockData = await findStockData(values.stock)
-
-        if (!stockData) {
-          return ErrorMessages.NOT_FOUND
-        }
-        await createStock(stockData, values.stock)
-      }
-
-      await Wallet.create({
-        name: chat.title,
-        chat_id: chat.id,
-        stocks: [{
-          stock: values.stock,
-          quantity: parseInt(values.quantity),
-          price: parseFloat(formattedPrice)
-        }]
-      })
-
-      const logMessage = `Wallet was created by:\n${chat.first_name} ${chat.username ? '(@' + chat.username + ')' : ''}`
-      useSentryLogger(null, logMessage)
-      sendMessageToAdmin({ level: 'INFO', message: logMessage })
-
-      return ActionMessages.STOCK_CREATED
+  async createWallet(chat, stockData, withNewStock = false) {
+    if (withNewStock) {
+      const createdStock = await findStockData(stockData.stock)
+      if (!createdStock) return ErrorMessages.NOT_FOUND
+      await createStock(createdStock, stockData.stock)
     }
 
-    // when wallet exists, but stock do not
-    if (!stockAlreadyExists) {
-      stockData = await findStockData(values.stock)
+    await Wallet.create({
+      name: chat.title,
+      chat_id: chat.id,
+      stocks: [stockData]
+    })
 
-      if (!stockData) {
-        return ErrorMessages.NOT_FOUND
-      }
+    const logMessage = `Wallet was created by:\n${chat.first_name} ${chat.username ? '(@' + chat.username + ')' : ''}`
+    useSentryLogger(null, logMessage)
+    sendMessageToAdmin({ level: 'INFO', message: logMessage })
 
-      await createStock(stockData, values.stock)
+    return ActionMessages.STOCK_CREATED
+  }
 
-      await Wallet.findByIdAndUpdate(walletAlreadyExists._id, {
-        stocks: [...walletAlreadyExists.stocks, {
-          stock: values.stock,
-          quantity: parseInt(values.quantity),
-          price: parseFloat(formattedPrice)
-        }]
-      })
-
-      return ActionMessages.STOCK_CREATED
+  async updateWallet(walletRef, stockData, withNewStock = false) {
+    if (withNewStock) {
+      const createdStock = await findStockData(stockData.stock)
+      if (!createdStock) return ErrorMessages.NOT_FOUND
+      await createStock(createdStock, stockData.stock)
     }
 
-    // check if stock already exists on chat wallet
-    const stockIndex = await walletAlreadyExists.stocks.findIndex(s => (s.stock).toUpperCase() === (values.stock).toUpperCase())
+    await Wallet.findByIdAndUpdate(walletRef._id, {
+      stocks: [...walletRef.stocks, stockData]
+    })
 
-    // stock exists in db, but not included on wallet
-    if (stockIndex === -1) {
-      await Wallet.findByIdAndUpdate(walletAlreadyExists._id, {
-        stocks: [...walletAlreadyExists.stocks, {
-          stock: values.stock,
-          quantity: parseInt(values.quantity),
-          price: parseFloat(formattedPrice)
-        }]
-      })
+    return ActionMessages.STOCK_CREATED
+  }
 
-      return ActionMessages.STOCK_CREATED
-    }
-
-    // stock is included on wallet
-    walletAlreadyExists.stocks[stockIndex] = {
-      stock: (values.stock).toUpperCase(),
-      quantity: parseInt(values.quantity),
-      price: parseFloat(formattedPrice)
-    }
-    await walletAlreadyExists.save()
+  async updateStockDataOnWallet(walletRef, stockIndex, stockData) {
+    walletRef.stocks[stockIndex] = stockData
+    await walletRef.save()
 
     return ActionMessages.STOCK_UPDATED
   }
 
   async listWalletById(chat_id) {
-    const wallet = await Wallet.find({
+    const wallet = await Wallet.findOne({
       chat_id
     })
 
-    const walletStocks = wallet[0].stocks
+    if (!wallet) return ErrorMessages.WALLET_IS_REQUIRED
+
+    const { stocks: walletStocks } = wallet
     const orderedStocks = walletStocks.sort(dynamicSort({ property: 'price', order: 'desc' }))
 
-    if (!orderedStocks) throw Error('Ocorreu uma falha ao ordenar os ativos do chat=' + chat_id)
+    const stocks = orderedStocks.map((s) => {
+      return (({ stock, price, quantity }) =>
+        `<code>${stock}${walletTabulation(stock.length)}</code>` +
+        `<code>R$${price}${walletTabulation((price.toString()).length)}</code>` +
+        `<code>${quantity}</code>\n`)(s)
+    })
 
-    const stocks = []
+    const walletHeaderText = [
+      emojis.moneyBag +
+      ' <b>SUA CARTEIRA</b> \n\n' +
+      '<code>ATIVO</code>' + walletTabulationHeader.ATIVO_SPACE +
+      '<code>PM</code>' + walletTabulationHeader.PM_SPACE +
+      '<code>QNTD.</code> \n\n'
+    ]
 
-    if (!wallet[0]) {
-      return 'Calma lá!\nCadastre pelo menos um ativo para utilizar funcionalidades da carteira.'
-    }
-
-    for (let index = 0; index < orderedStocks.length; index++) {
-      if (index === 0) stocks.push('\n&#x1F4B0 <b>SUA CARTEIRA</b> \n\n' + '<code>ATIVO</code>\t\t\t\t\t\t\t\t<code>PM</code>\t\t\t\t\t\t\t\t\t\t\t\t<code>QNTD.</code> \n\n')
-      const picked = (({ stock, price, quantity }) => `<code>${stock}${walletTabulation(stock.length)}</code><code>R$${price}${walletTabulation((price.toString()).length)}</code><code>${quantity}</code>\n`)(wallet[0].stocks[index])
-      stocks.push(picked)
-    }
-
-    return stocks.join('')
+    const walletTextArray = walletHeaderText.concat(stocks)
+    return walletTextArray.join('')
   }
 
   async listAllWallets() {
     const wallets = await Wallet.find({}).select('chat_id stocks -_id').populate('stocks')
-
-    if (!wallets) throw Error('Ocorreu uma falha ao todas as carteiras cadastradas.')
-
+    if (!wallets) throw Error('Ocorreu uma falha ao listar todas as carteiras cadastradas.')
     return wallets
   }
 }
