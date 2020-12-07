@@ -11,6 +11,11 @@ const fundamentalsTabulation = (size) => {
   return tab[size] || ''
 }
 
+const walletTabulationHeader = {
+  ATIVO_SPACE: '\t\t\t\t\t\t\t\t',
+  PM_SPACE: '\t\t\t\t\t\t\t\t\t\t\t\t'
+}
+
 const walletTabulation = (size) => {
   const tab = {
     6: '\t',
@@ -24,4 +29,4 @@ const walletTabulation = (size) => {
   return tab[size] || ''
 }
 
-module.exports = { fundamentalsTabulation, walletTabulation }
+module.exports = { fundamentalsTabulation, walletTabulation, walletTabulationHeader }
