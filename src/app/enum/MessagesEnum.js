@@ -3,7 +3,8 @@ const ErrorMessages = {
     'Para mais informações use /help.',
   GENERAL_ERROR: '&#x26A0 Ocorreu um erro!\n' +
     'Tente novamente em alguns instantes!',
-  NOT_FOUND: '&#x26A0 Ativo não encontrado ou sentença mal formatada, verifique o menu /help.'
+  NOT_FOUND: '&#x26A0 Ativo não encontrado ou sentença mal formatada, verifique o menu /help.',
+  WALLET_IS_REQUIRED: '&#x26A0 Você precisa cadastrar ao menos um ativo na sua carteira pra completar essa ação.'
 }
 
 const ActionMessages = {
