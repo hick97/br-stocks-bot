@@ -1,10 +1,12 @@
+const { emojis } = require('./EmojiEnum')
+
 const ErrorMessages = {
-  INVALID_COMMAND: '&#x26A0 Comando inválido!\n' +
+  INVALID_COMMAND: emojis.warning + ' Comando inválido!\n' +
     'Para mais informações use /help.',
-  GENERAL_ERROR: '&#x26A0 Ocorreu um erro!\n' +
+  GENERAL_ERROR: emojis.warning + ' Ocorreu um erro!\n' +
     'Tente novamente em alguns instantes!',
-  NOT_FOUND: '&#x26A0 Ativo não encontrado ou sentença mal formatada, verifique o menu /help.',
-  WALLET_IS_REQUIRED: '&#x26A0 Você precisa cadastrar ao menos um ativo na sua carteira pra completar essa ação.'
+  NOT_FOUND: emojis.warning + ' Ativo não encontrado ou sentença mal formatada, verifique o menu /help.',
+  WALLET_IS_REQUIRED: emojis.warning + ' Você precisa cadastrar ao menos um ativo na sua carteira pra completar essa ação.'
 }
 
 const ActionMessages = {
@@ -21,10 +23,10 @@ const ActionMessages = {
 }
 
 const GeneralMessages = {
-  START_MESSAGE: '<b>&#x1F4C8 @BRStocksBot</b>\n\n' +
-    'Bem-vindo(a) ao <b>BR Stocks Bot</b>!\n\n' +
+  START_MESSAGE: '<b>' + emojis.chartUpwards + ' Bot do investidor (@brstocksbot)</b>\n\n' +
+    'Seja bem-vindo(a) investidor(a)!\n\n' +
     'Monte sua carteira para monitorar seus ativos favoritos. É simples de usar:\n\n' +
-    '<b>&#x1F449 <b>CADASTRE UM ATIVO:</b> </b>\n' +
+    '<b>' + emojis.rightPointing + ' <b>CADASTRE UM ATIVO:</b> </b>\n' +
     '/stock\t\t <code>ATIVO</code>\t\t<code>QTDADE.</code>\t\t<code>PM</code>\n' +
     '/stock  <code>ITSA4</code>\t\t<code>100</code>\t\t<code>9.80</code> <code>(EXEMPLO)</code>\n\n' +
     '<code>PM = PREÇO MÉDIO DO ATIVO</code>\n\n' +
@@ -32,29 +34,29 @@ const GeneralMessages = {
     '<b>DÚVIDAS?</b>\n' +
     'Mais informações em: <i>/help</i>.\n\n' +
     '<b>CONFIRA TAMBÉM:</b>\n' +
-    '<code>&#x1F4F1 INSTAGRAM:</code> <a href="https://www.instagram.com/botdoinvestidor/">@botdoinvestidor</a>\n' +
-    '<code>&#x1F4D6 LEITURAS:</code> <a href="https://amzn.to/30mMyvh">Dicas de leitura</a>\n' +
-    '<code>&#x1F4B5 COLABORE:</code> <a href="picpay.me/hick97">PicPay</a>\n\n',
+    '<code>' + emojis.mobilePhone + ' INSTAGRAM:</code> <a href="https://www.instagram.com/botdoinvestidor/">@botdoinvestidor</a>\n' +
+    '<code>' + emojis.openBook + ' LEITURAS:</code> <a href="https://amzn.to/30mMyvh">Dicas de leitura</a>\n' +
+    '<code>' + emojis.bankNote + ' COLABORE:</code> <a href="picpay.me/hick97">PicPay</a>\n\n',
 
-  HELP_MESSAGE: '<b>&#x1F4C8 @BRStocksBot</b>\n\n' +
+  HELP_MESSAGE: '<b>' + emojis.chartUpwards + ' Bot do investidor (@brstocksbot)</b>\n\n' +
     '<b>INTRUÇÕES</b>\n\n' +
-    '<b>&#x1F449 <b>CADASTRE UM ATIVO:</b> </b>\n' +
+    '<b>' + emojis.rightPointing + ' <b>CADASTRE UM ATIVO:</b> </b>\n' +
     '/stock  <code>ATIVO</code>\t\t<code>QTDADE.</code>\t\t<code>PM</code>\n' +
     '/stock  <code>ITSA4</code>\t\t<code>100</code>\t\t<code>9.80</code> <code>(EXEMPLO)</code>\n\n' +
     '<code>PM = PREÇO MÉDIO DO ATIVO</code>\n\n' +
-    '<b>&#x1F449 <b>DELETE UM ATIVO:</b></b>\n' +
+    '<b>' + emojis.rightPointing + ' <b>DELETE UM ATIVO:</b></b>\n' +
     '/del  <code>ATIVO</code>\n' +
     '/del  <code>ITSA4</code> <code>(EXEMPLO)</code>\n\n' +
-    '<b>&#x1F449 <b>VISUALIZAR SUA CARTEIRA:</b></b>\n' +
+    '<b>' + emojis.rightPointing + ' <b>VISUALIZAR SUA CARTEIRA:</b></b>\n' +
     '/wallet\n\n' +
-    '<b>&#x1F449 <b>FUNDAMENTOS DE UM ATIVO:</b></b>\n' +
+    '<b>' + emojis.rightPointing + ' <b>FUNDAMENTOS DE UM ATIVO:</b></b>\n' +
     '/fundamentals  <code>AÇÃO</code>\n' +
     '/fundamentals  <code>ITSA4</code> <code>(EXEMPLO)</code>\n\n' +
     '<b>CONFIRA TAMBÉM:</b>\n\n' +
-    '<code>&#x1F4F1 INSTAGRAM:</code> <a href="https://www.instagram.com/botdoinvestidor/">@botdoinvestidor</a>\n' +
-    '<code>&#x1F4D6 LEITURAS:</code> <a href="https://amzn.to/30mMyvh">Dicas de leitura</a>\n' +
-    '<code>&#x1F4B5 COLABORE:</code> <a href="picpay.me/hick97">PicPay</a>\n\n' +
-    '@hick97'
+    '<code>' + emojis.mobilePhone + ' INSTAGRAM:</code> <a href="https://www.instagram.com/botdoinvestidor/">@botdoinvestidor</a>\n' +
+    '<code>' + emojis.openBook + ' LEITURAS:</code> <a href="https://amzn.to/30mMyvh">Dicas de leitura</a>\n' +
+    '<code>' + emojis.bankNote + ' COLABORE:</code> <a href="picpay.me/hick97">PicPay</a>\n\n' +
+    'by: @hick97'
 
 }
 
