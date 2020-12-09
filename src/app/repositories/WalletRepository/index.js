@@ -64,7 +64,7 @@ class WalletRepository {
 
     const stocks = orderedStocks.map((s) => {
       return (({ stock, price, quantity }) =>
-        `<code>${stock}${walletTabulation(stock.length)}</code>` +
+        `<code>${stock.toUpperCase()}${walletTabulation(stock.length)}</code>` +
         `<code>R$${price}${walletTabulation((price.toString()).length)}</code>` +
         `<code>${quantity}</code>\n`)(s)
     })
