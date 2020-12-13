@@ -13,8 +13,7 @@ const partialPercentualVariation = '33.25'
 
 const messages = {
   withError: '<code>ATIVO INVÁLIDO</code>\n\n',
-  withoutError: '<code>FECHAM.</code>\t\t\t<code>R$ ' + successfullStockData.price + '</code>\n' +
-    '<code>RENTAB.</code>\t\t\t<code>R$ ' + parseToFixedFloat(dailyCurrencyVariation) + ' (' + successfullStockData.change + ')' + '</code>\n' +
+  withoutError: '<code>FECHAM.</code>\t\t\t<code>R$ ' + successfullStockData.price + ' (' + successfullStockData.change + ')' + '</code>\n' +
     '<code>PARCIAL</code>\t\t\t<code>R$ ' + parseToFixedFloat(partialResult) + ' (' + partialPercentualVariation + '%)' + '</code>\n\n'
 }
 
