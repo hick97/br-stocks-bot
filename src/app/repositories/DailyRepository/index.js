@@ -45,7 +45,6 @@ class DailyRepository {
       symbol: formattedSymbol,
       price: scrappyResult.price || scrappyResult.points,
       change: scrappyResult.change,
-      last: quoteAlreadyExists.price || scrappyResult.price || scrappyResult.points,
       class: scrappyResult.class,
       failed: scrappyResult.failed
     }
