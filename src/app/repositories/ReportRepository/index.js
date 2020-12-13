@@ -1,11 +1,12 @@
 const Daily = require('../../models/Daily')
+const Wallet = require('../../models/Wallet')
 
 const DailyRepository = require('../DailyRepository')
 const ScrappyRepository = require('../ScrappyRepository')
 
 const { getCurrentDate } = require('../../helpers/DateHelper')
 const { getStockReportTextWhenFailed, getCompleteReportByClass } = require('../../helpers/ReportHelper')
-const { parseToCleanedFloat, formatNumberWithOperator, parseToFixedFloat, getPercentualFromAmount, getPartialRentability } = require('../../helpers/CurrencyHelper')
+const { parseToCleanedFloat, formatNumberWithOperator, parseToFixedFloat, getPartialRentability } = require('../../helpers/CurrencyHelper')
 
 class ReportRepository {
   async createDailyQuotes(stocks) {
@@ -17,13 +18,12 @@ class ReportRepository {
     await ScrappyRepository.scrappyBenchmarks()
   }
 
-  async buildSharePerfomance(stocks) {
+  async buildSharePerfomance(walletId, stocks, previousAmount, withPreviousAmount) {
     const othersText = []
     const fiisData = []
     const stocksData = []
 
     let walletResult = 0
-    let walletVariation = 0
 
     for (let index = 0; index < stocks.length; index++) {
       const { stock: symbol, quantity, price } = stocks[index]
@@ -41,17 +41,14 @@ class ReportRepository {
 
       // when not failed
       const formattedPrice = parseToCleanedFloat(dailyResult.price)
-      const formmatedLastPrice = parseToCleanedFloat(dailyResult.last)
-      const dailyCurrencyVariation = formattedPrice - formmatedLastPrice
 
       const partialResult = formattedPrice * quantity
       const initialAmount = parseToFixedFloat(price * quantity)
 
       walletResult += partialResult
-      walletVariation += dailyCurrencyVariation * quantity
 
       const symbolClass = await DailyRepository.getClassBySymbol(symbol)
-      const dataToPush = { stock: symbol, dailyResult, dailyCurrencyVariation, partialResult, initialAmount }
+      const dataToPush = { stock: symbol, dailyResult, partialResult, initialAmount }
 
       // push share data by class
       const isStock = symbolClass === 'Ações'
@@ -63,8 +60,14 @@ class ReportRepository {
     const fiisText = getCompleteReportByClass({ shares: fiisData, type: 'FIIS', emoji: 'building' })
 
     // get wallet rentability
-    const previousResult = walletResult - walletVariation
-    const dailyPercentualResult = getPercentualFromAmount(previousResult, walletVariation)
+    const previousResult = withPreviousAmount && previousAmount
+    const dailyPercentualResult = withPreviousAmount && getPartialRentability(previousAmount, walletResult)
+
+    // update previous result
+    await Wallet.findByIdAndUpdate(walletId, {
+      previousAmount: walletResult,
+      withPreviousAmount: true
+    })
 
     const report = {
       message: {
@@ -74,7 +77,8 @@ class ReportRepository {
       },
       daily_result: walletResult,
       previous_result: previousResult,
-      daily_percentual_result: dailyPercentualResult
+      daily_percentual_result: dailyPercentualResult,
+      with_previous_amount: withPreviousAmount
     }
 
     return report
@@ -84,7 +88,8 @@ class ReportRepository {
     const {
       previous_result,
       daily_result,
-      daily_percentual_result
+      daily_percentual_result,
+      with_previous_amount
     } = report
 
     const todayForTelegram = getCurrentDate() + '\n\n'
@@ -105,10 +110,14 @@ class ReportRepository {
     const ifixMessage = ifixData.failed ? errorMessage : `${ifixData.change} (${ifixData.price}pts)`
 
     const amountInvested = stocks.reduce((acc, stock) => acc + (stock.price * stock.quantity), 0)
-    const formattedPercentualResult = parseToFixedFloat(daily_percentual_result)
-    const formattedRealResult = parseToFixedFloat(daily_result - previous_result)
+    const formattedPercentualResult = with_previous_amount && parseToFixedFloat(daily_percentual_result)
+    const formattedRealResult = with_previous_amount && parseToFixedFloat(daily_result - previous_result)
 
-    const dailyWalletRentability = `${formatNumberWithOperator(formattedPercentualResult)}% (R$ ${formatNumberWithOperator(formattedRealResult)})`
+    const dailyWalletRentability =
+      with_previous_amount
+        ? `${formatNumberWithOperator(formattedPercentualResult)}% (R$ ${formatNumberWithOperator(formattedRealResult)})`
+        : 'Consolidando...'
+
     const generalWalletRentability = getPartialRentability(amountInvested, daily_result)
 
     const telegramText = '<b>Resumo da Carteira</b>\n\n' +

@@ -27,12 +27,12 @@ class ReportController {
 
       // create daily report to subscripted users
       for (let index = 0; index < subscriptions.length; index++) {
-        const { chat_id, stocks } = subscriptions[index]
+        const { _id: walletId, chat_id, stocks, previousAmount, withPreviousAmount } = subscriptions[index]
         const currentChatId = isDebug ? process.env.ADMIN_CHAT_ID : chat_id
         const shouldSendReport = currentChatId == chat_id
 
         if (shouldSendReport) {
-          const stocksReport = await buildSharePerfomance(stocks)
+          const stocksReport = await buildSharePerfomance(walletId, stocks, previousAmount, withPreviousAmount)
           const walletReport = await buildWalletPerfomance(stocks, stocksReport)
 
           const { stocks: stocksMessage, fiis, others } = stocksReport.message
