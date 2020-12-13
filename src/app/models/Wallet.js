@@ -16,6 +16,15 @@ const WalletSchema = new mongoose.Schema({
       price: { type: Number, required: true }
     }
   ],
+  previousAmount: {
+    type: Number,
+    required: true
+  },
+  withPreviousAmount: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now
