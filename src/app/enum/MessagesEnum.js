@@ -24,6 +24,7 @@ const ActionMessages = {
 
 const GeneralMessages = {
   START_MESSAGE: '<b>' + emojis.chartUpwards + ' Bot do investidor (@brstocksbot)</b>\n\n' +
+    'Versão Beta 1.0.0\n\n' +
     'Seja bem-vindo(a) investidor(a)!\n\n' +
     'Monte sua carteira para monitorar seus ativos favoritos. É simples de usar:\n\n' +
     '<b>' + emojis.rightPointing + ' <b>CADASTRE UM ATIVO:</b> </b>\n' +
