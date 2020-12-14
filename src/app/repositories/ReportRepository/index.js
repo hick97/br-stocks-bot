@@ -9,10 +9,12 @@ const { getStockReportTextWhenFailed, getCompleteReportByClass } = require('../.
 const { parseToCleanedFloat, formatNumberWithOperator, parseToFixedFloat, getPartialRentability } = require('../../helpers/CurrencyHelper')
 
 class ReportRepository {
-  async createDailyQuotes(stocks) {
+  async createDailyQuotes(stocks, isRetry = false) {
     for (let index = 0; index < stocks.length; index++) {
       const stock = stocks[index].stock
-      await ScrappyRepository.scrappyDailyData(stock)
+      // await ScrappyRepository.scrappyDailyData(stock)
+      await ScrappyRepository.scrappyStockDataFromB3(stock, isRetry)
+      await ScrappyRepository.scrappyStockClass(stock)
     }
 
     await ScrappyRepository.scrappyBenchmarks()
@@ -91,6 +93,8 @@ class ReportRepository {
       daily_percentual_result,
       with_previous_amount
     } = report
+    // TODO: put b3 date in report
+    await ScrappyRepository.scrappyLastStockDataUpdate()
 
     const todayForTelegram = getCurrentDate() + '\n\n'
     const todayForWhats = '* %F0%9F%93%85 ' + getCurrentDate(false) + '*' + '\n\n'
