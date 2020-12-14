@@ -20,10 +20,14 @@ class ReportController {
       useSentryLogger(null, logMessages.start)
       await createDailyQuotes(allStocks)
 
+      console.log('DONE')
+
       // retry failed quotes
       const failedQuotes = await getInvalidDailies()
       const quotesToRetry = failedQuotes.map(({ symbol: stock }) => ({ stock }))
-      await createDailyQuotes(quotesToRetry)
+      await createDailyQuotes(quotesToRetry, true)
+
+      console.log('Finish retry')
 
       // create daily report to subscripted users
       for (let index = 0; index < subscriptions.length; index++) {
