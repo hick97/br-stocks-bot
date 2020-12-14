@@ -8,7 +8,7 @@ const getStockReportText = ({ symbol, dailyResult, partialResult, partialPercent
   const defaultEmojis = isNegative ? emojis.brokenHeart : emojis.greenHeart
 
   const withoutError =
-    '<code>FECHAM.</code>\t\t\t<code>R$ ' + dailyResult.price + ' (' + dailyResult.change + ')' + '</code>\n' +
+    '<code>FECHAM.</code>\t\t\t<code>R$ ' + dailyResult.price + ' (' + dailyResult.change + '%)' + '</code>\n' +
     '<code>PARCIAL</code>\t\t\t<code>R$ ' + parseToFixedFloat(partialResult) + ' (' + partialPercentualVariation + '%)' + '</code>\n\n'
 
   return '<b>' + symbol.toUpperCase() + '</b> ' + defaultEmojis + '\n' + withoutError
