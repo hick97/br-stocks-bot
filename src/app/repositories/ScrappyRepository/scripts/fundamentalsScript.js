@@ -1,21 +1,22 @@
+const { indicatorsValuesNotAllowed } = require('./utils/fundamentalsUtils')
+
 var tryGetFundamentals = () => {
-  const indicatorsIndexNotAllowed = [0, 13, 20, 25, 30]
   const isInvalidPage = document.querySelector('body .indicators') === null
 
   if (isInvalidPage) return null
 
   const labels = Array.from(document.querySelectorAll('.indicators h3'))
-  const values = Array.prototype.slice.call(document.querySelectorAll('.indicators strong'))
-  const filteredValues = values.filter((_, idx) => !indicatorsIndexNotAllowed.includes(idx))
+  const values = Array.from(document.querySelectorAll('.indicators strong'))
+  const filteredValues = values.filter((v) => !indicatorsValuesNotAllowed.includes(v.innerText))
 
-  const fundamentals = labels.map((l, idx) => {
-    const label = l.innerText
-    const value = filteredValues[idx].innerText
-    const isEmpty = value === '-' || value === '-%'
+  const fundamentals = filteredValues.map((value, idx) => {
+    const label = labels[idx].innerText
+    const formattedValue = value.innerText
+    const isEmpty = formattedValue === '-' || formattedValue === '-%'
 
     return {
       label,
-      value: isEmpty ? 'N/A' : value
+      value: isEmpty ? 'N/A' : formattedValue
     }
   })
 
