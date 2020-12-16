@@ -16,7 +16,6 @@ class ScrappyRepository {
     const result = await evaluate(tryGetFundamentals)
     browser.close()
 
-    // console.log(result)
     return result
   }
 

@@ -1,9 +1,9 @@
 const rangeByIndicatorsType = {
-  valuation: [0, 12],
-  indebtedness: [12, 18],
-  efficiency: [18, 22],
-  rentability: [22, 26],
-  growth: [26, 28]
+  valuation: [0, 13],
+  indebtedness: [13, 19],
+  efficiency: [17, 23],
+  rentability: [23, 27],
+  growth: [27, 29]
 }
 
 module.exports = { rangeByIndicatorsType }
