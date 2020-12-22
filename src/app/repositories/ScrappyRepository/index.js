@@ -78,7 +78,7 @@ class ScrappyRepository {
 
     const { browser, page, evaluate } = await launchBrowser({ url: 'http://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/cotacoes/outros-ativos.htm' })
 
-    const delay = isRetry ? 2000 : 1000
+    const delay = isRetry ? 3000 : 2000
 
     await page.$eval(actionIdentifiers.input, (el, value) => { el.value = value }, formattedSymbol)
     await page.click(actionIdentifiers.button)
@@ -86,7 +86,7 @@ class ScrappyRepository {
 
     const result = await evaluate(tryGetStockDataFromB3)
 
-    console.log(result)
+    // console.log(result)
 
     await updateDailyData(symbol, result)
 
@@ -107,20 +107,18 @@ class ScrappyRepository {
 
     await page.$eval(actionIdentifiers.input, (el, value) => { el.value = value }, defaultSymbol)
     await page.click(actionIdentifiers.button)
-    await page.waitFor(1000)
+    await page.waitFor(2000)
 
     const result = await evaluate(tryGetLastStockDataUpdate)
 
     browser.close()
-    console.log(result)
+    // console.log(result)
     return result
   }
 
   async scrappyStockClass(symbol) {
     const quoteAlreadyExists = await Daily.findOne({ symbol: symbol.toUpperCase() })
     const classAlreadyExists = quoteAlreadyExists.class !== 'Não aplicável'
-
-    console.log(quoteAlreadyExists.class)
 
     if (classAlreadyExists) return
 
@@ -138,7 +136,7 @@ class ScrappyRepository {
       result = await evaluate(tryGetStockClass)
     }
 
-    console.log(result)
+    // console.log(result)
 
     await Daily.findByIdAndUpdate(quoteAlreadyExists._id, { class: result.class })
 
