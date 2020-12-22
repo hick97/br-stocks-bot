@@ -58,8 +58,8 @@ class ReportRepository {
     const formattedHour = hour !== 'Não aplicável' ? hour : ''
 
     // creating report text by class
-    const stockText = getCompleteReportByClass({ shares: stocksData, type: 'AÇÕES', emoji: 'graphic', formattedHour })
-    const fiisText = getCompleteReportByClass({ shares: fiisData, type: 'FIIS', emoji: 'building', formattedHour })
+    const stockText = getCompleteReportByClass({ shares: stocksData, type: 'AÇÕES', emoji: 'graphic', hour: formattedHour })
+    const fiisText = getCompleteReportByClass({ shares: fiisData, type: 'FIIS', emoji: 'building', hour: formattedHour })
 
     // get wallet rentability
     const previousResult = withPreviousAmount && previousAmount
