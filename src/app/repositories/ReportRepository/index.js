@@ -16,11 +16,9 @@ class ReportRepository {
       await ScrappyRepository.scrappyStockDataFromB3(stock, isRetry)
       await ScrappyRepository.scrappyStockClass(stock)
     }
-
-    await ScrappyRepository.scrappyBenchmarks()
   }
 
-  async buildSharePerfomance(walletId, stocks, previousAmount, withPreviousAmount) {
+  async buildSharePerfomance(walletId, stocks, previousAmount, withPreviousAmount, hour) {
     const othersText = []
     const fiisData = []
     const stocksData = []
@@ -57,9 +55,11 @@ class ReportRepository {
       isStock ? stocksData.push(dataToPush) : fiisData.push(dataToPush)
     }
 
+    const formattedHour = hour !== 'Não aplicável' ? hour : ''
+
     // creating report text by class
-    const stockText = getCompleteReportByClass({ shares: stocksData, type: 'AÇÕES', emoji: 'graphic' })
-    const fiisText = getCompleteReportByClass({ shares: fiisData, type: 'FIIS', emoji: 'building' })
+    const stockText = getCompleteReportByClass({ shares: stocksData, type: 'AÇÕES', emoji: 'graphic', formattedHour })
+    const fiisText = getCompleteReportByClass({ shares: fiisData, type: 'FIIS', emoji: 'building', formattedHour })
 
     // get wallet rentability
     const previousResult = withPreviousAmount && previousAmount
@@ -86,17 +86,16 @@ class ReportRepository {
     return report
   }
 
-  async buildWalletPerfomance(stocks, report) {
+  async buildWalletPerfomance(stocks, report, hour) {
     const {
       previous_result,
       daily_result,
       daily_percentual_result,
       with_previous_amount
     } = report
-    // TODO: put b3 date in report
-    await ScrappyRepository.scrappyLastStockDataUpdate()
 
-    const todayForTelegram = getCurrentDate() + '\n\n'
+    const formattedHour = hour !== 'Não aplicável' ? '<code> ( ' + hour + ' )</code>' : ''
+    const todayForTelegram = getCurrentDate() + formattedHour + '\n\n'
     const todayForWhats = '* %F0%9F%93%85 ' + getCurrentDate(false) + '*' + '\n\n'
 
     const ibovResult = await Daily.findOne({ symbol: 'IBOVESPA' })
@@ -131,8 +130,8 @@ class ReportRepository {
       `<code>RETORNO:\t</code> <code>R$ ${parseToFixedFloat(daily_result)}</code>\n` +
       `<code>RENTAB.:\t</code> <code>${parseToFixedFloat(generalWalletRentability)}%</code>\n\n` +
       '<b>DIÁRIO</b>\n' +
-      `<code>IFIX: \t\t\t</code> <code>${ifixMessage}</code>\n` +
-      `<code>IBOVESPA:</code> <code>${ibovMessage}</code>\n` +
+      `<code>IFIX: </code> <code>${ifixMessage}</code>\n` +
+      `<code>IBOV: </code> <code>${ibovMessage}</code>\n` +
       `<code>CARTEIRA:</code> <code>${dailyWalletRentability}</code>\n`
 
     const whatsappText = '*Resumo da Carteira*\n\n' +
