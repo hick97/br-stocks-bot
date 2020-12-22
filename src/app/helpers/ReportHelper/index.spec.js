@@ -21,7 +21,6 @@ describe('ReportHelper', () => {
           dailyCurrencyVariation,
           partialPercentualVariation,
           dailyResult: successfullStockData
-
         })
 
     const expectedResult = '<b>' + symbol.toUpperCase() + '</b> ' + emojis.greenHeart + '\n' + messages.withoutError

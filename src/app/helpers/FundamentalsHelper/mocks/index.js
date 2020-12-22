@@ -1,4 +1,5 @@
 const indicatorsMock = [
+  { _id: '5fadc0d4bdd3940021231a00', label: 'D.Y', value: '5,67%' },
   { _id: '5fadc0d4bdd3940021231a00', label: 'P/L', value: '12,87' },
   { _id: '5fadc0d4bdd3940021231a01', label: 'EV/EBITDA', value: '5,83' },
   { _id: '5fadc0d4bdd3940021231a02', label: 'P/VP', value: '1,62' },
@@ -78,6 +79,7 @@ const indicatorsMock = [
 ]
 
 const valuationResultMock =
+  '<code>5,67%\t\t\t</code> <code>D.Y</code>\n' +
   '<code>12,87\t\t\t</code> <code>P/L</code>\n<code>5,83\t\t\t\t</code> ' +
   '<code>EV/EBITDA</code>\n<code>1,62\t\t\t\t</code> ' +
   '<code>P/VP</code>\n<code>11,50\t\t\t</code> <code>EV/EBIT</code>\n<code>5,62\t\t\t\t</code> ' +
@@ -87,7 +89,7 @@ const valuationResultMock =
   '<code>P/CAP. GIRO</code>\n<code>-1,45\t\t\t</code> <code>P/ATIVO CIRC. LIQ.</code>\n'
 
 const completeFundamentalsTextMock =
-  '<b>ITSA4</b>\n\n<b>VALUATION</b>\n<code>12,87\t\t\t</code> ' +
+  '<b>ITSA4</b>\n\n<b>VALUATION</b>\n' + '<code>5,67%\t\t\t</code> ' + '<code>D.Y</code>\n' + '<code>12,87\t\t\t</code> ' +
   '<code>P/L</code>\n<code>5,83\t\t\t\t</code> <code>EV/EBITDA</code>\n' +
   '<code>1,62\t\t\t\t</code> <code>P/VP</code>\n<code>11,50\t\t\t</code> ' +
   '<code>EV/EBIT</code>\n<code>5,62\t\t\t\t</code> <code>P/EBITDA</code>\n<code>11,08\t\t\t</code> ' +
