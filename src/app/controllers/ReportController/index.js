@@ -2,6 +2,8 @@ const { listAllStocks } = require('../../repositories/StockRepository')
 const { listAllWallets } = require('../../repositories/WalletRepository')
 const { getInvalidDailies } = require('../../repositories/DailyRepository')
 const { sendCustomMessage } = require('../../repositories/MessageRepository')
+const { scrappyBenchmarks, scrappyLastStockDataUpdate } = require('../../repositories/ScrappyRepository')
+
 const { buildWalletPerfomance, buildSharePerfomance, createDailyQuotes } = require('../../repositories/ReportRepository')
 
 const { useSentryLogger } = require('../../helpers/LogHelper')
@@ -20,14 +22,13 @@ class ReportController {
       useSentryLogger(null, logMessages.start)
       await createDailyQuotes(allStocks)
 
-      console.log('DONE')
-
       // retry failed quotes
       const failedQuotes = await getInvalidDailies()
       const quotesToRetry = failedQuotes.map(({ symbol: stock }) => ({ stock }))
       await createDailyQuotes(quotesToRetry, true)
 
-      console.log('Finish retry')
+      const { hour } = await scrappyLastStockDataUpdate()
+      await scrappyBenchmarks()
 
       // create daily report to subscripted users
       for (let index = 0; index < subscriptions.length; index++) {
@@ -36,8 +37,8 @@ class ReportController {
         const shouldSendReport = currentChatId == chat_id
 
         if (shouldSendReport) {
-          const stocksReport = await buildSharePerfomance(walletId, stocks, previousAmount, withPreviousAmount)
-          const walletReport = await buildWalletPerfomance(stocks, stocksReport)
+          const stocksReport = await buildSharePerfomance(walletId, stocks, previousAmount, withPreviousAmount, hour)
+          const walletReport = await buildWalletPerfomance(stocks, stocksReport, hour)
 
           const { stocks: stocksMessage, fiis, others } = stocksReport.message
           const { telegramText, whatsappText } = walletReport
