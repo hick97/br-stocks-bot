@@ -8,7 +8,7 @@ const getStockReportText = ({ symbol, dailyResult, partialResult, partialPercent
   const defaultEmojis = isNegative ? emojis.brokenHeart : emojis.greenHeart
 
   const withoutError =
-    '<code>FECHAM.</code>\t\t\t<code>R$ ' + dailyResult.price + ' (' + dailyResult.change + ')' + '</code>\n' +
+    '<code>FECHAM.</code>\t\t\t<code>R$ ' + dailyResult.price + ' (' + dailyResult.change + '%)' + '</code>\n' +
     '<code>PARCIAL</code>\t\t\t<code>R$ ' + parseToFixedFloat(partialResult) + ' (' + partialPercentualVariation + '%)' + '</code>\n\n'
 
   return '<b>' + symbol.toUpperCase() + '</b> ' + defaultEmojis + '\n' + withoutError
@@ -23,9 +23,9 @@ const getStockReportTextWhenFailed = ({ symbol }) => {
   return text
 }
 
-const getCompleteReportByClass = ({ shares, type, emoji }) => {
+const getCompleteReportByClass = ({ shares, type, emoji, hour }) => {
   const reportTypeText = '<b>Resultados parciais</b>\n\n'
-  const reportHour = getCurrentDate() + '<code> ( 17h50 )</code>\n\n'
+  const reportHour = getCurrentDate() + '<code> ( ' + hour + ' )</code>\n\n'
   const classTypeText = `<b>${emojis[emoji]} ${type}</b>\n\n`
 
   const partialText = shares.map(item => {

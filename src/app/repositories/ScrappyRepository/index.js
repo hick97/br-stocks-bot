@@ -1,8 +1,11 @@
+const Daily = require('../../models/Daily')
+
 const { updateDailyData } = require('../DailyRepository')
 
 const { launchBrowser } = require('../../helpers/ScrappyHelper')
+
 const { tryGetFundamentals } = require('./scripts/fundamentalsScript')
-const { tryGetStockData } = require('./scripts/stockScript')
+const { tryGetStockData, tryGetStockDataFromB3, tryGetLastStockDataUpdate, tryGetStockClass } = require('./scripts/stockScript')
 const { tryGetBenchmarks } = require('./scripts/benchmarksScript')
 
 class ScrappyRepository {
@@ -62,6 +65,83 @@ class ScrappyRepository {
       ibovResult,
       ifixResult
     }
+  }
+
+  async scrappyStockDataFromB3(symbol, isRetry = false) {
+    const formattedSymbol = symbol.toUpperCase()
+    console.log('Trying ' + formattedSymbol)
+
+    const actionIdentifiers = {
+      input: '#txtCampoPesquisa',
+      button: '#btnBuscarOutrosAtivos'
+    }
+
+    const { browser, page, evaluate } = await launchBrowser({ url: 'http://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/cotacoes/outros-ativos.htm' })
+
+    const delay = isRetry ? 3000 : 2000
+
+    await page.$eval(actionIdentifiers.input, (el, value) => { el.value = value }, formattedSymbol)
+    await page.click(actionIdentifiers.button)
+    await page.waitFor(delay)
+
+    const result = await evaluate(tryGetStockDataFromB3)
+
+    // console.log(result)
+
+    await updateDailyData(symbol, result)
+
+    browser.close()
+    // console.log(result)
+    return result
+  }
+
+  async scrappyLastStockDataUpdate() {
+    const defaultSymbol = 'ITSA4'
+
+    const actionIdentifiers = {
+      input: '#txtCampoPesquisa',
+      button: '#btnBuscarOutrosAtivos'
+    }
+
+    const { browser, page, evaluate } = await launchBrowser({ url: 'http://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/cotacoes/outros-ativos.htm' })
+
+    await page.$eval(actionIdentifiers.input, (el, value) => { el.value = value }, defaultSymbol)
+    await page.click(actionIdentifiers.button)
+    await page.waitFor(2000)
+
+    const result = await evaluate(tryGetLastStockDataUpdate)
+
+    browser.close()
+    // console.log(result)
+    return result
+  }
+
+  async scrappyStockClass(symbol) {
+    const quoteAlreadyExists = await Daily.findOne({ symbol: symbol.toUpperCase() })
+    const classAlreadyExists = quoteAlreadyExists.class !== 'Não aplicável'
+
+    if (classAlreadyExists) return
+
+    console.log('Classe do ativo:' + symbol)
+    let result = {}
+
+    const formattedSymbol = symbol.toLowerCase()
+    const { browser, page, evaluate } = await launchBrowser({ url: `https://statusinvest.com.br/acoes/${formattedSymbol}` })
+
+    result = await evaluate(tryGetStockClass)
+
+    if (result.failed) {
+      await page.goto(`https://statusinvest.com.br/fundos-imobiliarios/${formattedSymbol}`)
+      await page.waitFor(1000)
+      result = await evaluate(tryGetStockClass)
+    }
+
+    // console.log(result)
+
+    await Daily.findByIdAndUpdate(quoteAlreadyExists._id, { class: result.class })
+
+    browser.close()
+    return result
   }
 }
 
