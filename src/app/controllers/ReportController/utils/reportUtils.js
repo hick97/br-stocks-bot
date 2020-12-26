@@ -1,4 +1,5 @@
 const { getCurrentDate } = require('../../../helpers/DateHelper')
+const { emojis } = require('../../../enum/EmojiEnum')
 
 const logMessages = {
   start: `Starting daily quotes on ${getCurrentDate(false)}...`,
@@ -6,7 +7,7 @@ const logMessages = {
 }
 
 const alertMessages = {
-  support: '<code>Atenção: Até o momento, o @brstocksbot suporta apenas as seguintes classes de ativos: AÇÕES ou Fundo de Investimento Imobiliário. Em breve daremos suporte a ETFs também &#x1F916</code>'
+  support: `<code>Atenção: Até o momento, o @brstocksbot suporta apenas as seguintes classes de ativos: AÇÕES, Fundo de Investimento Imobiliário, ETFs e BDRs. Em breve daremos suporte a outras classes de ativos também ${emojis.robot}</code>`
 }
 
 module.exports = { alertMessages, logMessages }
