@@ -11,7 +11,8 @@ const emojis = {
   rightPointing: '&#x1F449',
   mobilePhone: '&#x1F4F1',
   openBook: '&#x1F4D6',
-  bankNote: '&#x1F4B5'
+  bankNote: '&#x1F4B5',
+  robot: '&#x1F916'
 }
 
 module.exports = { emojis }
