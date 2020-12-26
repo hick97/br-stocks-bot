@@ -19,9 +19,10 @@ class ReportRepository {
   }
 
   async buildSharePerfomance(walletId, stocks, previousAmount, withPreviousAmount, hour) {
-    const othersText = []
+    const invalidText = []
     const fiisData = []
     const stocksData = []
+    const othersData = []
 
     let walletResult = 0
 
@@ -30,12 +31,12 @@ class ReportRepository {
 
       // check if daily already exists
       const stockAlreadyExists = await DailyRepository.getDailyBySymbol(symbol)
-      const dailyResult = !stockAlreadyExists ? await ScrappyRepository.scrappyDailyData(symbol) : stockAlreadyExists
+      const dailyResult = !stockAlreadyExists ? await ScrappyRepository.scrappyStockDataFromB3(symbol) : stockAlreadyExists
 
       // check if scrappy failed
       if (dailyResult.failed) {
         const partialText = getStockReportTextWhenFailed({ symbol })
-        othersText.push(partialText)
+        invalidText.push(partialText)
         continue
       }
 
@@ -50,9 +51,16 @@ class ReportRepository {
       const symbolClass = await DailyRepository.getClassBySymbol(symbol)
       const dataToPush = { stock: symbol, dailyResult, partialResult, initialAmount }
 
+      const dataByClass = {
+        Ações: stocksData,
+        'Fundos Imobiliários': fiisData,
+        ETFs: othersData,
+        BDRs: othersData
+      }
+
       // push share data by class
-      const isStock = symbolClass === 'Ações'
-      isStock ? stocksData.push(dataToPush) : fiisData.push(dataToPush)
+      const dataSetToPush = dataByClass[symbolClass] || stocksData
+      dataSetToPush.push(dataToPush)
     }
 
     const formattedHour = hour !== 'Não aplicável' ? hour : ''
@@ -60,6 +68,7 @@ class ReportRepository {
     // creating report text by class
     const stockText = getCompleteReportByClass({ shares: stocksData, type: 'AÇÕES', emoji: 'graphic', hour: formattedHour })
     const fiisText = getCompleteReportByClass({ shares: fiisData, type: 'FIIS', emoji: 'building', hour: formattedHour })
+    const othersText = getCompleteReportByClass({ shares: othersData, type: 'OUTROS', emoji: 'moneyBag', hour: formattedHour })
 
     // get wallet rentability
     const previousResult = withPreviousAmount && previousAmount
@@ -75,7 +84,8 @@ class ReportRepository {
       message: {
         fiis: fiisText,
         stocks: stockText,
-        others: othersText.join('')
+        others: othersText,
+        invalids: invalidText.join('')
       },
       daily_result: walletResult,
       previous_result: previousResult,
