@@ -40,7 +40,7 @@ class DailyRepository {
   async updateDailyData(symbol, scrappyResult) {
     const formattedSymbol = symbol.toUpperCase()
     const quoteAlreadyExists = await Daily.findOne({ symbol: formattedSymbol })
-    const classAlreadyExists = quoteAlreadyExists.class !== 'Não aplicável'
+    const classAlreadyExists = !!quoteAlreadyExists && quoteAlreadyExists.class !== 'Não aplicável'
 
     const obj = {
       symbol: formattedSymbol,
