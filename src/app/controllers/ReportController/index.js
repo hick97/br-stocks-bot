@@ -40,13 +40,14 @@ class ReportController {
           const stocksReport = await buildSharePerfomance(walletId, stocks, previousAmount, withPreviousAmount, hour)
           const walletReport = await buildWalletPerfomance(stocks, stocksReport, hour)
 
-          const { stocks: stocksMessage, fiis, others } = stocksReport.message
+          const { stocks: stocksMessage, fiis, others, invalids } = stocksReport.message
           const { telegramText, whatsappText } = walletReport
 
           await sendCustomMessage({ chat_id: currentChatId, text: telegramText, options: { reply_markup: shareByWhatsapp(whatsappText) } })
           stocks.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: stocksMessage })
           fiis.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: fiis })
-          others.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: '<b>OUTROS</b>\n\n' + others + alertMessages.support })
+          others.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: others })
+          invalids.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: '<b>INVÁLIDOS</b>\n\n' + invalids + alertMessages.support })
 
           useSentryLogger(null, logMessages.finish)
         }
