@@ -118,7 +118,7 @@ class ScrappyRepository {
 
   async scrappyStockClass(symbol) {
     const quoteAlreadyExists = await Daily.findOne({ symbol: symbol.toUpperCase() })
-    const classAlreadyExists = quoteAlreadyExists.class !== 'Não aplicável'
+    const classAlreadyExists = !!quoteAlreadyExists && quoteAlreadyExists.class !== 'Não aplicável'
 
     if (classAlreadyExists) return
 
@@ -133,6 +133,18 @@ class ScrappyRepository {
     if (result.failed) {
       await page.goto(`https://statusinvest.com.br/fundos-imobiliarios/${formattedSymbol}`)
       await page.waitFor(1000)
+      result = await evaluate(tryGetStockClass)
+    }
+
+    if (result.failed) {
+      await page.goto(`https://statusinvest.com.br/bdrs/${formattedSymbol}`)
+      await page.waitFor(2000)
+      result = await evaluate(tryGetStockClass)
+    }
+
+    if (result.failed) {
+      await page.goto(`https://statusinvest.com.br/etfs/${formattedSymbol}`)
+      await page.waitFor(2000)
       result = await evaluate(tryGetStockClass)
     }
 
