@@ -44,9 +44,11 @@ class ReportController {
           const { telegramText, whatsappText } = walletReport
 
           await sendCustomMessage({ chat_id: currentChatId, text: telegramText, options: { reply_markup: shareByWhatsapp(whatsappText) } })
-          stocks.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: stocksMessage })
-          fiis.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: fiis })
-          others.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: others })
+
+          !stocks.failed && await sendCustomMessage({ chat_id: currentChatId, text: stocksMessage.text })
+          !fiis.failed && await sendCustomMessage({ chat_id: currentChatId, text: fiis.text })
+          !others.failed && await sendCustomMessage({ chat_id: currentChatId, text: others.text })
+
           invalids.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: '<b>INVÁLIDOS</b>\n\n' + invalids + alertMessages.support })
 
           useSentryLogger(null, logMessages.finish)

@@ -41,7 +41,10 @@ const getCompleteReportByClass = ({ shares, type, emoji, hour }) => {
     return currentTex
   })
 
-  return reportTypeText + reportHour + classTypeText + partialText.join('')
+  const hasNoText = partialText.length === 0
+  const validText = reportTypeText + reportHour + classTypeText + partialText.join('')
+
+  return { text: hasNoText ? '' : validText, failed: hasNoText }
 }
 
 module.exports = { getStockReportText, getStockReportTextWhenFailed, getCompleteReportByClass }
