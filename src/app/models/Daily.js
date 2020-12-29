@@ -14,8 +14,7 @@ const DailySchema = new mongoose.Schema({
     required: true
   },
   class: {
-    type: String,
-    required: true
+    type: String
   },
   failed: {
     type: Boolean,

@@ -1,6 +1,7 @@
 {
   "env": {
     "commonjs": true,
+    "jest": true,
     "es6": true,
     "node": true
   },
@@ -14,6 +15,7 @@
   },
   "rules": {
     "space-before-function-paren": "off",
-    "camelcase": "off"
+    "camelcase": "off",
+    "eqeqeq": "warn"
   }
 }

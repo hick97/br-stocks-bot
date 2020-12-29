@@ -9,7 +9,7 @@
 >  A Telegram bot to provide analysis about your favorite brazilian stocks 
 
 ### 🤖 [Beta version](https://t.me/brstocksbot)
-### :iphone: [Instagram](https://t.me/brstocksbot)
+### :iphone: [Instagram](https://instagram.com/botdoinvestidor/)
 
 ## Enviroment
 
