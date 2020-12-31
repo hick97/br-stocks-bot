@@ -1,13 +1,15 @@
 const { listWalletById } = require('../WalletRepository')
-const { fundamentalsCommandIsValid } = require('../../helpers/FundamentalsHelper')
+const { sendNotificationToAll } = require('../NotificationRepository')
 
 const WalletController = require('../../controllers/WalletController')
 const FundamentalsController = require('../../controllers/FundamentalsController')
 
-const { splitCommand } = require('../../helpers/CommandHelper')
+const { splitCommand, removeCommandFromText } = require('../../helpers/CommandHelper')
 const { validStockCommand } = require('../../helpers/StockHelper')
+const { fundamentalsCommandIsValid } = require('../../helpers/FundamentalsHelper')
 
 const { SingleCommands, SingleCommandsActions } = require('../../enum/CommandEnum')
+const { ErrorMessages } = require('../../enum/MessagesEnum')
 
 class ActionsRepository {
   getAction(message) {
@@ -37,6 +39,15 @@ class ActionsRepository {
   async handleFundamentals(message) {
     const [firstCommandTerm] = splitCommand(message.text)
     return fundamentalsCommandIsValid(firstCommandTerm) && await FundamentalsController.execute(message)
+  }
+
+  async handleNotifications(message) {
+    const { chat, text } = message
+
+    if (chat.id !== process.env.ADMIN_CHAT_ID) return ErrorMessages.ACCESS_DENIED
+
+    const notification = removeCommandFromText(text) || ''
+    return await sendNotificationToAll({ text: notification })
   }
 }
 

@@ -1,5 +1,4 @@
 const { sendGifAnimation, sendCustomMessage } = require('../../repositories/MessageRepository')
-
 const Actions = require('../../repositories/ActionsRepository')
 
 const { useSentryLogger } = require('../../helpers/LogHelper')
@@ -12,6 +11,10 @@ class MessageController {
     const { message, edited_message } = req.body
     const command = message || edited_message || null
 
+    const AdminActionsHandler = {
+      '/sendtoall': Actions.handleNotifications
+    }
+
     const ActionsHandler = {
       '/start': Actions.staticMessage,
       '/help': Actions.staticMessage,
@@ -19,6 +22,7 @@ class MessageController {
       '/wallet': Actions.handleWallet,
       '/del': Actions.handleWallet,
       '/fundamentals': Actions.handleFundamentals,
+      ...AdminActionsHandler,
       default: () => ErrorMessages.INVALID_COMMAND
     }
 
