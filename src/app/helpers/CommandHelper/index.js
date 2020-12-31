@@ -7,9 +7,12 @@ const splitCommand = (text) => {
 
 const removeCommandFromText = (text, separator = ' ') => {
   const splittedText = splitCommand(text)
-  splittedText.shift()
+  const command = splittedText.shift()
 
-  return splittedText.join(separator)
+  return {
+    command,
+    text: splittedText.join(separator)
+  }
 }
 
 module.exports = { splitCommand, removeCommandFromText }
