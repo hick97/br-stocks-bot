@@ -23,10 +23,7 @@ class NotificationRepository {
         const currentChatId = isDebug ? process.env.ADMIN_CHAT_ID : chat_id
         const shouldSendReport = currentChatId == chat_id
 
-        if (shouldSendReport) {
-          console.log(`Enviando relatório para o usuário ${currentChatId} com o texto = ${text}`)
-          await sendCustomMessage({ chat_id: currentChatId, text: notificationMessage, options })
-        }
+        if (shouldSendReport) await sendCustomMessage({ chat_id: currentChatId, text: notificationMessage, options })
       }
 
       return successMessage
