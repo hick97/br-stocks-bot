@@ -18,13 +18,14 @@ describe('CommandHelper', () => {
     expect(resultWithUnformattedMessage).toStrictEqual(expectedResult)
   })
 
-  it('removeCommandFromText -> should return text without command', async () => {
-    const command = '/sendtoall '
+  it('removeCommandFromText -> should return text without command', () => {
+    const command = '/sendtoall'
     const text = 'Some text here.'
-    const regularMessage = { text: command + text }
+    const regularMessage = { text: command + ' ' + text }
 
-    const result = await removeCommandFromText(regularMessage.text)
+    const result = removeCommandFromText(regularMessage.text)
 
-    expect(result).toBe(text)
+    expect(result.text).toBe(text)
+    expect(result.command).toBe(command)
   })
 })
