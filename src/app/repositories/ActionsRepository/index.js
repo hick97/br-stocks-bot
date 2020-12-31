@@ -44,12 +44,10 @@ class ActionsRepository {
   async handleNotifications(message) {
     const { chat, text } = message
 
-    const parsedChatId = String(chat.id)
-
-    if (parsedChatId !== process.env.ADMIN_CHAT_ID) return ErrorMessages.ACCESS_DENIED
+    if (chat.id != process.env.ADMIN_CHAT_ID) return ErrorMessages.ACCESS_DENIED
 
     const notification = removeCommandFromText(text) || ''
-    return await sendNotificationToAll({ text: notification })
+    return await sendNotificationToAll({ command: notification.command, text: notification.text })
   }
 }
 
