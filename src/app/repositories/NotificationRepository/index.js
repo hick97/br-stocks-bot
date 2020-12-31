@@ -6,9 +6,9 @@ const { useSentryLogger } = require('../../helpers/LogHelper')
 const { NotificationMessages } = require('../../enum/MessagesEnum')
 
 class NotificationRepository {
-  async sendNotificationToAll({ text, options }) {
+  async sendNotificationToAll({ command, text, options }) {
     try {
-      const isDebug = process.env.NODE_ENV === 'development' || process.env.NODE_ENV !== 'development'
+      const isDebug = process.env.NODE_ENV === 'development' || command === '/sendtome'
       const subscriptions = await listAllWallets()
 
       const successMessage = 'Mensagem enviada com sucesso!'
