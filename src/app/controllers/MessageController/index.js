@@ -12,7 +12,8 @@ class MessageController {
     const command = message || edited_message || null
 
     const AdminActionsHandler = {
-      '/sendtoall': Actions.handleNotifications
+      '/sendtoall': Actions.handleNotifications,
+      '/sendtome': Actions.handleNotifications
     }
 
     const ActionsHandler = {
