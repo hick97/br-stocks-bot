@@ -1,4 +1,4 @@
-const { splitCommand } = require('./index')
+const { splitCommand, removeCommandFromText } = require('./index')
 
 describe('CommandHelper', () => {
   it('splitCommand -> should return the correct splitted values given a command', async () => {
@@ -16,5 +16,15 @@ describe('CommandHelper', () => {
 
     expect(resultWithUnformattedMessage).toHaveLength(expectedLength)
     expect(resultWithUnformattedMessage).toStrictEqual(expectedResult)
+  })
+
+  it('removeCommandFromText -> should return text without command', async () => {
+    const command = '/sendtoall '
+    const text = 'Some text here.'
+    const regularMessage = { text: command + text }
+
+    const result = await removeCommandFromText(regularMessage.text)
+
+    expect(result).toBe(text)
   })
 })
