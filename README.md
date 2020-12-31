@@ -6,7 +6,10 @@
   </a>
 </p>
 
->  A Telegram bot to provide analysis about your favorite brazilian stocks 
+>  A Telegram bot to investors:
+- Manage your wallet for free;
+- Receive reports and notifications;
+- See indicators of your favorite brazilian companies;
 
 ### 🤖 [Beta version](https://t.me/brstocksbot)
 ### :iphone: [Instagram](https://instagram.com/botdoinvestidor/)
@@ -14,10 +17,10 @@
 ## Enviroment
 
 - Create an `.env` file similar to `.env.example`;
-- Add `mongoose.connect('mongodb://localhost/yourDatabaseName')` in DB_MONGO_URI
-- Add your [Telegram key](https://telegram.me/BotFather) in TELEGRAM_KEY
-- Add your [Alpha Vantage key](https://www.alphavantage.co/support/#api-key) in ALPHA_VANTAGE_KEY
-- Add your [Sentry DNS](https://sentry.io/auth/login/) in SENTRY_DSN
+- Add `mongoose.connect('mongodb://localhost/yourDatabaseName')` in DB_MONGO_URI;
+- Add your [Telegram key](https://telegram.me/BotFather) in TELEGRAM_KEY;
+- Add your [Alpha Vantage key](https://www.alphavantage.co/support/#api-key) in ALPHA_VANTAGE_KEY;
+- Add your [Sentry DNS](https://sentry.io/auth/login/) in SENTRY_DSN.
 
 ## Install
 
