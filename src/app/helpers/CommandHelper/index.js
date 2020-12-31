@@ -5,4 +5,11 @@ const splitCommand = (text) => {
   return cleanedCommands
 }
 
-module.exports = { splitCommand }
+const removeCommandFromText = (text, separator = ' ') => {
+  const splittedText = splitCommand(text)
+  splittedText.shift()
+
+  return splittedText.join(separator)
+}
+
+module.exports = { splitCommand, removeCommandFromText }
