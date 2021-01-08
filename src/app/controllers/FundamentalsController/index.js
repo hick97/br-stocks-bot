@@ -1,6 +1,7 @@
 const FundamentalsRepository = require('../../repositories/FundamentalsRepository')
 const { getFundamentalsText } = require('../../helpers/FundamentalsHelper')
 
+const { isWeekend } = require('../../helpers/DateHelper')
 const { useSentryLogger } = require('../../helpers/LogHelper')
 const { splitCommand } = require('../../helpers/CommandHelper')
 
@@ -31,6 +32,7 @@ class FundamentalsController {
 
   async updateFundamentals() {
     try {
+      if (isWeekend()) return
       await FundamentalsRepository.updateAllFundamentals()
     } catch (err) {
       const errorMessage = 'Error (Houve uma falha ao atualizar todos os fundamentos)'

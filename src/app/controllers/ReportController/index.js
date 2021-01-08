@@ -8,12 +8,15 @@ const { buildWalletPerfomance, buildSharePerfomance, createDailyQuotes } = requi
 
 const { useSentryLogger } = require('../../helpers/LogHelper')
 const { shareByWhatsapp } = require('../../helpers/SocialHelper')
+const { isWeekend } = require('../../helpers/DateHelper')
 
 const { logMessages, alertMessages } = require('./utils/reportUtils')
 
 class ReportController {
   async execute() {
     try {
+      if (isWeekend()) return
+
       const isDebug = process.env.NODE_ENV === 'development'
       const subscriptions = await listAllWallets()
       const allStocks = await listAllStocks()
