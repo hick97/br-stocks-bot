@@ -18,7 +18,7 @@ class ReportRepository {
     }
   }
 
-  async buildSharePerfomance(walletId, stocks, previousAmount, withPreviousAmount, hour) {
+  async buildSharePerfomance(stocks, hour) {
     const invalidText = []
     const fiisData = []
     const stocksData = []
@@ -70,16 +70,6 @@ class ReportRepository {
     const fiisText = getCompleteReportByClass({ shares: fiisData, type: 'FIIS', emoji: 'building', hour: formattedHour })
     const othersText = getCompleteReportByClass({ shares: othersData, type: 'OUTROS', emoji: 'moneyBag', hour: formattedHour })
 
-    // get wallet rentability
-    const previousResult = withPreviousAmount && previousAmount
-    const dailyPercentualResult = withPreviousAmount && getPartialRentability(previousAmount, walletResult)
-
-    // update previous result
-    await Wallet.findByIdAndUpdate(walletId, {
-      previousAmount: walletResult,
-      withPreviousAmount: true
-    })
-
     const report = {
       message: {
         fiis: fiisText,
@@ -87,21 +77,15 @@ class ReportRepository {
         others: othersText,
         invalids: invalidText.join('')
       },
-      daily_result: walletResult,
-      previous_result: previousResult,
-      daily_percentual_result: dailyPercentualResult,
-      with_previous_amount: withPreviousAmount
+      daily_result: walletResult
     }
 
     return report
   }
 
-  async buildWalletPerfomance(stocks, report, hour) {
+  async buildWalletPerfomance(walletId, stocks, report, previousData, hour) {
     const {
-      previous_result,
-      daily_result,
-      daily_percentual_result,
-      with_previous_amount
+      daily_result
     } = report
 
     const formattedHour = hour !== 'Não aplicável' ? '<code> ( ' + hour + ' )</code>' : ''
@@ -122,23 +106,35 @@ class ReportRepository {
     const ibovMessage = ibovData.failed ? errorMessage : `${ibovData.change} (${ibovData.price}pts)`
     const ifixMessage = ifixData.failed ? errorMessage : `${ifixData.change} (${ifixData.price}pts)`
 
+    // general data
     const amountInvested = stocks.reduce((acc, stock) => acc + (stock.price * stock.quantity), 0)
-    const formattedPercentualResult = with_previous_amount && parseToFixedFloat(daily_percentual_result)
-    const formattedRealResult = with_previous_amount && parseToFixedFloat(daily_result - previous_result)
+    const generalWalletRentability = getPartialRentability(amountInvested, daily_result)
+    const generalCashResult = parseToFixedFloat(daily_result - amountInvested)
+
+    // daily data
+    const formattedPercentualResult = previousData.withPreviousData && parseToFixedFloat(generalWalletRentability - previousData.percentualResult)
+    const formattedRealResult = previousData.withPreviousData && parseToFixedFloat(generalCashResult - previousData.cashResult)
+
+    // update previous result
+    await Wallet.findByIdAndUpdate(walletId, {
+      previousData: {
+        cashResult: generalCashResult,
+        percentualResult: generalWalletRentability,
+        withPreviousData: true
+      }
+    })
 
     const dailyWalletRentability =
-      with_previous_amount
+      previousData.withPreviousData
         ? `${formatNumberWithOperator(formattedPercentualResult)}% (R$ ${formatNumberWithOperator(formattedRealResult)})`
         : 'Consolidando...'
-
-    const generalWalletRentability = getPartialRentability(amountInvested, daily_result)
 
     const telegramText = '<b>Resumo da Carteira</b>\n\n' +
       todayForTelegram +
       '<b>GERAL</b>\n' +
       `<code>INVEST.:\t</code> <code>R$ ${parseToFixedFloat(amountInvested)}</code>\n` +
       `<code>RETORNO:\t</code> <code>R$ ${parseToFixedFloat(daily_result)}</code>\n` +
-      `<code>RENTAB.:\t</code> <code>${parseToFixedFloat(generalWalletRentability)}%</code>\n\n` +
+      `<code>RENTAB.:\t</code> <code>${parseToFixedFloat(generalWalletRentability)}% (R$ ${formatNumberWithOperator(generalCashResult)})</code>\n\n` +
       '<b>DIÁRIO</b>\n' +
       `<code>IFIX: </code> <code>${ifixMessage}</code>\n` +
       `<code>IBOV: </code> <code>${ibovMessage}</code>\n` +
