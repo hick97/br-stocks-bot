@@ -82,7 +82,7 @@ class WalletRepository {
   }
 
   async listAllWallets() {
-    const wallets = await Wallet.find({}).select('chat_id stocks previousAmount withPreviousAmount _id').populate('stocks')
+    const wallets = await Wallet.find({}).select('chat_id stocks previousData _id').populate('stocks')
     if (!wallets) throw Error('Ocorreu uma falha ao listar todas as carteiras cadastradas.')
     return wallets
   }

@@ -15,9 +15,10 @@ const { logMessages, alertMessages } = require('./utils/reportUtils')
 class ReportController {
   async execute() {
     try {
-      if (isWeekend()) return
-
       const isDebug = process.env.NODE_ENV === 'development'
+
+      if (isWeekend() && !isDebug) return
+
       const subscriptions = await listAllWallets()
       const allStocks = await listAllStocks()
 
@@ -35,13 +36,13 @@ class ReportController {
 
       // create daily report to subscripted users
       for (let index = 0; index < subscriptions.length; index++) {
-        const { _id: walletId, chat_id, stocks, previousAmount, withPreviousAmount } = subscriptions[index]
+        const { _id: walletId, chat_id, stocks, previousData } = subscriptions[index]
         const currentChatId = isDebug ? process.env.ADMIN_CHAT_ID : chat_id
         const shouldSendReport = currentChatId == chat_id
 
         if (shouldSendReport) {
-          const stocksReport = await buildSharePerfomance(walletId, stocks, previousAmount, withPreviousAmount, hour)
-          const walletReport = await buildWalletPerfomance(stocks, stocksReport, hour)
+          const stocksReport = await buildSharePerfomance(stocks, hour)
+          const walletReport = await buildWalletPerfomance(walletId, stocks, stocksReport, previousData, hour)
 
           const { stocks: stocksMessage, fiis, others, invalids } = stocksReport.message
           const { telegramText, whatsappText } = walletReport
@@ -53,10 +54,9 @@ class ReportController {
           !others.failed && await sendCustomMessage({ chat_id: currentChatId, text: others.text })
 
           invalids.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: '<b>INVÁLIDOS</b>\n\n' + invalids + alertMessages.support })
-
-          useSentryLogger(null, logMessages.finish)
         }
       }
+      useSentryLogger(null, logMessages.finish)
     } catch (err) {
       useSentryLogger(err)
     }
