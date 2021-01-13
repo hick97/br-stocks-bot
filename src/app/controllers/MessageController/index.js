@@ -8,8 +8,21 @@ const { ErrorMessages } = require('../../enum/MessagesEnum')
 
 class MessageController {
   async execute(req, res) {
-    const { message, edited_message } = req.body
+    const { message, edited_message, callback_query } = req.body
     const command = message || edited_message || null
+
+    console.log(callback_query.message.chat.id)
+
+    if (!command) {
+      await sendCustomMessage(
+        {
+          text: 'Cadastre um ativo:',
+          chat_id: callback_query.message.chat.id
+        }
+      )
+
+      return res.json({ result: 'OK' })
+    }
 
     const AdminActionsHandler = {
       '/sendtoall': Actions.handleNotifications,
@@ -36,7 +49,17 @@ class MessageController {
         {
           text: response,
           chat_id: command.chat.id,
-          message_id: command.message_id
+          message_id: command.message_id,
+          options: {
+            reply_markup: {
+              inline_keyboard: [
+                [{
+                  text: 'Teste 1',
+                  callback_data: 'command1'
+                }]
+              ]
+            }
+          }
         }
       )
 
