@@ -10,7 +10,9 @@ const cron = require('node-cron')
 const cors = require('cors')
 
 const databaseConfig = require('./config/database')
+
 const reportJob = require('./app/controllers/ReportController')
+const earningsJob = require('./app/controllers/EarningsController')
 const fundamentalsJob = require('./app/controllers/FundamentalsController')
 
 const routes = require('./routes')
@@ -55,22 +57,22 @@ class App {
   }
 
   jobs() {
-    // ScrappyRepository.getFundamentals('SULA11')
-    // reportJob.execute()
+    const defaultJobOptions = {
+      scheduled: true,
+      timezone: 'America/Sao_Paulo'
+    }
 
     cron.schedule('10 20 * * *', () => {
       fundamentalsJob.updateFundamentals()
-    }, {
-      scheduled: true,
-      timezone: 'America/Sao_Paulo'
-    })
+    }, defaultJobOptions)
+
+    cron.schedule('00 09 * * *', () => {
+      earningsJob.execute()
+    }, defaultJobOptions)
 
     cron.schedule('40 18 * * *', () => {
       reportJob.execute()
-    }, {
-      scheduled: true,
-      timezone: 'America/Sao_Paulo'
-    })
+    }, defaultJobOptions)
   }
 
   exceptionHandler() {
