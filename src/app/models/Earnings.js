@@ -9,7 +9,7 @@ const EarningsSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  limiteDate: {
+  limitDate: {
     type: String,
     required: true
   },
