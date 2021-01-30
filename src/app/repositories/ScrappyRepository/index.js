@@ -3,10 +3,14 @@ const Daily = require('../../models/Daily')
 const { updateDailyData } = require('../DailyRepository')
 
 const { launchBrowser } = require('../../helpers/ScrappyHelper')
+const { createAllEarnings } = require('./helpers/dividendsHelper')
 
 const { tryGetFundamentals } = require('./scripts/fundamentalsScript')
 const { tryGetStockData, tryGetStockDataFromB3, tryGetLastStockDataUpdate, tryGetStockClass } = require('./scripts/stockScript')
 const { tryGetBenchmarks } = require('./scripts/benchmarksScript')
+const { tryGetDividends } = require('./scripts/dividendsScript')
+
+const { dividendsScrappyHosts } = require('./utils/scrappyHosts')
 
 class ScrappyRepository {
   async scrappyFundamentalsData(symbol) {
@@ -86,12 +90,9 @@ class ScrappyRepository {
 
     const result = await evaluate(tryGetStockDataFromB3)
 
-    // console.log(result)
-
     await updateDailyData(symbol, result)
 
     browser.close()
-    // console.log(result)
     return result
   }
 
@@ -112,7 +113,6 @@ class ScrappyRepository {
     const result = await evaluate(tryGetLastStockDataUpdate)
 
     browser.close()
-    // console.log(result)
     return result
   }
 
@@ -148,12 +148,38 @@ class ScrappyRepository {
       result = await evaluate(tryGetStockClass)
     }
 
-    // console.log(result)
-
     await Daily.findByIdAndUpdate(quoteAlreadyExists._id, { class: result.class })
 
     browser.close()
     return result
+  }
+
+  async scrappyStockDividends() {
+    // We need improve it to scrappy data for all companies
+    const { browser, page, evaluate } = await launchBrowser({ url: dividendsScrappyHosts.stocks })
+    await page.waitForSelector('#result')
+
+    const stockEarnings = await evaluate(tryGetDividends)
+
+    const { datePayment: stocksPaymentSection } = JSON.parse(stockEarnings)
+    !!stockEarnings && await createAllEarnings(stocksPaymentSection)
+
+    browser.close()
+    return stocksPaymentSection
+  }
+
+  async scrappyFiisDividends() {
+    // We need improve it to scrappy data for all companies
+    const { browser, page, evaluate } = await launchBrowser({ url: dividendsScrappyHosts.fiis })
+    await page.waitForSelector('#result')
+
+    const fiisEarnings = await evaluate(tryGetDividends)
+
+    const { datePayment: fiisPaymentSection } = JSON.parse(fiisEarnings)
+    !!fiisEarnings && await createAllEarnings(fiisPaymentSection)
+
+    browser.close()
+    return fiisPaymentSection
   }
 }
 

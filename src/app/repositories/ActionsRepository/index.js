@@ -1,5 +1,5 @@
 const { listWalletById } = require('../WalletRepository')
-const { sendNotificationToAll } = require('../NotificationRepository')
+const { sendNewsNotificationToAll } = require('../NotificationRepository')
 
 const WalletController = require('../../controllers/WalletController')
 const FundamentalsController = require('../../controllers/FundamentalsController')
@@ -47,7 +47,7 @@ class ActionsRepository {
     if (chat.id != process.env.ADMIN_CHAT_ID) return ErrorMessages.ACCESS_DENIED
 
     const notification = removeCommandFromText(text) || ''
-    return await sendNotificationToAll({ command: notification.command, text: notification.text })
+    return await sendNewsNotificationToAll({ command: notification.command, text: notification.text })
   }
 }
 
