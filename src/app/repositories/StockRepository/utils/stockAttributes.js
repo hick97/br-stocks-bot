@@ -10,4 +10,14 @@ const stockAttributes = {
   MATCH_SCORE: '9. matchScore'
 }
 
-module.exports = { stockAttributes }
+const defaultAttributes = {
+  NAME: 'Not found',
+  TYPE: 'Equity',
+  REGION: 'Brazil/Sao Paolo',
+  MARKET_OPEN: '10:00',
+  MARKET_CLOSE: '17:30',
+  TIMEZONE: 'UTC-03',
+  CURRENCY: 'BRL'
+}
+
+module.exports = { stockAttributes, defaultAttributes }
