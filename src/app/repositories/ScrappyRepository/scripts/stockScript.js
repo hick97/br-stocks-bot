@@ -56,10 +56,12 @@ const tryGetLastStockDataUpdate = () => {
   const data = isInvalidPage
     ? {
       date: unavailableData,
-      hour: unavailableData
+      hour: unavailableData,
+      stock: unavailableData
     } : {
       date: document.querySelector(dataIdentifiers.date).innerText,
-      hour: document.querySelector(dataIdentifiers.hour).innerText
+      hour: document.querySelector(dataIdentifiers.hour).innerText,
+      stock: document.querySelector(dataIdentifiers.name).innerText
     }
 
   return data

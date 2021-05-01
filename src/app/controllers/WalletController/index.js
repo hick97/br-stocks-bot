@@ -39,12 +39,12 @@ class WalletController {
 
       if (!walletAlreadyExists && !stockAlreadyExists) return await createWallet(chat, formattedStockObject, true)
       if (!walletAlreadyExists && !!stockAlreadyExists) return await createWallet(chat, formattedStockObject)
-      if (!!walletAlreadyExists && !stockAlreadyExists) return await updateWallet(walletAlreadyExists, formattedStockObject, true)
+      if (!!walletAlreadyExists && !stockAlreadyExists) return await updateWallet(chat, walletAlreadyExists, formattedStockObject, true)
 
       const stockIndex = await walletAlreadyExists.stocks.findIndex(s => s.stock.toUpperCase() === values.stock.toUpperCase())
 
       // stock exists in db, but not included on wallet
-      if (stockIndex === -1) return await updateWallet(walletAlreadyExists, formattedStockObject)
+      if (stockIndex === -1) return await updateWallet(chat, walletAlreadyExists, formattedStockObject)
       // updating existent stock on existent wallet
       return await updateStockDataOnWallet(walletAlreadyExists, stockIndex, formattedStockObject)
     } catch (err) {

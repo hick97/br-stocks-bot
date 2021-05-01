@@ -96,8 +96,10 @@ class ScrappyRepository {
     return result
   }
 
-  async scrappyLastStockDataUpdate() {
+  async scrappyLastStockDataUpdate(stock) {
     const defaultSymbol = 'ITSA4'
+
+    const symbolToScrappy = stock || defaultSymbol
 
     const actionIdentifiers = {
       input: '#txtCampoPesquisa',
@@ -106,7 +108,7 @@ class ScrappyRepository {
 
     const { browser, page, evaluate } = await launchBrowser({ url: 'http://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/cotacoes/outros-ativos.htm' })
 
-    await page.$eval(actionIdentifiers.input, (el, value) => { el.value = value }, defaultSymbol)
+    await page.$eval(actionIdentifiers.input, (el, value) => { el.value = value }, symbolToScrappy)
     await page.click(actionIdentifiers.button)
     await page.waitFor(2000)
 

@@ -9,12 +9,17 @@ const { ErrorMessages, ActionMessages } = require('../../enum/MessagesEnum')
 const { emojis } = require('../../enum/EmojiEnum')
 
 const { findStockData, createStock } = require('../StockRepository')
+const { sendCustomMessage } = require('../MessageRepository')
 
 class WalletRepository {
   async createWallet(chat, stockData, withNewStock = false) {
     if (withNewStock) {
+      await sendCustomMessage({ chat_id: chat.id, text: ActionMessages.SEARCH_STOCK })
+
       const createdStock = await findStockData(stockData.stock)
+
       if (!createdStock) return ErrorMessages.NOT_FOUND
+
       await createStock(createdStock, stockData.stock)
     }
 
@@ -31,10 +36,14 @@ class WalletRepository {
     return ActionMessages.STOCK_CREATED
   }
 
-  async updateWallet(walletRef, stockData, withNewStock = false) {
+  async updateWallet(chat, walletRef, stockData, withNewStock = false) {
     if (withNewStock) {
+      await sendCustomMessage({ chat_id: chat.id, text: ActionMessages.SEARCH_STOCK })
+
       const createdStock = await findStockData(stockData.stock)
+
       if (!createdStock) return ErrorMessages.NOT_FOUND
+
       await createStock(createdStock, stockData.stock)
     }
 
