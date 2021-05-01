@@ -20,6 +20,7 @@ const ActionMessages = {
   STOCK_UPDATED: 'Ativo atualizado com sucesso!\n' +
     ' Veja seus ativos com o comando:\n' +
     '/wallet',
+  SEARCH_STOCK: 'Só alguns segundos, estamos procurando seu ativo :)',
   REMOVE_STOCK: 'Ativo removido com sucesso!'
 }
 
