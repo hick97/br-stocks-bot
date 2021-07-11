@@ -95,6 +95,8 @@ class WalletRepository {
   async getWalletPartials(chat_id) {
     const weights = []
 
+    await sendCustomMessage({ chat_id, text: ActionMessages.SEARCH_WALLET_RESULTS })
+
     const wallet = await Wallet.findOne({
       chat_id
     })
@@ -129,8 +131,9 @@ class WalletRepository {
     })
 
     const weightHeaderText = [
-      '<b>MAIS SOBRE SEUS ATIVOS</b> \n\n' +
-      ' <b>TOTAL INVESTIDO: </b>\n' + `<code>R$${parseToFixedFloat(previousData.investedAmount)}</code>` + '\n\n' +
+      emojis.bankNote +
+      '<b>PARCIAIS DA SUA CARTEIRA</b> \n\n' +
+      '<b>RETORNO ACUMULADO </b>\n' + `<code>R$${parseToFixedFloat(previousData.investedAmount)} (${previousData.percentualResult}%)</code>` + '\n\n' +
       '<code>ATIVO</code>' + walletTabulationHeader.WEIGHT_ATIVO_SPACE +
       '<code>PESO</code>' + walletTabulationHeader.ATIVO_SPACE +
       '<code>PARCIAL</code> \n\n'
