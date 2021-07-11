@@ -21,14 +21,32 @@ class MessageController {
       '/help': Actions.staticMessage,
       '/stock': Actions.handleWallet,
       '/wallet': Actions.handleWallet,
+      '/partials': Actions.handleWallet,
       '/del': Actions.handleWallet,
       '/fundamentals': Actions.handleFundamentals,
       ...AdminActionsHandler,
       default: () => ErrorMessages.INVALID_COMMAND
     }
 
+    const optionsByCommand = {
+      '/partials': {
+        reply_markup: {
+          inline_keyboard: [
+            [{
+              text: 'Ver resultados parciais',
+              switch_inline_query_current_chat: '/partials'
+            }]
+          ]
+        }
+      }
+    }
+
+    const withOptions = ['/partials']
+
     try {
       const action = Actions.getAction(command)
+      const hasOptions = withOptions.includes(action)
+
       const actionHandler = ActionsHandler[action] || ActionsHandler.default
       const response = await actionHandler(command)
 
@@ -36,7 +54,10 @@ class MessageController {
         {
           text: response,
           chat_id: command.chat.id,
-          message_id: command.message_id
+          message_id: command.message_id,
+          ...(hasOptions && {
+            options: optionsByCommand[action]
+          })
         }
       )
 
