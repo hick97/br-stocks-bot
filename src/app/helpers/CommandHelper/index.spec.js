@@ -18,6 +18,18 @@ describe('CommandHelper', () => {
     expect(resultWithUnformattedMessage).toStrictEqual(expectedResult)
   })
 
+  it('splitCommand -> should return the correct splitted values given a command with botname', async () => {
+    const regularMessage = { text: '@BRStocksBot /partials' }
+
+    const resultWithRegularMessage = await splitCommand(regularMessage.text)
+
+    const expectedLength = 1
+    const expectedResult = ['/partials']
+
+    expect(resultWithRegularMessage).toHaveLength(expectedLength)
+    expect(resultWithRegularMessage).toStrictEqual(expectedResult)
+  })
+
   it('removeCommandFromText -> should return text without command', () => {
     const command = '/sendtoall'
     const text = 'Some text here.'
