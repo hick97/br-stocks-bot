@@ -29,11 +29,11 @@ class MessageController {
     }
 
     const optionsByCommand = {
-      '/partials': {
+      '/wallet': {
         reply_markup: {
           inline_keyboard: [
             [{
-              text: 'Ver resultados parciais',
+              text: 'Clique para mais detalhes!',
               switch_inline_query_current_chat: '/partials'
             }]
           ]
@@ -41,7 +41,7 @@ class MessageController {
       }
     }
 
-    const withOptions = ['/partials']
+    const withOptions = ['/wallet']
 
     try {
       const action = Actions.getAction(command)
