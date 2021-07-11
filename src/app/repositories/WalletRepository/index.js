@@ -3,6 +3,7 @@ const Wallet = require('../../models/Wallet')
 const { dynamicSort } = require('../../helpers/SortHelper')
 const { useSentryLogger } = require('../../helpers/LogHelper')
 const { sendMessageToAdmin } = require('../../helpers/AdminHelper')
+const { parseToFixedFloat } = require('../../helpers/CurrencyHelper')
 const { walletTabulation, walletTabulationHeader } = require('../../helpers/TabulationHelper')
 
 const { ErrorMessages, ActionMessages } = require('../../enum/MessagesEnum')
@@ -10,6 +11,7 @@ const { emojis } = require('../../enum/EmojiEnum')
 
 const { findStockData, createStock } = require('../StockRepository')
 const { sendCustomMessage } = require('../MessageRepository')
+const { getDailyBySymbol } = require('../DailyRepository')
 
 class WalletRepository {
   async createWallet(chat, stockData, withNewStock = false) {
@@ -88,6 +90,55 @@ class WalletRepository {
 
     const walletTextArray = walletHeaderText.concat(stocks)
     return walletTextArray.join('')
+  }
+
+  async getWalletPartials(chat_id) {
+    const weights = []
+
+    const wallet = await Wallet.findOne({
+      chat_id
+    })
+
+    if (!wallet) return ErrorMessages.WALLET_IS_REQUIRED
+
+    const { stocks, previousData } = wallet
+
+    if (!previousData.investedAmount) return ActionMessages.NEEDS_REPORT
+
+    for (let index = 0; index < stocks.length; index++) {
+      const s = stocks[index]
+      const dailyStock = await getDailyBySymbol(s.stock)
+      const partialResult = s.quantity * dailyStock.price
+
+      weights.push({
+        partialResult,
+        stock: s.stock,
+        weight: partialResult * 100 / previousData.investedAmount
+      })
+    }
+
+    const orderedWeights = weights.sort(dynamicSort({ property: 'weight', order: 'desc' }))
+
+    const texts = orderedWeights.map(s => {
+      const partialResult = s.partialResult
+      const stockWeight = partialResult * 100 / previousData.investedAmount
+
+      return `<code>${s.stock.toUpperCase()}${walletTabulation(s.stock.length)}</code>` +
+        `<code>${parseToFixedFloat(stockWeight)}%\t\t</code>` +
+        `<code>R$${parseToFixedFloat(partialResult)}</code>\n`
+    })
+
+    const weightHeaderText = [
+      '<b>MAIS SOBRE SEUS ATIVOS</b> \n\n' +
+      ' <b>TOTAL INVESTIDO: </b>\n' + `<code>R$${parseToFixedFloat(previousData.investedAmount)}</code>` + '\n\n' +
+      '<code>ATIVO</code>' + walletTabulationHeader.WEIGHT_ATIVO_SPACE +
+      '<code>PESO</code>' + walletTabulationHeader.ATIVO_SPACE +
+      '<code>PARCIAL</code> \n\n'
+    ]
+
+    const weightTextArray = weightHeaderText.concat(texts)
+
+    return weightTextArray.join('')
   }
 
   async listAllWallets() {
