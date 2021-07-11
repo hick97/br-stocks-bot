@@ -22,6 +22,7 @@ const ActionMessages = {
     ' Veja seus ativos com o comando:\n' +
     '/wallet',
   SEARCH_STOCK: 'Só alguns segundos, estamos procurando seu ativo :)',
+  SEARCH_WALLET_RESULTS: 'Só alguns segundos, estamos consolidando sua carteira :)',
   REMOVE_STOCK: 'Ativo removido com sucesso!'
 }
 
