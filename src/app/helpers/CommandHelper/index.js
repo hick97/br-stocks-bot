@@ -1,6 +1,6 @@
 const splitCommand = (text) => {
   const splittedText = text.split(' ')
-  const cleanedCommands = splittedText.filter(element => element !== '')
+  const cleanedCommands = splittedText.filter(element => element !== '' && element !== '@BRStocksBot')
 
   return cleanedCommands
 }

@@ -13,6 +13,7 @@ const fundamentalsTabulation = (size) => {
 
 const walletTabulationHeader = {
   ATIVO_SPACE: '\t\t\t\t\t\t\t\t',
+  WEIGHT_ATIVO_SPACE: '\t\t\t\t\t',
   PM_SPACE: '\t\t\t\t\t\t\t\t\t\t\t\t'
 }
 

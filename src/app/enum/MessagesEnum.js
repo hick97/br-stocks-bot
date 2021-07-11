@@ -14,6 +14,7 @@ const ActionMessages = {
   WALLET_UPDATED: 'Carteira atualizada com sucesso!\n' +
     ' Veja seus ativos com o comando:\n' +
     '/wallet',
+  NEEDS_REPORT: 'Quase lá! Você poderá utilizar esse comando após receber o seu primeiro relátorio. Aguarde até amanhã :)',
   STOCK_CREATED: 'Ativo inserido com sucesso!\n' +
     ' Veja seus ativos com o comando:\n' +
     '/wallet',
@@ -21,6 +22,7 @@ const ActionMessages = {
     ' Veja seus ativos com o comando:\n' +
     '/wallet',
   SEARCH_STOCK: 'Só alguns segundos, estamos procurando seu ativo :)',
+  SEARCH_WALLET_RESULTS: 'Só alguns segundos, estamos consolidando sua carteira :)',
   REMOVE_STOCK: 'Ativo removido com sucesso!'
 }
 

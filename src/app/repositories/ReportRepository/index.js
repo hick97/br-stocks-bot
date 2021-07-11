@@ -118,6 +118,7 @@ class ReportRepository {
     // update previous result
     await Wallet.findByIdAndUpdate(walletId, {
       previousData: {
+        investedAmount: parseToFixedFloat(daily_result),
         cashResult: generalCashResult,
         percentualResult: generalWalletRentability,
         withPreviousData: true

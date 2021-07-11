@@ -17,6 +17,9 @@ const WalletSchema = new mongoose.Schema({
     }
   ],
   previousData: {
+    investedAmount: {
+      type: Number
+    },
     cashResult: {
       type: Number
     },
