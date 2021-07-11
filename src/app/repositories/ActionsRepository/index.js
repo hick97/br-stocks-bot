@@ -1,4 +1,4 @@
-const { listWalletById } = require('../WalletRepository')
+const { listWalletById, getWalletPartials } = require('../WalletRepository')
 const { sendNewsNotificationToAll } = require('../NotificationRepository')
 
 const WalletController = require('../../controllers/WalletController')
@@ -11,13 +11,17 @@ const { fundamentalsCommandIsValid } = require('../../helpers/FundamentalsHelper
 const { SingleCommands, SingleCommandsActions } = require('../../enum/CommandEnum')
 const { ErrorMessages } = require('../../enum/MessagesEnum')
 
+const getCommandAction = (text) => {
+  const cleanedValues = splitCommand(text)
+  const [action] = cleanedValues
+
+  return action.trim()
+}
+
 class ActionsRepository {
   getAction(message) {
     const { text } = message
-    const cleanedValues = splitCommand(text)
-    const [action] = cleanedValues
-
-    return action.trim()
+    return getCommandAction(text)
   }
 
   async staticMessage(message) {
@@ -29,11 +33,20 @@ class ActionsRepository {
 
   async handleWallet(message) {
     const { chat, text } = message
-    const isWalletCommand = text === '/wallet'
 
-    return isWalletCommand
-      ? await listWalletById(chat.id)
-      : validStockCommand(text) && await WalletController.execute(message)
+    const funcByWalletCommands = {
+      '/wallet': listWalletById,
+      '/partials': getWalletPartials
+    }
+
+    const command = getCommandAction(text)
+
+    const funcKeys = Object.keys(funcByWalletCommands)
+    const withChatId = funcKeys.includes(command)
+
+    if (withChatId) return await funcByWalletCommands[command](chat.id)
+
+    return validStockCommand(text) && await WalletController.execute(message)
   }
 
   async handleFundamentals(message) {
