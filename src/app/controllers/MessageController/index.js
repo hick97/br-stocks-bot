@@ -8,8 +8,15 @@ const { ErrorMessages } = require('../../enum/MessagesEnum')
 
 class MessageController {
   async execute(req, res) {
-    const { message, edited_message } = req.body
-    const command = message || edited_message || null
+    const { message, edited_message, callback_query } = req.body
+
+    const formattedCallback = (callback) => ({
+      text: callback.data,
+      chat: callback.message.chat
+    })
+
+    const callbackMessage = callback_query ? formattedCallback(callback_query) : null
+    const command = message || edited_message || callbackMessage || null
 
     const AdminActionsHandler = {
       '/sendtoall': Actions.handleNotifications,
@@ -34,7 +41,7 @@ class MessageController {
           inline_keyboard: [
             [{
               text: 'Clique para mais detalhes!',
-              switch_inline_query_current_chat: '/partials'
+              callback_data: '/partials'
             }]
           ]
         }
