@@ -49,11 +49,15 @@ class ReportController {
 
           await sendCustomMessage({ chat_id: currentChatId, text: telegramText, options: { reply_markup: shareByWhatsapp(whatsappText) } })
 
-          !stocks.failed && await sendCustomMessage({ chat_id: currentChatId, text: stocksMessage.text })
-          !fiis.failed && await sendCustomMessage({ chat_id: currentChatId, text: fiis.text })
-          !others.failed && await sendCustomMessage({ chat_id: currentChatId, text: others.text })
+          const hasStockMessage = !stocks.failed && !!stocksMessage.text
+          const hasFiisMessage = !fiis.failed && !!fiis.text
+          const hasOthersMessage = !others.failed && !!others.text
 
-          invalids.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: '<b>INVÁLIDOS</b>\n\n' + invalids + alertMessages.support })
+          hasStockMessage && await sendCustomMessage({ chat_id: currentChatId, text: stocksMessage.text, action: 'StockReport' })
+          hasFiisMessage && await sendCustomMessage({ chat_id: currentChatId, text: fiis.text, action: 'FIIsReport' })
+          hasOthersMessage && await sendCustomMessage({ chat_id: currentChatId, text: others.text, action: 'OthersReport' })
+
+          invalids.length > 0 && await sendCustomMessage({ chat_id: currentChatId, text: '<b>INVÁLIDOS</b>\n\n' + invalids + alertMessages.support, action: 'InvalidsReport' })
         }
       }
       useSentryLogger(null, logMessages.finish)
