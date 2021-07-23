@@ -47,7 +47,23 @@ class ReportController {
           const { stocks: stocksMessage, fiis, others, invalids } = stocksReport.message
           const { telegramText, whatsappText } = walletReport
 
-          await sendCustomMessage({ chat_id: currentChatId, text: telegramText, options: { reply_markup: shareByWhatsapp(whatsappText) } })
+          const messageOptions = {
+            reply_markup: {
+              inline_keyboard: [
+                [{
+                  text: '💰 Mais sobre sua carteira',
+                  callback_data: '/partials'
+                }],
+                shareByWhatsapp(whatsappText)
+              ]
+            }
+          }
+
+          await sendCustomMessage({
+            chat_id: currentChatId,
+            text: telegramText,
+            options: messageOptions
+          })
 
           const hasStockMessage = !stocks.failed && !!stocksMessage.text
           const hasFiisMessage = !fiis.failed && !!fiis.text
