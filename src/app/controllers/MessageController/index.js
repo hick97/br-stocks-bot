@@ -57,7 +57,9 @@ class MessageController {
 
       const actionHandler = ActionsHandler[action] || ActionsHandler.default
       const response = await actionHandler(command)
-      await updateCommandCount(action)
+
+      const isAdminActions = command.chat.id === process.env.ADMIN_CHAT_ID
+      !isAdminActions && await updateCommandCount(action)
 
       await sendCustomMessage(
         {
