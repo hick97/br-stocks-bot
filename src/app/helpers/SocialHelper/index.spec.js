@@ -6,7 +6,7 @@ describe('SocialHelper', () => {
     const expectedUrl = `https://api.whatsapp.com/send?text=${textToSend}`
 
     const result = shareByWhatsapp(textToSend)
-    const { url } = result.inline_keyboard[0][0]
+    const [{ url }] = result
 
     expect(url).toBe(expectedUrl)
   })
