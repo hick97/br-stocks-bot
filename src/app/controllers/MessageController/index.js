@@ -1,4 +1,5 @@
 const { sendGifAnimation, sendCustomMessage } = require('../../repositories/MessageRepository')
+const { updateCommandCount } = require('../../repositories/TrackRepository')
 const Actions = require('../../repositories/ActionsRepository')
 
 const { useSentryLogger } = require('../../helpers/LogHelper')
@@ -56,6 +57,9 @@ class MessageController {
 
       const actionHandler = ActionsHandler[action] || ActionsHandler.default
       const response = await actionHandler(command)
+
+      const isAdminActions = command.chat.id === process.env.ADMIN_CHAT_ID
+      !isAdminActions && await updateCommandCount(action)
 
       await sendCustomMessage(
         {
