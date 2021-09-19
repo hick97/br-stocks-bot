@@ -1,4 +1,6 @@
 const FundamentalsRepository = require('../../repositories/FundamentalsRepository')
+const ScrappyRepository = require('../../repositories/ScrappyRepository')
+
 const { getFundamentalsText } = require('../../helpers/FundamentalsHelper')
 
 const { isWeekend } = require('../../helpers/DateHelper')
@@ -18,6 +20,10 @@ class FundamentalsController {
     if (!isValid) return ErrorMessages.INVALID_COMMAND
 
     const symbol = values[1]
+
+    const stockClass = await ScrappyRepository.scrappyStockClass(symbol.toUpperCase())
+    if (stockClass !== 'Ações') return ErrorMessages.INVALID_STOCK_TYPE
+
     const fundamentals = await FundamentalsRepository.getFundamentalsByStock(symbol)
     const isInvalidStock = !fundamentals || fundamentals.length === 0
 
