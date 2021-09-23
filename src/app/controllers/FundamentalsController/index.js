@@ -21,14 +21,18 @@ class FundamentalsController {
 
     const symbol = values[1]
 
-    const stockClass = await ScrappyRepository.scrappyStockClass(symbol.toUpperCase())
+    const cleanedSymbol = symbol.trim().toUpperCase()
+    const isFractional = cleanedSymbol.endsWith('F')
+    const formattedSymbol = isFractional ? cleanedSymbol.slice(0, -1) : cleanedSymbol
+
+    const stockClass = await ScrappyRepository.scrappyStockClass(formattedSymbol)
     if (stockClass !== 'Ações') return ErrorMessages.INVALID_STOCK_TYPE
 
-    const fundamentals = await FundamentalsRepository.getFundamentalsByStock(symbol)
+    const fundamentals = await FundamentalsRepository.getFundamentalsByStock(formattedSymbol)
     const isInvalidStock = !fundamentals || fundamentals.length === 0
 
     if (isInvalidStock) {
-      const errorMessage = `Error(chat_id=${chat.id}) - Não foi possível achar fundamentos para o ativo=${symbol}).`
+      const errorMessage = `Error(chat_id=${chat.id}) - Não foi possível achar fundamentos para o ativo=${formattedSymbol}).`
       useSentryLogger(null, errorMessage)
       return ErrorMessages.NOT_FOUND
     }
