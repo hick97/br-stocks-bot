@@ -6,6 +6,12 @@ const validStockCommand = (term) => {
 
   const matched = match !== -1
 
+  if (term.toLowerCase().includes('/stock')) {
+    const wordsCount = term.split(' ').filter(word => !!word).length
+
+    if (wordsCount < 4) return false
+  }
+
   return matched
 }
 
