@@ -43,7 +43,7 @@ class StockRepository {
     const wallet = await Wallet.findOne({ chat_id })
     if (!wallet) return ErrorMessages.WALLET_IS_REQUIRED
 
-    const newStocks = wallet.stocks.filter(s => s.stock !== stock)
+    const newStocks = wallet.stocks.filter(s => s.stock.toUpperCase() !== stock.toUpperCase())
     const hasNoChanges = wallet.stocks.length === newStocks.length
     if (hasNoChanges) return ErrorMessages.NOT_FOUND
 
