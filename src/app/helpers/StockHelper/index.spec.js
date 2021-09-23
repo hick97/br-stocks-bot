@@ -1,6 +1,6 @@
 const { validStockCommand, getStockValues } = require('./index')
 
-describe('FundamentalsHelper', () => {
+describe('StockHelper', () => {
   it('validStockCommand -> should return true when term contains /del', async () => {
     const lowerCaseCommandTerm = '/del'
     const upperCaseCommandTerm = '/DEL'
@@ -15,7 +15,7 @@ describe('FundamentalsHelper', () => {
     expect(similarMatch).toBeTruthy()
   })
 
-  it('validStockCommand -> should return true when term contains /stock', async () => {
+  it('validStockCommand -> should return falsy when term contains /stock and are incomplete', async () => {
     const lowerCaseCommandTerm = '/stock'
     const upperCaseCommandTerm = '/STOCK'
     const similarCommandTerm = '/stocks'
@@ -24,9 +24,9 @@ describe('FundamentalsHelper', () => {
     const upperCaseMatch = validStockCommand(upperCaseCommandTerm)
     const similarMatch = validStockCommand(similarCommandTerm)
 
-    expect(lowerCaseMatch).toBeTruthy()
-    expect(upperCaseMatch).toBeTruthy()
-    expect(similarMatch).toBeTruthy()
+    expect(lowerCaseMatch).toBeFalsy()
+    expect(upperCaseMatch).toBeFalsy()
+    expect(similarMatch).toBeFalsy()
   })
 
   it('getStockValues -> should return the correct values given a /stock or /del command', async () => {
