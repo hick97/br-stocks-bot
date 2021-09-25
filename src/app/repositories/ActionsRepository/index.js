@@ -46,7 +46,9 @@ class ActionsRepository {
 
     if (withChatId) return await funcByWalletCommands[command](chat.id)
 
-    return validStockCommand(text) && await WalletController.execute(message)
+    if (!validStockCommand(text)) return ErrorMessages.INVALID_COMMAND
+
+    return await WalletController.execute(message)
   }
 
   async handleFundamentals(message) {

@@ -1,4 +1,6 @@
 const FundamentalsRepository = require('../../repositories/FundamentalsRepository')
+const ScrappyRepository = require('../../repositories/ScrappyRepository')
+
 const { getFundamentalsText } = require('../../helpers/FundamentalsHelper')
 
 const { isWeekend } = require('../../helpers/DateHelper')
@@ -18,11 +20,19 @@ class FundamentalsController {
     if (!isValid) return ErrorMessages.INVALID_COMMAND
 
     const symbol = values[1]
-    const fundamentals = await FundamentalsRepository.getFundamentalsByStock(symbol)
+
+    const cleanedSymbol = symbol.trim().toUpperCase()
+    const isFractional = cleanedSymbol.endsWith('F')
+    const formattedSymbol = isFractional ? cleanedSymbol.slice(0, -1) : cleanedSymbol
+
+    const stockClass = await ScrappyRepository.scrappyStockClass(formattedSymbol)
+    if (stockClass !== 'Ações') return ErrorMessages.INVALID_STOCK_TYPE
+
+    const fundamentals = await FundamentalsRepository.getFundamentalsByStock(formattedSymbol)
     const isInvalidStock = !fundamentals || fundamentals.length === 0
 
     if (isInvalidStock) {
-      const errorMessage = `Error(chat_id=${chat.id}) - Não foi possível achar fundamentos para o ativo=${symbol}).`
+      const errorMessage = `Error(chat_id=${chat.id}) - Não foi possível achar fundamentos para o ativo=${formattedSymbol}).`
       useSentryLogger(null, errorMessage)
       return ErrorMessages.NOT_FOUND
     }

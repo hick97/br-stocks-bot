@@ -12,6 +12,7 @@ const { emojis } = require('../../enum/EmojiEnum')
 const { findStockData, createStock } = require('../StockRepository')
 const { sendCustomMessage } = require('../MessageRepository')
 const { getDailyBySymbol } = require('../DailyRepository')
+const { scrappyStockDataFromB3 } = require('../ScrappyRepository')
 
 class WalletRepository {
   async createWallet(chat, stockData, withNewStock = false) {
@@ -109,8 +110,11 @@ class WalletRepository {
 
     for (let index = 0; index < stocks.length; index++) {
       const s = stocks[index]
+
       const dailyStock = await getDailyBySymbol(s.stock)
-      const partialResult = s.quantity * dailyStock.price
+      const dailyResult = !dailyStock ? await scrappyStockDataFromB3(s.stock) : dailyStock
+
+      const partialResult = s.quantity * dailyResult.price
 
       weights.push({
         partialResult,

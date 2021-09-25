@@ -7,7 +7,8 @@ const ErrorMessages = {
     'Tente novamente em alguns instantes!',
   NOT_FOUND: emojis.warning + ' Ativo não encontrado ou sentença mal formatada, verifique o menu /help.',
   WALLET_IS_REQUIRED: emojis.warning + ' Você precisa cadastrar ao menos um ativo na sua carteira pra completar essa ação.',
-  ACCESS_DENIED: emojis.warning + ' Acesso negado!'
+  ACCESS_DENIED: emojis.warning + ' Acesso negado!',
+  INVALID_STOCK_TYPE: emojis.warning + ' Ah que pena :( Esta funcionalidade ainda não está disponível para essa classe de ativos, tente novamente com outra classe!'
 }
 
 const ActionMessages = {

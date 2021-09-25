@@ -122,38 +122,43 @@ class ScrappyRepository {
     const quoteAlreadyExists = await Daily.findOne({ symbol: symbol.toUpperCase() })
     const classAlreadyExists = !!quoteAlreadyExists && quoteAlreadyExists.class !== 'Não aplicável'
 
-    if (classAlreadyExists) return
+    if (classAlreadyExists) return quoteAlreadyExists.class
 
-    console.log('Classe do ativo:' + symbol)
-    let result = {}
+    try {
+      console.log('Classe do ativo:' + symbol)
 
-    const formattedSymbol = symbol.toLowerCase()
-    const { browser, page, evaluate } = await launchBrowser({ url: `https://statusinvest.com.br/acoes/${formattedSymbol}` })
+      let result = {}
 
-    result = await evaluate(tryGetStockClass)
+      const formattedSymbol = symbol.toLowerCase()
+      const { browser, page, evaluate } = await launchBrowser({ url: `https://statusinvest.com.br/acoes/${formattedSymbol}` })
 
-    if (result.failed) {
-      await page.goto(`https://statusinvest.com.br/fundos-imobiliarios/${formattedSymbol}`)
-      await page.waitFor(1000)
       result = await evaluate(tryGetStockClass)
+
+      if (result.failed) {
+        await page.goto(`https://statusinvest.com.br/fundos-imobiliarios/${formattedSymbol}`)
+        await page.waitFor(1000)
+        result = await evaluate(tryGetStockClass)
+      }
+
+      if (result.failed) {
+        await page.goto(`https://statusinvest.com.br/bdrs/${formattedSymbol}`)
+        await page.waitFor(2000)
+        result = await evaluate(tryGetStockClass)
+      }
+
+      if (result.failed) {
+        await page.goto(`https://statusinvest.com.br/etfs/${formattedSymbol}`)
+        await page.waitFor(2000)
+        result = await evaluate(tryGetStockClass)
+      }
+
+      await Daily.findByIdAndUpdate(quoteAlreadyExists._id, { class: result.class })
+
+      browser.close()
+      return result.class
+    } catch (error) {
+      return 'not found'
     }
-
-    if (result.failed) {
-      await page.goto(`https://statusinvest.com.br/bdrs/${formattedSymbol}`)
-      await page.waitFor(2000)
-      result = await evaluate(tryGetStockClass)
-    }
-
-    if (result.failed) {
-      await page.goto(`https://statusinvest.com.br/etfs/${formattedSymbol}`)
-      await page.waitFor(2000)
-      result = await evaluate(tryGetStockClass)
-    }
-
-    await Daily.findByIdAndUpdate(quoteAlreadyExists._id, { class: result.class })
-
-    browser.close()
-    return result
   }
 
   async scrappyStockDividends() {

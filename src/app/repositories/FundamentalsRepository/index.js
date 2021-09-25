@@ -18,14 +18,13 @@ class FundamentalsRepository {
     }
   }
 
-  async getFundamentalsByStock(symbol) {
+  async getFundamentalsByStock(formattedSymbol) {
     try {
-      const formattedSymbol = symbol.toUpperCase()
       const fundamentals = await Fundamentals.findOne({ symbol: formattedSymbol })
       const fundamentalsNotFound = !fundamentals
 
       if (fundamentalsNotFound) {
-        const indicators = await ScrappyRepository.scrappyFundamentalsData(symbol)
+        const indicators = await ScrappyRepository.scrappyFundamentalsData(formattedSymbol)
         const isValid = !!indicators && indicators.length !== 0
         if (isValid) {
           const newFundamentals = await Fundamentals.create({
@@ -37,7 +36,7 @@ class FundamentalsRepository {
       }
       return fundamentals.indicators
     } catch (error) {
-      useSentryLogger(error, `Falha ao pegar fundamentos para o symbol=${symbol}`)
+      useSentryLogger(error, `Falha ao pegar fundamentos para o symbol=${formattedSymbol}`)
     }
   }
 }
