@@ -80,7 +80,7 @@ class ScrappyRepository {
       button: '#btnBuscarOutrosAtivos'
     }
 
-    const { browser, page, evaluate } = await launchBrowser({ url: 'http://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/cotacoes/outros-ativos.htm' })
+    const { browser, page, evaluate } = await launchBrowser({ url: 'https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/cotacoes/outros-ativos.htm' })
 
     const delay = isRetry ? 3000 : 2000
 
@@ -106,7 +106,7 @@ class ScrappyRepository {
       button: '#btnBuscarOutrosAtivos'
     }
 
-    const { browser, page, evaluate } = await launchBrowser({ url: 'http://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/cotacoes/outros-ativos.htm' })
+    const { browser, page, evaluate } = await launchBrowser({ url: 'https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/cotacoes/outros-ativos.htm' })
 
     await page.$eval(actionIdentifiers.input, (el, value) => { el.value = value }, symbolToScrappy)
     await page.click(actionIdentifiers.button)
