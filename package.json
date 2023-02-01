@@ -17,7 +17,7 @@
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "form-data": "^3.0.0",
-    "mongoose": "^5.9.18",
+    "mongoose": "^5.13.15",
     "node-cron": "^2.0.3",
     "puppeteer": "^4.0.1",
     "puppeteer-extra": "^3.1.15",
